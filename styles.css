@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nursing Resource Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Existing styles... */
+
+    /* New styles for select elements and content boxes */
+    select {
+      margin: 10px 0;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    #ebooks, #practice-questions {
+      margin-top: 10px;
+      padding: 10px;
+      background: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nursing Resource Hub</h1>
+    <nav>
+      <ul>
+        <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
+        <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
+        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
+        <li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
+        <li><a href="newpage.html"><i class="fas fa-file-alt"></i> New Page</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="info">
+      <div class="card">
+        <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
+        <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
+      </div>
+    </section>
+
+    <section id="library">
+      <div class="card">
+        <h2><i class="fas fa-book"></i> Digital Library</h2>
+        <label for="year-select">Select Year Level:</label>
+        <select id="year-select" onchange="showEbooks(this.value)">
+          <option value="1st">1st Year</option>
+          <option value="2nd">2nd Year</option>
+          <option value="3rd">3rd Year</option>
+          <option value="4th">4th Year</option>
+        </select>
+        <div id="ebooks" class="content-box">
+          <p>Select a year level to view available eBooks.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="practice">
+      <div class="card">
+        <h2><i class="fas fa-pencil-alt"></i> Practice Questions</h2>
+        <label for="practice-select">Select Year Level:</label>
+        <select id="practice-select" onchange="showPracticeQuestions(this.value)">
+          <option value="1st">1st Year</option>
+          <option value="2nd">2nd Year</option>
+          <option value="3rd">3rd Year</option>
+          <option value="4th">4th Year</option>
+        </select>
+        <div id="practice-questions" class="content-box">
+          <p>Select a year level to view practice questions.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="videos">
+      <div class="card">
+        <h2><i class="fas fa-video"></i> Video Procedures</h2>
+        <p>Watch step-by-step video demonstrations of essential nursing procedures.</p>
+        <ul>
+          <li><a href="#"><i class="fas fa-play-circle"></i> Hand Hygiene Procedure</a></li>
+          <li><a href="#"><i class="fas fa-play-circle"></i> Vital Signs Assessment</a></li>
+          <li><a href="#"><i class="fas fa-play-circle"></i> Wound Dressing Tutorial</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
