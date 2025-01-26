@@ -74,6 +74,44 @@
       transform: scale(1.1);
     }
 
+    /* Hamburger Menu */
+    .menu-toggle {
+      display: none;
+      font-size: 1.5rem;
+      position: absolute;
+      right: 1.5rem;
+      top: 1rem;
+      cursor: pointer;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #4CAF50;
+        padding: 1rem 0;
+        z-index: 999;
+      }
+
+      nav ul.active {
+        display: flex;
+      }
+
+      nav ul li {
+        margin: 0.5rem 0;
+        text-align: center;
+      }
+    }
+
     /* Hero Section */
     .hero {
       position: relative;
@@ -267,7 +305,11 @@
     <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo" class="logo">
     <h1>Nursing Resource Hub</h1>
     <nav>
-      <ul>
+      <!-- Hamburger Menu Icon -->
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul id="nav-menu">
         <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
         <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
         <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
@@ -334,5 +376,21 @@
     <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo">
     <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
   </footer>
+
+  <!-- JavaScript for Menu Toggle -->
+  <script>
+    const toggle = document.getElementById("menu-toggle");
+    const navMenu = document.getElementById("nav-menu");
+
+    toggle.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!navMenu.contains(event.target) && !toggle.contains(event.target)) {
+        navMenu.classList.remove("active");
+      }
+    });
+  </script>
 </body>
 </html>
