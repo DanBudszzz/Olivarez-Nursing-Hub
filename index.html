@@ -13,13 +13,13 @@
       margin: 0;
       padding: 0;
       line-height: 1.6;
-      background-color: #F4F4F4; /* Light Gray */
-      color: #2C3E50; /* Charcoal Black */
-      scroll-behavior: smooth; /* Smooth scroll for anchor links */
+      background-color: #F4F4F4;
+      color: #2C3E50;
+      scroll-behavior: smooth;
     }
 
     header {
-      background-color: #4CAF50; /* Soft Green */
+      background-color: #4CAF50;
       color: white;
       padding: 1.5rem 0;
       text-align: center;
@@ -48,7 +48,6 @@
       display: inline-block;
     }
 
-    /* Navigation Styles */
     nav {
       margin-top: 1rem;
     }
@@ -59,7 +58,6 @@
       display: flex;
       justify-content: center;
       margin: 0;
-      transition: transform 0.5s ease;
     }
 
     nav ul li {
@@ -80,7 +78,6 @@
       text-decoration: underline; /* Adding underline on hover for more interactivity */
     }
 
-    /* Hamburger Menu */
     .menu-toggle {
       display: none;
       font-size: 1.5rem;
@@ -118,7 +115,6 @@
       }
     }
 
-    /* Hero Section */
     .hero {
       position: relative;
       color: white;
@@ -141,34 +137,22 @@
       z-index: -1;
     }
 
-    .hero-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay */
-      z-index: -1;
-    }
-
     .hero h2 {
       font-family: 'Montserrat', Arial, sans-serif;
       font-size: 2.5rem;
       margin: 0;
       text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
-      animation: fadeInUp 1.5s ease-out;
     }
 
     .hero p {
       font-size: 1.2rem;
       margin-top: 1rem;
       text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-      animation: fadeInUp 2s ease-out;
     }
 
     .cta-btn {
       display: inline-block;
-      background-color: #388E3C; /* Darker Green */
+      background-color: #388E3C;
       color: white;
       padding: 1rem 2rem;
       text-decoration: none;
@@ -176,15 +160,13 @@
       border-radius: 30px;
       margin-top: 1rem;
       transition: background-color 0.3s;
-      animation: bounceIn 1s ease-out;
     }
 
     .cta-btn:hover {
-      background-color: #81C784; /* Lighter Green */
-      transform: scale(1.1); /* Adding subtle scale effect on hover */
+      background-color: #81C784;
+      transform: scale(1.1);
     }
 
-    /* Content Section */
     .container {
       max-width: 1200px;
       margin: 2rem auto;
@@ -198,17 +180,15 @@
       padding: 1.5rem;
       margin-bottom: 2rem;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeIn 1s ease-out;
     }
 
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card h2 {
-      color: #4CAF50; /* Soft Green */
+      color: #4CAF50;
       font-family: 'Montserrat', Arial, sans-serif;
       margin-bottom: 1rem;
       font-size: 1.5rem;
@@ -219,28 +199,8 @@
       line-height: 1.8;
     }
 
-    label {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-
-    select {
-      width: 100%;
-      padding: 0.8rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      transition: border-color 0.3s ease;
-    }
-
-    select:focus {
-      border-color: #81C784;
-    }
-
     footer {
-      background-color: #388E3C; /* Darker Green */
+      background-color: #388E3C;
       color: white;
       text-align: center;
       padding: 1.5rem;
@@ -256,7 +216,6 @@
       margin: 0.5rem 0;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
       header h1 {
         font-size: 1.5rem;
@@ -285,7 +244,6 @@
       }
     }
 
-    /* Animations */
     @keyframes fadeIn {
       0% { opacity: 0; }
       100% { opacity: 1; }
@@ -314,15 +272,14 @@
     <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo" class="logo">
     <h1>Nursing Resource Hub</h1>
     <nav>
-      <!-- Hamburger Menu Icon -->
       <div class="menu-toggle" id="menu-toggle">
         <i class="fas fa-bars"></i>
       </div>
       <ul id="nav-menu">
         <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
         <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
-        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions
-					<li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
+        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
+        <li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
       </ul>
     </nav>
   </header>
@@ -345,27 +302,14 @@
     <!-- Digital Library Section -->
     <section id="library" class="card">
       <h2><i class="fas fa-book"></i> Digital Library</h2>
-      <label for="year-select">Select Year Level:</label>
-      <select id="year-select">
-        <option value="1st">1st Year</option>
-        <option value="2nd">2nd Year</option>
-        <option value="3rd">3rd Year</option>
-        <option value="4th">4th Year</option>
-      </select>
-      <p>Select a year level to view available eBooks.</p>
+      <p>The Nursing Resource Hub's Digital Library contains a wide variety of eBooks, research materials, and resources for all nursing levels. Click below to access the full library of resources.</p>
+      <a href="library.html" class="cta-btn">Go to Digital Library</a>
     </section>
 
     <!-- Practice Questions Section -->
     <section id="practice" class="card">
       <h2><i class="fas fa-pencil-alt"></i> Practice Questions</h2>
-      <label for="practice-select">Select Year Level:</label>
-      <select id="practice-select">
-        <option value="1st">1st Year</option>
-        <option value="2nd">2nd Year</option>
-        <option value="3rd">3rd Year</option>
-        <option value="4th">4th Year</option>
-      </select>
-      <p>Select a year level to view practice questions.</p>
+      <p>Test your knowledge with practice questions categorized by nursing year levels. Improve your skills and prepare for exams.</p>
     </section>
 
     <!-- Video Procedures Section -->
@@ -380,9 +324,9 @@
     </section>
   </main>
 
-  <!-- Footer -->
+  <!-- Footer Section -->
   <footer>
-    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo">
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Logo">
     <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
   </footer>
 
@@ -401,7 +345,6 @@
       }
     });
 
-    // JavaScript to Hide and Show Header on Scroll
     let prevScrollPos = window.pageYOffset;
     const header = document.querySelector("header");
 
