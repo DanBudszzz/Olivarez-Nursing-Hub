@@ -264,6 +264,41 @@
       60% { transform: scale(1.1); }
       100% { transform: scale(1); opacity: 1; }
     }
+
+    /* New styles for horizontal scrolling */
+    #facebook-feed-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+      padding: 1rem 0;
+      margin-top: 1rem;
+      scroll-snap-type: x mandatory;
+    }
+
+    .fb-post {
+      flex-shrink: 0;
+      width: 300px;
+      padding: 1rem;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      scroll-snap-align: start;
+    }
+
+.fb-post img {
+  width: 100%; /* Make the image take up the full width of the container */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 200px; /* Limit the height to make sure images don't get too large */
+  object-fit: cover; /* Ensure the image covers the area without stretching */
+  border-radius: 5px;
+  margin-bottom: 1rem; /* Add space below the image */
+}
+
+    .fb-post a {
+      color: #4CAF50;
+      font-weight: bold;
+      text-decoration: none;
+    }
   </style>
 </head>
 <body>
@@ -297,6 +332,8 @@
     <section id="info" class="card">
       <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
       <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
+      <!-- Facebook Post Embed -->
+      <div id="facebook-feed-container"></div>
     </section>
 
     <!-- Digital Library Section -->
@@ -330,7 +367,7 @@
     <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
   </footer>
 
-  <!-- JavaScript for Menu Toggle -->
+  <!-- JavaScript for Menu Toggle and RSS Fetching -->
   <script>
     const toggle = document.getElementById("menu-toggle");
     const navMenu = document.getElementById("nav-menu");
@@ -357,6 +394,44 @@
       }
       prevScrollPos = currentScrollPos;
     };
+
+// Fetching the RSS feed and displaying posts
+async function loadFacebookPosts() {
+  const response = await fetch('https://rss.app/feeds/bfyOgG6aFc2lHiHN.xml');
+  const xml = await response.text();
+  const parser = new DOMParser();
+  const xmlDoc = parser.parseFromString(xml, "application/xml");
+
+  // Extracting items from RSS
+  const items = xmlDoc.getElementsByTagName("item");
+  let htmlContent = "";
+
+  // Limit to display 10 posts
+  const maxPosts = 20;
+  const totalPosts = items.length;
+
+  for (let i = 0; i < Math.min(maxPosts, totalPosts); i++) {
+    const title = items[i].getElementsByTagName("title")[0].textContent;
+    const link = items[i].getElementsByTagName("link")[0].textContent;
+    const pubDate = items[i].getElementsByTagName("pubDate")[0].textContent;
+    const imageUrl = items[i].getElementsByTagName("media:content")[0]?.getAttribute("url"); // Looking for image URL
+
+    htmlContent += `
+      <div class="fb-post">
+        ${imageUrl ? `<img src="${imageUrl}" alt="Post image">` : ""}
+        <a href="${link}" target="_blank">${title}</a>
+        <br>
+        <small>Published on: ${pubDate}</small>
+      </div>
+    `;
+  }
+
+  // Display the posts in the #facebook-feed-container
+  document.getElementById("facebook-feed-container").innerHTML = htmlContent;
+}
+
+// Load posts when the page loads
+window.onload = loadFacebookPosts;
   </script>
 </body>
 </html>
