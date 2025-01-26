@@ -42,9 +42,8 @@
       display: inline-block;
     }
 
-    /* Navigation Styles */
+    /* Navigation */
     nav {
-      margin-top: 1rem;
       position: relative;
     }
 
@@ -54,23 +53,10 @@
       display: flex;
       justify-content: center;
       margin: 0;
-      display: none;
-    }
-
-    nav ul.active {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: #4CAF50; /* Same as header */
-      padding: 1rem 0;
     }
 
     nav ul li {
-      margin: 0.5rem 0;
-      text-align: center;
+      margin: 0 1.5rem;
     }
 
     nav ul li a {
@@ -86,6 +72,7 @@
       transform: scale(1.1);
     }
 
+    /* Responsive Navigation (Hamburger Menu) */
     .menu-toggle {
       display: none;
       font-size: 1.5rem;
@@ -94,3 +81,151 @@
       top: 1rem;
       cursor: pointer;
       color: white;
+    }
+
+    .menu-toggle.active + ul,
+    nav ul.active {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: #4CAF50;
+      padding: 1rem 0;
+      z-index: 999;
+    }
+
+    .menu-toggle.active + ul li {
+      margin: 0.5rem 0;
+      text-align: center;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      color: white;
+      text-align: center;
+      padding: 4rem 1rem;
+      background-image: url('cover.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero h2 {
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 2.5rem;
+      margin: 0;
+      text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-top: 1rem;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background-color: #388E3C; /* Darker Green */
+      color: white;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      margin-top: 1rem;
+    }
+
+    .cta-btn:hover {
+      background-color: #81C784; /* Lighter Green */
+    }
+
+    /* Footer */
+    footer {
+      background-color: #388E3C; /* Darker Green */
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    footer img {
+      max-width: 40px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul {
+        display: none;
+        flex-direction: column;
+      }
+
+      nav ul li {
+        margin: 0.5rem 0;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <header>
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo" class="logo">
+    <h1>Nursing Resource Hub</h1>
+    <nav>
+      <div class="menu-toggle" id="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+      <ul>
+        <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
+        <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
+        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
+        <li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Welcome to Your Nursing Resource Hub</h2>
+    <p>Your gateway to comprehensive nursing materials, tools, and resources.</p>
+    <a href="#info" class="cta-btn">Explore Resources</a>
+  </section>
+
+  <!-- Content Section -->
+  <main class="container">
+    <section id="info" class="card">
+      <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
+      <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo">
+    <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    const toggle = document.getElementById("menu-toggle");
+    const navMenu = document.querySelector("nav ul");
+
+    toggle.addEventListener("click", () => {
+      toggle.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!toggle.contains(event.target) && !navMenu.contains(event.target)) {
+        toggle.classList.remove("active");
+        navMenu.classList.remove("active");
+      }
+    });
+  </script>
+</body>
+</html>
