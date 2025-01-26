@@ -246,12 +246,16 @@
     const toggle = document.getElementById("menu-toggle");
     const navMenu = document.getElementById("nav-menu");
 
+    // Toggle the menu when the hamburger icon is clicked
     toggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
     });
 
-    navMenu.addEventListener("click", () => {
-      navMenu.classList.remove("active");
+    // Close the menu when clicking outside of it
+    document.addEventListener("click", (event) => {
+      if (!navMenu.contains(event.target) && !toggle.contains(event.target)) {
+        navMenu.classList.remove("active");
+      }
     });
   </script>
 </body>
