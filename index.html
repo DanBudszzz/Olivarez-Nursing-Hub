@@ -13,13 +13,13 @@
       margin: 0;
       padding: 0;
       line-height: 1.6;
-      background-color: #F4F4F4; /* Light Gray */
-      color: #2C3E50; /* Charcoal Black */
-      scroll-behavior: smooth; /* Smooth scroll for anchor links */
+      background-color: #F4F4F4;
+      color: #2C3E50;
+      scroll-behavior: smooth;
     }
 
     header {
-      background-color: #4CAF50; /* Soft Green */
+      background-color: #4CAF50;
       color: white;
       padding: 1.5rem 0;
       text-align: center;
@@ -32,19 +32,16 @@
     header .logo {
       max-width: 70px;
       margin-right: 10px;
-      vertical-align: middle;
     }
 
     header h1 {
       font-family: 'Montserrat', Arial, sans-serif;
       font-size: 2rem;
       margin: 0;
-      display: inline-block;
     }
 
-    /* Navigation Styles */
+    /* Navigation */
     nav {
-      margin-top: 1rem;
       position: relative;
     }
 
@@ -64,16 +61,14 @@
       color: white;
       text-decoration: none;
       font-weight: bold;
-      transition: color 0.3s ease, transform 0.3s ease;
-      font-size: 1rem;
+      transition: color 0.3s ease;
     }
 
     nav ul li a:hover {
-      color: #81C784; /* Lighter Green */
-      transform: scale(1.1);
+      color: #81C784;
     }
 
-    /* Responsive Navigation (Hamburger Menu) */
+    /* Hamburger Menu */
     .menu-toggle {
       display: none;
       font-size: 1.5rem;
@@ -84,16 +79,16 @@
       color: white;
     }
 
-    .menu-toggle.active + ul {
+    .menu-toggle.active + ul,
+    nav ul.active {
       display: flex;
       flex-direction: column;
       position: absolute;
       top: 100%;
       left: 0;
       right: 0;
-      background-color: #4CAF50; /* Same as header */
+      background-color: #4CAF50;
       padding: 1rem 0;
-      z-index: 999;
     }
 
     .menu-toggle.active + ul li {
@@ -127,7 +122,7 @@
 
     .cta-btn {
       display: inline-block;
-      background-color: #388E3C; /* Darker Green */
+      background-color: #388E3C;
       color: white;
       padding: 1rem 2rem;
       text-decoration: none;
@@ -137,12 +132,12 @@
     }
 
     .cta-btn:hover {
-      background-color: #81C784; /* Lighter Green */
+      background-color: #81C784;
     }
 
     /* Footer */
     footer {
-      background-color: #388E3C; /* Darker Green */
+      background-color: #388E3C;
       color: white;
       text-align: center;
       padding: 1.5rem;
@@ -153,7 +148,7 @@
       max-width: 40px;
     }
 
-    /* Media Queries */
+    /* Responsive Design */
     @media (max-width: 768px) {
       .menu-toggle {
         display: block;
@@ -198,47 +193,9 @@
 
   <!-- Content Section -->
   <main class="container">
-    <!-- Nursing Information Section -->
     <section id="info" class="card">
       <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
       <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
-    </section>
-
-    <!-- Digital Library Section -->
-    <section id="library" class="card">
-      <h2><i class="fas fa-book"></i> Digital Library</h2>
-      <label for="year-select">Select Year Level:</label>
-      <select id="year-select">
-        <option value="1st">1st Year</option>
-        <option value="2nd">2nd Year</option>
-        <option value="3rd">3rd Year</option>
-        <option value="4th">4th Year</option>
-      </select>
-      <p>Select a year level to view available eBooks.</p>
-    </section>
-
-    <!-- Practice Questions Section -->
-    <section id="practice" class="card">
-      <h2><i class="fas fa-pencil-alt"></i> Practice Questions</h2>
-      <label for="practice-select">Select Year Level:</label>
-      <select id="practice-select">
-        <option value="1st">1st Year</option>
-        <option value="2nd">2nd Year</option>
-        <option value="3rd">3rd Year</option>
-        <option value="4th">4th Year</option>
-      </select>
-      <p>Select a year level to view practice questions.</p>
-    </section>
-
-    <!-- Video Procedures Section -->
-    <section id="videos" class="card">
-      <h2><i class="fas fa-video"></i> Video Procedures</h2>
-      <p>Watch step-by-step video demonstrations of essential nursing procedures:</p>
-      <ul>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Hand Hygiene Procedure</a></li>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Vital Signs Assessment</a></li>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Wound Dressing Tutorial</a></li>
-      </ul>
     </section>
   </main>
 
@@ -256,6 +213,13 @@
     toggle.addEventListener("click", () => {
       toggle.classList.toggle("active");
       navMenu.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!toggle.contains(e.target) && !navMenu.contains(e.target)) {
+        toggle.classList.remove("active");
+        navMenu.classList.remove("active");
+      }
     });
   </script>
 </body>
