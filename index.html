@@ -84,28 +84,6 @@
       color: white;
     }
 
-    nav ul {
-      display: flex;
-      flex-direction: row;
-    }
-
-    nav ul.active {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: #4CAF50; /* Same as header */
-      padding: 1rem 0;
-      z-index: 999;
-    }
-
-    nav ul li {
-      margin: 0.5rem 0;
-      text-align: center;
-    }
-
     @media (max-width: 768px) {
       .menu-toggle {
         display: block;
@@ -113,10 +91,23 @@
 
       nav ul {
         display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #4CAF50; /* Same as header */
+        padding: 1rem 0;
+        z-index: 999;
       }
 
       nav ul.active {
         display: flex;
+      }
+
+      nav ul li {
+        margin: 0.5rem 0;
+        text-align: center;
       }
     }
 
@@ -182,7 +173,7 @@
       <div class="menu-toggle" id="menu-toggle">
         <i class="fas fa-bars"></i>
       </div>
-      <ul>
+      <ul id="nav-menu">
         <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
         <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
         <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
@@ -253,10 +244,14 @@
   <!-- JavaScript -->
   <script>
     const toggle = document.getElementById("menu-toggle");
-    const navMenu = document.querySelector("nav ul");
+    const navMenu = document.getElementById("nav-menu");
 
     toggle.addEventListener("click", () => {
       navMenu.classList.toggle("active");
+    });
+
+    navMenu.addEventListener("click", () => {
+      navMenu.classList.remove("active");
     });
   </script>
 </body>
