@@ -382,18 +382,22 @@
       }
     });
 
-    let prevScrollPos = window.pageYOffset;
-    const header = document.querySelector("header");
+  let prevScrollPos = window.pageYOffset;
+const header = document.querySelector("header");
 
-    window.onscroll = function() {
-      let currentScrollPos = window.pageYOffset;
-      if (prevScrollPos > currentScrollPos) {
-        header.classList.remove("hidden");
-      } else {
-        header.classList.add("hidden");
-      }
-      prevScrollPos = currentScrollPos;
-    };
+window.onscroll = function() {
+  let currentScrollPos = window.pageYOffset;
+
+  if (currentScrollPos === 0) {
+    // If at the top of the page, show the header
+    header.classList.remove("hidden");
+  } else {
+    // If not at the top of the page, hide the header
+    header.classList.add("hidden");
+  }
+
+  prevScrollPos = currentScrollPos;
+};
 
 // Fetching the RSS feed and displaying posts
 async function loadFacebookPosts() {
