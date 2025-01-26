@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,348 +14,318 @@
       line-height: 1.6;
       background-color: #F4F4F4;
       color: #2C3E50;
-      scroll-behavior: smooth;
-    }
-
-    header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 1.5rem 0;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 1s ease-in-out;
-      transition: transform 0.3s ease; /* Smooth transition for hiding the header */
-    }
-
-    header.hidden {
-      transform: translateY(-100%); /* Move header up when scrolled down */
-    }
-
-    header .logo {
-      max-width: 70px;
-      margin-right: 10px;
-      vertical-align: middle;
-    }
-
-    header h1 {
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-size: 2rem;
-      margin: 0;
-      display: inline-block;
-    }
-
-    nav {
-      margin-top: 1rem;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
       display: flex;
-      justify-content: center;
-      margin: 0;
-    }
+      flex-direction: column;
+      min-height: 100vh;
+    }/* Header Styling */
+header {
+  background-color: #388E3C;
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-    nav ul li {
-      margin: 0 1.5rem;
-    }
+header .logo {
+  max-width: 50px;  
+  height: auto;
+  vertical-align: middle;
+  margin-right: 10px;
+}
 
-    nav ul li a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s ease, transform 0.3s ease;
-      font-size: 1rem;
-    }
+header h1 {
+  font-size: 2rem;
+  margin: 0;
+  display: inline-block;
+}
 
-    nav ul li a:hover {
-      color: #81C784; /* Lighter Green */
-      transform: scale(1.1);
-      text-decoration: underline; /* Adding underline on hover for more interactivity */
-    }
+/* Content Section */
+main {
+  flex-grow: 1; /* Ensures the content takes up available space */
+  padding: 2rem 1rem;
+  background-color: #fff;
+}
 
-    .menu-toggle {
-      display: none;
-      font-size: 1.5rem;
-      position: absolute;
-      right: 1.5rem;
-      top: 1rem;
-      cursor: pointer;
-      color: white;
-    }
+/* Digital Library Container Box */
+.digital-library-box {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
 
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block;
-      }
+/* Filters Section */
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
 
-      nav ul {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: #4CAF50;
-        padding: 1rem 0;
-        z-index: 999;
-      }
+.filters select, .filters input {
+  padding: 0.8rem;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-      nav ul.active {
-        display: flex;
-      }
+/* Book Section with Grid Layout */
+.carousel-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
 
-      nav ul li {
-        margin: 0.5rem 0;
-        text-align: center;
-      }
-    }
+.book-carousel {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  transition: transform 0.5s ease;
+  padding: 0 1rem;
+}
 
-    .hero {
-      position: relative;
-      color: white;
-      text-align: center;
-      padding: 4rem 1rem;
-      animation: slideIn 1s ease-out;
-    }
+.book-item {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url('cover.jpg'); /* Update to correct image path */
-      background-size: cover;
-      background-position: center;
-      filter: blur(5px); /* Add blur effect */
-      z-index: -1;
-    }
+.book-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
 
-    .hero h2 {
-      font-family: 'Montserrat', Arial, sans-serif;
-      font-size: 2.5rem;
-      margin: 0;
-      text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
-    }
+.book-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-top: 1rem;
-      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-    }
+.book-title {
+  font-weight: bold;
+  color: #388E3C;
+  margin-top: 0.5rem;
+}
 
-    .cta-btn {
-      display: inline-block;
-      background-color: #388E3C;
-      color: white;
-      padding: 1rem 2rem;
-      text-decoration: none;
-      font-size: 1.2rem;
-      border-radius: 30px;
-      margin-top: 1rem;
-      transition: background-color 0.3s;
-    }
+/* Carousel Navigation Arrows */
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  transform: translateY(-50%);
+  z-index: 10; /* Ensures the buttons are always on top */
+}
 
-    .cta-btn:hover {
-      background-color: #81C784;
-      transform: scale(1.1);
-    }
+.carousel-nav button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-    .container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
+.carousel-nav button:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
 
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+/* Footer Section */
+footer {
+  background-color: #388E3C;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+}
 
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
+footer img {
+  max-width: 40px;
+  vertical-align: middle;
+  margin-right: 10px;
+  margin-bottom: -5px;
+}
 
-    .card h2 {
-      color: #4CAF50;
-      font-family: 'Montserrat', Arial, sans-serif;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-    }
+footer p {
+  margin: 0.5rem 0;
+}
 
-    .card p {
-      font-size: 1rem;
-      line-height: 1.8;
-    }
+/* Responsive Design */
+@media (max-width: 768px) {
+  .book-carousel {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
-    footer {
-      background-color: #388E3C;
-      color: white;
-      text-align: center;
-      padding: 1.5rem;
-      margin-top: 2rem;
-    }
+@media (max-width: 480px) {
+  .book-carousel {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
 
-    footer img {
-      max-width: 40px;
-      margin-bottom: -10px;
-    }
-
-    footer p {
-      margin: 0.5rem 0;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 1.5rem;
-      }
-
-      nav ul {
-        flex-wrap: wrap;
-        justify-content: space-around;
-      }
-
-      nav ul li {
-        margin: 0.5rem 0;
-        text-align: center;
-      }
-
-      .hero {
-        padding: 2rem 1rem;
-      }
-
-      .hero h2 {
-        font-size: 2rem;
-      }
-
-      .card h2 {
-        font-size: 1.3rem;
-      }
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-
-    @keyframes slideIn {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(0); }
-    }
-
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(50px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes bounceIn {
-      0% { transform: scale(0); opacity: 0; }
-      60% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
-    }
   </style>
 </head>
 <body>
   <!-- Header Section -->
   <header>
-    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Olivarez College Tagaytay Logo" class="logo">
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Logo" class="logo">
     <h1>Nursing Resource Hub</h1>
-    <nav>
-      <div class="menu-toggle" id="menu-toggle">
-        <i class="fas fa-bars"></i>
-      </div>
-      <ul id="nav-menu">
-        <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
-        <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
-        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
-        <li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
-      </ul>
-    </nav>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <h2>Welcome to Your Nursing Resource Hub</h2>
-    <p>Your gateway to comprehensive nursing materials, tools, and resources.</p>
-    <a href="#info" class="cta-btn">Explore Resources</a>
-  </section>
-
-  <!-- Content Section -->
-  <main class="container">
-    <!-- Nursing Information Section -->
-    <section id="info" class="card">
-      <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
-      <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
-    </section>
-
+  </header>  <!-- Content Section -->  <main class="container">
     <!-- Digital Library Section -->
-    <section id="library" class="card">
-      <h2><i class="fas fa-book"></i> Digital Library</h2>
-      <p>The Nursing Resource Hub's Digital Library contains a wide variety of eBooks, research materials, and resources for all nursing levels. Click below to access the full library of resources.</p>
-      <a href="library.html" class="cta-btn">Go to Digital Library</a>
-    </section>
+    <section id="library" class="digital-library-box">
+      <h2><i class="fas fa-book"></i> Digital Library</h2><!-- Search Bar, Year Filter, and Subject Filter -->
+  <div class="filters">
+    <input type="text" id="search" placeholder="Search for books..." onkeyup="filterBooks()">
+    <select id="year-filter" onchange="filterBooks()">
+      <option value="all">All Year Levels</option>
+      <option value="1st">1st Year</option>
+      <option value="2nd">2nd Year</option>
+      <option value="3rd">3rd Year</option>
+      <option value="4th">4th Year</option>
+    </select>
+    <select id="subject-filter" onchange="filterBooks()">
+      <option value="all">Show All Subjects</option>
+    </select>
+  </div>
 
-    <!-- Practice Questions Section -->
-    <section id="practice" class="card">
-      <h2><i class="fas fa-pencil-alt"></i> Practice Questions</h2>
-      <p>Test your knowledge with practice questions categorized by nursing year levels. Improve your skills and prepare for exams.</p>
-    </section>
+  <!-- Carousel Container -->
+    <div class="book-carousel" id="book-carousel">
+      <!-- Placeholder Books -->
+      <div class="book-item" data-year="1st" data-subject="anatomy">
+        <img src="book1.jpg" alt="Anatomy and Physiology">
+        <p class="book-title">Anatomy and Physiology</p>
+      </div>
 
-    <!-- Video Procedures Section -->
-    <section id="videos" class="card">
-      <h2><i class="fas fa-video"></i> Video Procedures</h2>
-      <p>Watch step-by-step video demonstrations of essential nursing procedures:</p>
-      <ul>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Hand Hygiene Procedure</a></li>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Vital Signs Assessment</a></li>
-        <li><a href="#"><i class="fas fa-play-circle"></i> Wound Dressing Tutorial</a></li>
-      </ul>
-    </section>
-  </main>
+      <div class="book-item" data-year="2nd" data-subject="pharmacology">
+        <img src="book2.jpg" alt="Pharmacology Basics">
+        <p class="book-title">Pharmacology Basics</p>
+      </div>
 
-  <!-- Footer Section -->
-  <footer>
-    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Logo">
+      <div class="book-item" data-year="3rd" data-subject="nursing-skills">
+        <img src="book3.jpg" alt="Nursing Skills and Procedures">
+        <p class="book-title">Nursing Skills and Procedures</p>
+      </div>
+
+      <div class="book-item" data-year="4th" data-subject="advanced-nursing">
+        <img src="book4.jpg" alt="Advanced Nursing Practice">
+        <p class="book-title">Advanced Nursing Practice</p>
+      </div>
+
+      <!-- Additional Placeholder Books -->
+      <div class="book-item" data-year="1st" data-subject="anatomy">
+        <img src="book5.jpg" alt="Human Anatomy and Physiology">
+        <p class="book-title">Human Anatomy and Physiology</p>
+      </div>
+
+      <div class="book-item" data-year="2nd" data-subject="pharmacology">
+        <img src="book6.jpg" alt="Pharmacology and Therapeutics">
+        <p class="book-title">Pharmacology and Therapeutics</p>
+      </div>
+
+      <div class="book-item" data-year="3rd" data-subject="nursing-skills">
+        <img src="book7.jpg" alt="Basic Nursing Skills">
+        <p class="book-title">Basic Nursing Skills</p>
+      </div>
+
+      <div class="book-item" data-year="4th" data-subject="advanced-nursing">
+        <img src="book8.jpg" alt="Critical Care Nursing">
+        <p class="book-title">Critical Care Nursing</p>
+      </div>
+
+  </div>
+</section>
+
+  </main>  <!-- Footer Section -->  <footer>
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
+         alt="Logo" 
+         style="max-width: 40px; vertical-align: middle; margin-right: 10px; margin-bottom: -5px;">
     <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
-  </footer>
+  </footer>  <!-- JavaScript for Search, Filter, and Carousel Navigation -->  <script>
+    // Populates the subject filter based on the selected year level
+    function populateSubjects() {
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter');
+      subjectFilter.innerHTML = '<option value="all">Show All Subjects</option>'; // Reset the subject filter
 
-  <!-- JavaScript for Menu Toggle -->
-  <script>
-    const toggle = document.getElementById("menu-toggle");
-    const navMenu = document.getElementById("nav-menu");
+      const subjects = {
+        '1st': ['Anatomy', 'Physiology'],
+        '2nd': ['Pharmacology', 'Microbiology'],
+        '3rd': ['Nursing Skills', 'Patient Care'],
+        '4th': ['Advanced Nursing', 'Critical Care']
+      };
 
-    toggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!navMenu.contains(event.target) && !toggle.contains(event.target)) {
-        navMenu.classList.remove("active");
+      if (yearFilter !== 'all') {
+        subjects[yearFilter].forEach(subject => {
+          const option = document.createElement('option');
+          option.value = subject.toLowerCase().replace(' ', '-');
+          option.textContent = subject;
+          subjectFilter.appendChild(option);
+        });
       }
-    });
+    }
 
-    let prevScrollPos = window.pageYOffset;
-    const header = document.querySelector("header");
+    // Filters books based on search input, year filter, and subject filter
+    function filterBooks() {
+      const searchInput = document.getElementById('search').value.toLowerCase();
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter').value;
+      const books = document.querySelectorAll('.book-item');
 
-    window.onscroll = function() {
-      let currentScrollPos = window.pageYOffset;
-      if (prevScrollPos > currentScrollPos) {
-        header.classList.remove("hidden");
-      } else {
-        header.classList.add("hidden");
-      }
-      prevScrollPos = currentScrollPos;
-    };
-  </script>
-</body>
+      // Automatically populate subject filter based on the selected year
+      populateSubjects();
+
+      books.forEach(book => {
+        const title = book.querySelector('.book-title').textContent.toLowerCase();
+        const year = book.getAttribute('data-year');
+        const subject = book.getAttribute('data-subject');
+
+        // Show book if it matches the search query, year filter, and subject filter
+        if (
+          (yearFilter === 'all' || year === yearFilter) &&
+          (subjectFilter === 'all' || subject === subjectFilter) &&
+          title.includes(searchInput)
+        ) {
+          book.style.display = 'block';
+        } else {
+          book.style.display = 'none';
+        }
+      });
+    }
+
+    // Function to move the carousel left or right
+    function moveCarousel(direction) {
+      const carousel = document.getElementById('book-carousel');
+      const carouselWidth = carousel.offsetWidth;
+      const currentScrollPosition = carousel.scrollLeft;
+      const scrollAmount = direction === 'left' ? -carouselWidth : carouselWidth;
+      
+      carousel.scrollTo({
+        left: currentScrollPosition + scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+
+    // Initial call to populate subject filter based on the default year filter
+    document.getElementById('year-filter').addEventListener('change', filterBooks);
+    document.getElementById('subject-filter').addEventListener('change', filterBooks);
+    document.getElementById('search').addEventListener('keyup', filterBooks);
+
+    // Initially filter books to show only the books of the selected year level
+    filterBooks();
+  </script></body>
 </html>
