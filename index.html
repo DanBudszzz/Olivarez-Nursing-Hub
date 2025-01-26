@@ -28,6 +28,11 @@
       z-index: 1000;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
       animation: fadeIn 1s ease-in-out;
+      transition: transform 0.3s ease; /* Smooth transition for hiding the header */
+    }
+
+    header.hidden {
+      transform: translateY(-100%); /* Move header up when scrolled down */
     }
 
     header .logo {
@@ -264,6 +269,7 @@
 
       nav ul li {
         margin: 0.5rem 0;
+        text-align: center;
       }
 
       .hero {
@@ -315,8 +321,8 @@
       <ul id="nav-menu">
         <li><a href="#info"><i class="fas fa-info-circle"></i> Information</a></li>
         <li><a href="#library"><i class="fas fa-book"></i> Digital Library</a></li>
-        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions</a></li>
-        <li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
+        <li><a href="#practice"><i class="fas fa-pencil-alt"></i> Practice Questions
+					<li><a href="#videos"><i class="fas fa-video"></i> Video Procedures</a></li>
       </ul>
     </nav>
   </header>
@@ -394,6 +400,20 @@
         navMenu.classList.remove("active");
       }
     });
+
+    // JavaScript to Hide and Show Header on Scroll
+    let prevScrollPos = window.pageYOffset;
+    const header = document.querySelector("header");
+
+    window.onscroll = function() {
+      let currentScrollPos = window.pageYOffset;
+      if (prevScrollPos > currentScrollPos) {
+        header.classList.remove("hidden");
+      } else {
+        header.classList.add("hidden");
+      }
+      prevScrollPos = currentScrollPos;
+    };
   </script>
 </body>
 </html>
