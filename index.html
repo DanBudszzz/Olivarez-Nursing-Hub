@@ -42,8 +42,9 @@
       display: inline-block;
     }
 
-    /* Navigation */
+    /* Navigation Styles */
     nav {
+      margin-top: 1rem;
       position: relative;
     }
 
@@ -83,7 +84,11 @@
       color: white;
     }
 
-    .menu-toggle.active + ul,
+    nav ul {
+      display: flex;
+      flex-direction: row;
+    }
+
     nav ul.active {
       display: flex;
       flex-direction: column;
@@ -91,14 +96,28 @@
       top: 100%;
       left: 0;
       right: 0;
-      background-color: #4CAF50;
+      background-color: #4CAF50; /* Same as header */
       padding: 1rem 0;
       z-index: 999;
     }
 
-    .menu-toggle.active + ul li {
+    nav ul li {
       margin: 0.5rem 0;
       text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      nav ul {
+        display: none;
+      }
+
+      nav ul.active {
+        display: flex;
+      }
     }
 
     /* Hero Section */
@@ -152,23 +171,6 @@
     footer img {
       max-width: 40px;
     }
-
-    /* Media Queries */
-    @media (max-width: 768px) {
-      .menu-toggle {
-        display: block;
-      }
-
-      nav ul {
-        display: none;
-        flex-direction: column;
-      }
-
-      nav ul li {
-        margin: 0.5rem 0;
-        text-align: center;
-      }
-    }
   </style>
 </head>
 <body>
@@ -198,9 +200,47 @@
 
   <!-- Content Section -->
   <main class="container">
+    <!-- Nursing Information Section -->
     <section id="info" class="card">
       <h2><i class="fas fa-info-circle"></i> Nursing Information</h2>
       <p>Stay updated with the latest announcements, updates, and supplementary materials curated for nursing students.</p>
+    </section>
+
+    <!-- Digital Library Section -->
+    <section id="library" class="card">
+      <h2><i class="fas fa-book"></i> Digital Library</h2>
+      <label for="year-select">Select Year Level:</label>
+      <select id="year-select">
+        <option value="1st">1st Year</option>
+        <option value="2nd">2nd Year</option>
+        <option value="3rd">3rd Year</option>
+        <option value="4th">4th Year</option>
+      </select>
+      <p>Select a year level to view available eBooks.</p>
+    </section>
+
+    <!-- Practice Questions Section -->
+    <section id="practice" class="card">
+      <h2><i class="fas fa-pencil-alt"></i> Practice Questions</h2>
+      <label for="practice-select">Select Year Level:</label>
+      <select id="practice-select">
+        <option value="1st">1st Year</option>
+        <option value="2nd">2nd Year</option>
+        <option value="3rd">3rd Year</option>
+        <option value="4th">4th Year</option>
+      </select>
+      <p>Select a year level to view practice questions.</p>
+    </section>
+
+    <!-- Video Procedures Section -->
+    <section id="videos" class="card">
+      <h2><i class="fas fa-video"></i> Video Procedures</h2>
+      <p>Watch step-by-step video demonstrations of essential nursing procedures:</p>
+      <ul>
+        <li><a href="#"><i class="fas fa-play-circle"></i> Hand Hygiene Procedure</a></li>
+        <li><a href="#"><i class="fas fa-play-circle"></i> Vital Signs Assessment</a></li>
+        <li><a href="#"><i class="fas fa-play-circle"></i> Wound Dressing Tutorial</a></li>
+      </ul>
     </section>
   </main>
 
@@ -216,15 +256,7 @@
     const navMenu = document.querySelector("nav ul");
 
     toggle.addEventListener("click", () => {
-      toggle.classList.toggle("active");
       navMenu.classList.toggle("active");
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!toggle.contains(event.target) && !navMenu.contains(event.target)) {
-        toggle.classList.remove("active");
-        navMenu.classList.remove("active");
-      }
     });
   </script>
 </body>
