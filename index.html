@@ -126,10 +126,10 @@
     /* Hero Section */
     .hero {
       position: relative;
-      padding: 6rem 2rem;
-      text-align: center;
       color: white;
-      overflow: hidden;
+      text-align: center;
+      padding: 4rem 1rem;
+      animation: slideIn 1s ease-out;
     }
 
     .hero::before {
@@ -143,6 +143,7 @@
                         url('cover.jpg');
       background-size: cover;
       background-position: center;
+      filter: blur(5px);
       z-index: -1;
     }
 
