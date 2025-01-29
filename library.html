@@ -1,331 +1,387 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nursing Resource Hub</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&family=Roboto:wght@300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* General Styles */
-    body {
-      font-family: 'Roboto', Arial, sans-serif;
+    :root {
+--primary: #388E3C; /* Base Green */
+      --primary-dark: #1B5E20; /* Darker Green */
+      --secondary: #66BB6A; /* Lighter Green */
+      --light: #E8F5E9; /* Very Light Green */
+      --text: #2C3E50;
+      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    }
+
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light);
+      color: var(--text);
       line-height: 1.6;
-      background-color: #F4F4F4;
-      color: #2C3E50;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-    }/* Header Styling */
-header {
-  background-color: #388E3C;
-  color: white;
-  padding: 1rem 0;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
+    }
 
-header .logo {
-  max-width: 50px;  
-  height: auto;
-  vertical-align: middle;
-  margin-right: 10px;
-}
+    /* Header */
+    header {
+      background: var(--gradient);
+      color: white;
+      padding: 1.5rem 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
 
-header h1 {
-  font-size: 2rem;
-  margin: 0;
-  display: inline-block;
-}
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0 2rem;
+    }
 
-/* Content Section */
-main {
-  flex-grow: 1; /* Ensures the content takes up available space */
-  padding: 2rem 1rem;
-  background-color: #fff;
-}
+    .logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
 
-/* Digital Library Container Box */
-.digital-library-box {
-  background-color: #fff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
-}
+    h1 {
+      font-weight: 600;
+      font-size: 2rem;
+      letter-spacing: -0.5px;
+    }
 
-/* Filters Section */
-.filters {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0;
-}
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 3rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
 
-.filters select, .filters input {
-  padding: 0.8rem;
-  width: 100%;
-  max-width: 500px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+    /* Library Container */
+    .library-container {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
 
-/* Book Section with Grid Layout */
-.carousel-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding: 1rem;
-  box-sizing: border-box;
-}
+    /* Filters Section */
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
 
-.book-carousel {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  transition: transform 0.5s ease;
-  padding: 0 1rem;
-}
+    .search-box {
+      position: relative;
+    }
 
-.book-item {
-  text-align: center;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      padding-left: 3rem;
+    }
 
-.book-item img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 5px;
-  margin-bottom: 0.5rem;
-}
+    .search-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42,157,143,0.2);
+    }
 
-.book-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+    .search-icon {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+    }
 
-.book-title {
-  font-weight: bold;
-  color: #388E3C;
-  margin-top: 0.5rem;
-}
+    select {
+      padding: 1rem 1.5rem;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      background: white;
+      font-size: 1rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232A9D8F'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.2em;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-/* Carousel Navigation Arrows */
-.carousel-nav {
-  position: absolute;
-  top: 50%;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  transform: translateY(-50%);
-  z-index: 10; /* Ensures the buttons are always on top */
-}
+    select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(42,157,143,0.2);
+    }
 
-.carousel-nav button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+    /* Book Carousel */
+    .carousel-container {
+      position: relative;
+      padding: 1rem 0;
+      margin: 0 -1rem;
+    }
 
-.carousel-nav button:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
+    .book-carousel {
+      display: grid;
+      grid-auto-flow: column;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 1rem;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
 
-/* Footer Section */
-footer {
-  background-color: #388E3C;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-}
+    .book-carousel::-webkit-scrollbar {
+      display: none;
+    }
 
-footer img {
-  max-width: 40px;
-  vertical-align: middle;
-  margin-right: 10px;
-  margin-bottom: -5px;
-}
+    .book-item {
+      scroll-snap-align: start;
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      min-width: 280px;
+      border: 1px solid rgba(42,157,143,0.1);
+    }
 
-footer p {
-  margin: 0.5rem 0;
-}
+    .book-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .book-carousel {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
+    .book-image {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s ease;
+    }
 
-@media (max-width: 480px) {
-  .book-carousel {
-    grid-template-columns: repeat(1, 1fr);
-  }
-}
+    .book-title {
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
 
+    .book-meta {
+      color: var(--primary);
+      font-size: 0.9rem;
+      display: flex;
+      gap: 1rem;
+      opacity: 0.8;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--secondary);
+      color: white;
+      padding: 2rem;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header-content {
+        padding: 0 1rem;
+      }
+
+      main {
+        padding: 2rem 1rem;
+      }
+
+      .library-container {
+        padding: 1.5rem;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .book-item {
+        min-width: 260px;
+      }
+    }
+
+    /* Scroll Hint Gradient */
+    .carousel-container::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 100%);
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
-  <!-- Header Section -->
   <header>
-    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="Logo" class="logo">
-    <h1>Nursing Resource Hub</h1>
-  </header>  <!-- Content Section -->  <main class="container">
-    <!-- Digital Library Section -->
-    <section id="library" class="digital-library-box">
-      <h2><i class="fas fa-book"></i> Digital Library</h2><!-- Search Bar, Year Filter, and Subject Filter -->
-  <div class="filters">
-    <input type="text" id="search" placeholder="Search for books..." onkeyup="filterBooks()">
-    <select id="year-filter" onchange="filterBooks()">
-      <option value="all">All Year Levels</option>
-      <option value="1st">1st Year</option>
-      <option value="2nd">2nd Year</option>
-      <option value="3rd">3rd Year</option>
-      <option value="4th">4th Year</option>
-    </select>
-    <select id="subject-filter" onchange="filterBooks()">
-      <option value="all">Show All Subjects</option>
-    </select>
-  </div>
+    <div class="header-content">
+      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
+           alt="College Logo" 
+           class="logo">
+      <h1>Nursing Resource Hub</h1>
+    </div>
+  </header>
 
-  <!-- Carousel Container -->
-    <div class="book-carousel" id="book-carousel">
-      <!-- Placeholder Books -->
-      <div class="book-item" data-year="1st" data-subject="anatomy">
-        <img src="book1.jpg" alt="Anatomy and Physiology">
-        <p class="book-title">Anatomy and Physiology</p>
+  <main>
+    <section class="library-container">
+      <h2 style="margin-bottom: 2rem; color: var(--secondary);">
+        <i class="fas fa-book-open" style="margin-right: 0.8rem;"></i>
+        Digital Library
+      </h2>
+
+      <div class="filters">
+        <div class="search-box">
+          <input type="text" 
+                 id="search" 
+                 class="search-input" 
+                 placeholder="Search resources..."
+                 aria-label="Search resources">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <select id="year-filter" aria-label="Filter by year">
+          <option value="all">All Year Levels</option>
+          <option value="1st">1st Year</option>
+          <option value="2nd">2nd Year</option>
+          <option value="3rd">3rd Year</option>
+          <option value="4th">4th Year</option>
+        </select>
+
+        <select id="subject-filter" aria-label="Filter by subject">
+          <option value="all">All Subjects</option>
+        </select>
       </div>
 
-      <div class="book-item" data-year="2nd" data-subject="pharmacology">
-        <img src="book2.jpg" alt="Pharmacology Basics">
-        <p class="book-title">Pharmacology Basics</p>
+      <div class="carousel-container">
+        <div class="book-carousel" id="book-carousel">
+          <!-- Book Items -->
+          <div class="book-item" data-year="1st" data-subject="anatomy">
+            <img src="https://source.unsplash.com/random/800x600?medical,anatomy" 
+                 alt="Anatomy Guide" 
+                 class="book-image">
+            <h3 class="book-title">Human Anatomy & Physiology</h3>
+            <div class="book-meta">
+              <span>1st Year</span>
+              <span>Anatomy</span>
+            </div>
+          </div>
+
+          <!-- Additional Book Items -->
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div class="book-item" data-year="3rd" data-subject="nursing-skills">
-        <img src="book3.jpg" alt="Nursing Skills and Procedures">
-        <p class="book-title">Nursing Skills and Procedures</p>
-      </div>
+  <footer>
+    <div class="footer-content">
+      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
+           alt="College Logo" 
+           style="width: 60px; border-radius: 12px;">
+      <p style="opacity: 0.9;">&copy; 2025 Olivarez College Tagaytay</p>
+    </div>
+  </footer>
 
-      <div class="book-item" data-year="4th" data-subject="advanced-nursing">
-        <img src="book4.jpg" alt="Advanced Nursing Practice">
-        <p class="book-title">Advanced Nursing Practice</p>
-      </div>
+  <script>
+    // Enhanced smooth filtering with debounce
+    const filters = {
+      year: document.getElementById('year-filter'),
+      subject: document.getElementById('subject-filter'),
+      search: document.getElementById('search')
+    };
 
-      <!-- Additional Placeholder Books -->
-      <div class="book-item" data-year="1st" data-subject="anatomy">
-        <img src="book5.jpg" alt="Human Anatomy and Physiology">
-        <p class="book-title">Human Anatomy and Physiology</p>
-      </div>
+    let timeoutId;
+    const books = document.querySelectorAll('.book-item');
 
-      <div class="book-item" data-year="2nd" data-subject="pharmacology">
-        <img src="book6.jpg" alt="Pharmacology and Therapeutics">
-        <p class="book-title">Pharmacology and Therapeutics</p>
-      </div>
+    const subjects = {
+      '1st': ['Anatomy', 'Physiology', 'Biochemistry'],
+      '2nd': ['Pharmacology', 'Microbiology', 'Pathology'],
+      '3rd': ['Nursing Skills', 'Patient Care', 'Surgical Nursing'],
+      '4th': ['Advanced Practice', 'Critical Care', 'Leadership']
+    };
 
-      <div class="book-item" data-year="3rd" data-subject="nursing-skills">
-        <img src="book7.jpg" alt="Basic Nursing Skills">
-        <p class="book-title">Basic Nursing Skills</p>
-      </div>
-
-      <div class="book-item" data-year="4th" data-subject="advanced-nursing">
-        <img src="book8.jpg" alt="Critical Care Nursing">
-        <p class="book-title">Critical Care Nursing</p>
-      </div>
-
-  </div>
-</section>
-
-  </main>  <!-- Footer Section -->  <footer>
-    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
-         alt="Logo" 
-         style="max-width: 40px; vertical-align: middle; margin-right: 10px; margin-bottom: -5px;">
-    <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
-  </footer>  <!-- JavaScript for Search, Filter, and Carousel Navigation -->  <script>
-    // Populates the subject filter based on the selected year level
     function populateSubjects() {
-      const yearFilter = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter');
-      subjectFilter.innerHTML = '<option value="all">Show All Subjects</option>'; // Reset the subject filter
-
-      const subjects = {
-        '1st': ['Anatomy', 'Physiology'],
-        '2nd': ['Pharmacology', 'Microbiology'],
-        '3rd': ['Nursing Skills', 'Patient Care'],
-        '4th': ['Advanced Nursing', 'Critical Care']
-      };
-
-      if (yearFilter !== 'all') {
-        subjects[yearFilter].forEach(subject => {
-          const option = document.createElement('option');
-          option.value = subject.toLowerCase().replace(' ', '-');
-          option.textContent = subject;
-          subjectFilter.appendChild(option);
+      const selectedYear = filters.year.value;
+      filters.subject.innerHTML = '<option value="all">All Subjects</option>';
+      
+      if (selectedYear !== 'all') {
+        subjects[selectedYear].forEach(subject => {
+          const option = new Option(subject, subject.toLowerCase().replace(' ', '-'));
+          filters.subject.add(option);
         });
       }
     }
 
-    // Filters books based on search input, year filter, and subject filter
     function filterBooks() {
-      const searchInput = document.getElementById('search').value.toLowerCase();
-      const yearFilter = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter').value;
-      const books = document.querySelectorAll('.book-item');
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const searchTerm = filters.search.value.toLowerCase();
+        const year = filters.year.value;
+        const subject = filters.subject.value;
 
-      // Automatically populate subject filter based on the selected year
+        books.forEach(book => {
+          const matchesYear = year === 'all' || book.dataset.year === year;
+          const matchesSubject = subject === 'all' || book.dataset.subject === subject;
+          const matchesSearch = book.textContent.toLowerCase().includes(searchTerm);
+          
+          book.style.display = matchesYear && matchesSubject && matchesSearch ? 
+            'block' : 'none';
+        });
+      }, 300);
+    }
+
+    // Event Listeners
+    filters.year.addEventListener('change', () => {
       populateSubjects();
+      filterBooks();
+    });
 
-      books.forEach(book => {
-        const title = book.querySelector('.book-title').textContent.toLowerCase();
-        const year = book.getAttribute('data-year');
-        const subject = book.getAttribute('data-subject');
+    filters.subject.addEventListener('change', filterBooks);
+    filters.search.addEventListener('input', filterBooks);
 
-        // Show book if it matches the search query, year filter, and subject filter
-        if (
-          (yearFilter === 'all' || year === yearFilter) &&
-          (subjectFilter === 'all' || subject === subjectFilter) &&
-          title.includes(searchInput)
-        ) {
-          book.style.display = 'block';
-        } else {
-          book.style.display = 'none';
-        }
-      });
-    }
-
-    // Function to move the carousel left or right
-    function moveCarousel(direction) {
-      const carousel = document.getElementById('book-carousel');
-      const carouselWidth = carousel.offsetWidth;
-      const currentScrollPosition = carousel.scrollLeft;
-      const scrollAmount = direction === 'left' ? -carouselWidth : carouselWidth;
-      
-      carousel.scrollTo({
-        left: currentScrollPosition + scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-
-    // Initial call to populate subject filter based on the default year filter
-    document.getElementById('year-filter').addEventListener('change', filterBooks);
-    document.getElementById('subject-filter').addEventListener('change', filterBooks);
-    document.getElementById('search').addEventListener('keyup', filterBooks);
-
-    // Initially filter books to show only the books of the selected year level
-    filterBooks();
-  </script></body>
+    // Initialize
+    populateSubjects();
+  </script>
+</body>
 </html>
