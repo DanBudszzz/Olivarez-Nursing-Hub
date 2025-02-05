@@ -15,13 +15,11 @@
       --light: #F8F9FA;
       --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: var(--light);
@@ -31,7 +29,6 @@
       display: flex;
       flex-direction: column;
     }
-
     /* Header */
     header {
       background: var(--gradient);
@@ -42,7 +39,6 @@
       z-index: 1000;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -51,19 +47,16 @@
       align-items: center;
       gap: 1rem;
     }
-
     .logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
     }
-
     .logo {
       width: 45px;
       height: 45px;
       border-radius: 8px;
     }
-
     .back-home {
       color: white;
       text-decoration: none;
@@ -71,12 +64,10 @@
       align-items: center;
       gap: 0.5rem;
     }
-
     h1 {
       font-size: 1.35rem;
       font-weight: 600;
     }
-
     /* Main Content */
     main {
       flex: 1;
@@ -85,7 +76,38 @@
       margin: 0 auto;
       width: 100%;
     }
-
+    /* Admin Panel – temporary upload feature */
+    .admin-panel {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 2rem;
+    }
+    .admin-panel h2 {
+      margin-bottom: 1rem;
+      color: var(--secondary);
+    }
+    #book-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    #book-form input, #book-form button {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid var(--primary);
+    }
+    #book-form button {
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #book-form button:hover {
+      background: var(--primary-dark);
+    }
     /* Library Container */
     .library-container {
       background: white;
@@ -93,7 +115,6 @@
       padding: 1.5rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-
     /* Filters Section */
     .filters {
       display: grid;
@@ -101,11 +122,9 @@
       gap: 1rem;
       margin: 2rem 0;
     }
-
     .search-box {
       position: relative;
     }
-
     .search-input {
       width: 100%;
       padding: 0.875rem 1.25rem;
@@ -116,12 +135,10 @@
       background: white;
       transition: box-shadow 0.2s ease;
     }
-
     .search-input:focus {
       outline: none;
       box-shadow: 0 0 0 3px var(--primary-light);
     }
-
     .search-icon {
       position: absolute;
       left: 1rem;
@@ -129,7 +146,6 @@
       transform: translateY(-50%);
       color: var(--primary);
     }
-
     select {
       width: 100%;
       padding: 0.875rem 1.25rem;
@@ -143,14 +159,12 @@
       background-position: right 1rem center;
       background-size: 1em;
     }
-
     /* Book Carousel */
     .carousel-container {
       position: relative;
       margin: 0 -1rem;
       padding: 0.5rem 0;
     }
-
     .book-carousel {
       display: flex;
       gap: 1rem;
@@ -161,11 +175,9 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-
     .book-carousel::-webkit-scrollbar {
       display: none;
     }
-
     .book-item {
       scroll-snap-align: start;
       flex: 0 0 280px;
@@ -176,11 +188,9 @@
       transition: transform 0.2s ease;
       border: 1px solid rgba(56,142,60,0.1);
     }
-
     .book-item:hover {
       transform: translateY(-3px);
     }
-
     .book-image {
       width: 100%;
       height: 180px;
@@ -189,14 +199,12 @@
       margin-bottom: 1rem;
       background: var(--primary-light);
     }
-
     .book-title {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--secondary);
       margin-bottom: 0.5rem;
     }
-
     .book-meta {
       color: var(--primary);
       font-size: 0.875rem;
@@ -204,7 +212,6 @@
       gap: 0.75rem;
       opacity: 0.9;
     }
-
     /* Footer */
     footer {
       background: var(--gradient);
@@ -212,7 +219,6 @@
       padding: 1.5rem;
       margin-top: auto;
     }
-
     .footer-content {
       max-width: 1200px;
       margin: 0 auto;
@@ -222,66 +228,53 @@
       align-items: center;
       gap: 1rem;
     }
-
     @media (max-width: 768px) {
       .header-content {
         gap: 0.5rem;
         padding: 0 0.5rem;
       }
-
       h1 {
         font-size: 1.2rem;
       }
-
       .logo {
         width: 40px;
         height: 40px;
       }
-
       main {
         padding: 1.5rem 0.5rem;
       }
-
       .library-container {
         padding: 1rem;
         border-radius: 12px;
       }
-
       .filters {
         grid-template-columns: 1fr;
         gap: 0.75rem;
         margin: 1.5rem 0;
       }
-
       .search-input,
       select {
         padding: 0.75rem 1rem;
         font-size: 0.9375rem;
       }
-
       .book-item {
         flex: 0 0 75%;
       }
     }
-
     @media (max-width: 480px) {
       h1 {
         font-size: 1.1rem;
       }
-
       .book-item {
         flex: 0 0 85%;
         padding: 1rem;
       }
-
       .book-image {
         height: 160px;
       }
-
       .book-title {
         font-size: 1rem;
       }
-
       .book-meta {
         font-size: 0.8125rem;
       }
@@ -304,12 +297,26 @@
   </header>
 
   <main>
+    <!-- Admin Upload Panel (temporary) -->
+    <section class="admin-panel">
+      <h2>Upload New Book</h2>
+      <form id="book-form">
+        <input type="text" id="book-title" placeholder="Book Title" required>
+        <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
+        <input type="text" id="book-subject" placeholder="Subject" required>
+        <!-- Provide an image URL from your file host (e.g., Google Drive, Dropbox, etc.) -->
+        <input type="url" id="book-image-url" placeholder="Image URL" required>
+        <!-- New input for the PDF URL of the book -->
+        <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
+        <button type="submit">Add Book</button>
+      </form>
+    </section>
+
     <section class="library-container">
       <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
         <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
         Digital Library
       </h2>
-
       <div class="filters">
         <div class="search-box">
           <input type="text" 
@@ -319,7 +326,6 @@
                  aria-label="Search resources">
           <i class="fas fa-search search-icon"></i>
         </div>
-        
         <select id="year-filter" aria-label="Filter by year">
           <option value="all">All Year Levels</option>
           <option value="1st">1st Year</option>
@@ -327,7 +333,6 @@
           <option value="3rd">3rd Year</option>
           <option value="4th">4th Year</option>
         </select>
-
         <select id="subject-filter" aria-label="Filter by subject">
           <option value="all">All Subjects</option>
         </select>
@@ -335,109 +340,7 @@
 
       <div class="carousel-container">
         <div class="book-carousel" id="book-carousel">
-          <!-- Existing Book Items -->
-          <div class="book-item" data-year="1st" data-subject="anatomy">
-            <img src="https://source.unsplash.com/random/800x600?medical,anatomy" 
-                 alt="Anatomy Guide" 
-                 class="book-image">
-            <h3 class="book-title">Human Anatomy & Physiology</h3>
-            <div class="book-meta">
-              <span>1st Year</span>
-              <span>Anatomy</span>
-            </div>
-          </div>
-
-          <!-- Additional Book Items (10 total) -->
-          <div class="book-item" data-year="1st" data-subject="biochemistry">
-            <img src="https://source.unsplash.com/random/800x600?medical,biochemistry" 
-                 class="book-image">
-            <h3 class="book-title">Basic Biochemistry</h3>
-            <div class="book-meta">
-              <span>1st Year</span>
-              <span>Biochemistry</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="2nd" data-subject="pathology">
-            <img src="https://source.unsplash.com/random/800x600?medical,pathology" 
-                 class="book-image">
-            <h3 class="book-title">Introduction to Pathology</h3>
-            <div class="book-meta">
-              <span>2nd Year</span>
-              <span>Pathology</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="3rd" data-subject="pediatrics">
-            <img src="https://source.unsplash.com/random/800x600?medical,pediatrics" 
-                 class="book-image">
-            <h3 class="book-title">Pediatric Nursing</h3>
-            <div class="book-meta">
-              <span>3rd Year</span>
-              <span>Pediatrics</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="4th" data-subject="community-health">
-            <img src="https://source.unsplash.com/random/800x600?medical,community" 
-                 class="book-image">
-            <h3 class="book-title">Community Health Nursing</h3>
-            <div class="book-meta">
-              <span>4th Year</span>
-              <span>Community Health</span>
-            </div>
-          </div>
-
-          <!-- Original Book Items -->
-          <div class="book-item" data-year="1st" data-subject="physiology">
-            <img src="https://source.unsplash.com/random/800x600?medical,physiology" 
-                 class="book-image">
-            <h3 class="book-title">Principles of Physiology</h3>
-            <div class="book-meta">
-              <span>1st Year</span>
-              <span>Physiology</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="2nd" data-subject="pharmacology">
-            <img src="https://source.unsplash.com/random/800x600?medical,pharmacy" 
-                 class="book-image">
-            <h3 class="book-title">Clinical Pharmacology</h3>
-            <div class="book-meta">
-              <span>2nd Year</span>
-              <span>Pharmacology</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="2nd" data-subject="microbiology">
-            <img src="https://source.unsplash.com/random/800x600?medical,microscope" 
-                 class="book-image">
-            <h3 class="book-title">Medical Microbiology</h3>
-            <div class="book-meta">
-              <span>2nd Year</span>
-              <span>Microbiology</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="3rd" data-subject="nursing-skills">
-            <img src="https://source.unsplash.com/random/800x600?medical,nursing" 
-                 class="book-image">
-            <h3 class="book-title">Nursing Procedures Manual</h3>
-            <div class="book-meta">
-              <span>3rd Year</span>
-              <span>Nursing Skills</span>
-            </div>
-          </div>
-
-          <div class="book-item" data-year="4th" data-subject="leadership">
-            <img src="https://source.unsplash.com/random/800x600?medical,management" 
-                 class="book-image">
-            <h3 class="book-title">Nursing Leadership</h3>
-            <div class="book-meta">
-              <span>4th Year</span>
-              <span>Leadership</span>
-            </div>
-          </div>
+          <!-- Book items will be loaded dynamically from books.json -->
         </div>
       </div>
     </section>
@@ -453,64 +356,107 @@
   </footer>
 
   <script>
-    // Enhanced filtering with debounce
-    const filters = {
-      year: document.getElementById('year-filter'),
-      subject: document.getElementById('subject-filter'),
-      search: document.getElementById('search')
-    };
-
-    const books = document.querySelectorAll('.book-item');
-    let timeoutId;
-
-    const subjects = {
-      '1st': ['Anatomy', 'Physiology', 'Biochemistry', 'Fundamentals'],
-      '2nd': ['Pharmacology', 'Microbiology', 'Pathology', 'Parasitology'],
-      '3rd': ['Nursing Skills', 'Patient Care', 'Surgical Nursing', 'Pediatrics'],
-      '4th': ['Critical Care', 'Leadership', 'Community Health', 'Research']
-    };
-
-    function populateSubjects() {
-      const selectedYear = filters.year.value;
-      filters.subject.innerHTML = '<option value="all">All Subjects</option>';
-      
-      if (selectedYear !== 'all') {
-        subjects[selectedYear].forEach(subject => {
-          const option = new Option(subject, subject.toLowerCase().replace(' ', '-'));
-          filters.subject.add(option);
+    // Function to load books from books.json and render them
+    async function loadBooks() {
+      try {
+        const response = await fetch('books.json');
+        const books = await response.json();
+        const bookCarousel = document.getElementById('book-carousel');
+        bookCarousel.innerHTML = '';
+        books.forEach(book => {
+          const bookItem = document.createElement('div');
+          bookItem.classList.add('book-item');
+          // Set data attributes for filtering
+          bookItem.dataset.year = book.year;
+          bookItem.dataset.subject = book.subject.toLowerCase().replace(' ', '-');
+          bookItem.innerHTML = `
+            <img src="${book.image}" class="book-image" alt="${book.title}">
+            <h3 class="book-title">${book.title}</h3>
+            <div class="book-meta">
+              <span>${book.year} Year</span>
+              <span>${book.subject}</span>
+            </div>
+            <a href="${book.pdf}" target="_blank" style="display:block;margin-top: 0.5rem;color: var(--primary);">View PDF</a>
+          `;
+          bookCarousel.appendChild(bookItem);
         });
+      } catch (error) {
+        console.error('Error loading books:', error);
       }
     }
 
-    function filterBooks() {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        const searchTerm = filters.search.value.toLowerCase();
-        const year = filters.year.value;
-        const subject = filters.subject.value;
+    // Admin form submission handler
+    document.getElementById('book-form').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const title = document.getElementById('book-title').value;
+      const year = document.getElementById('book-year').value;
+      const subject = document.getElementById('book-subject').value;
+      const imageUrl = document.getElementById('book-image-url').value;
+      const pdfUrl = document.getElementById('book-pdf-url').value;
+      
+      if (!imageUrl || !pdfUrl) {
+        alert("Please provide a valid image URL and PDF URL.");
+        return;
+      }
+      
+      const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
 
-        books.forEach(book => {
-          const matchesYear = year === 'all' || book.dataset.year === year;
-          const matchesSubject = subject === 'all' || book.dataset.subject === subject;
-          const matchesSearch = book.textContent.toLowerCase().includes(searchTerm);
-          
-          book.style.display = matchesYear && matchesSubject && matchesSearch ? 
-            'block' : 'none';
+      // Load current books, add new book, and save
+      const response = await fetch('books.json');
+      const books = await response.json();
+      books.push(newBook);
+      await fetch('save_books.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(books)
+      });
+      loadBooks();
+      this.reset();
+    });
+
+    // Filtering code – re-read current book items on each filter action
+    function populateSubjects() {
+      const selectedYear = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter');
+      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+      const subjects = {
+        '1st': ['Anatomy', 'Physiology', 'Biochemistry', 'Fundamentals'],
+        '2nd': ['Pharmacology', 'Microbiology', 'Pathology', 'Parasitology'],
+        '3rd': ['Nursing Skills', 'Patient Care', 'Surgical Nursing', 'Pediatrics'],
+        '4th': ['Critical Care', 'Leadership', 'Community Health', 'Research']
+      };
+      if (selectedYear !== 'all' && subjects[selectedYear]) {
+        subjects[selectedYear].forEach(subject => {
+          const option = new Option(subject, subject.toLowerCase().replace(' ', '-'));
+          subjectFilter.add(option);
         });
-      }, 300);
+      }
     }
-
-    // Event Listeners
-    filters.year.addEventListener('change', () => {
+    function filterBooks() {
+      // Always re-read current book items
+      const bookItems = document.querySelectorAll('.book-item');
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      const year = document.getElementById('year-filter').value;
+      const subject = document.getElementById('subject-filter').value;
+      bookItems.forEach(book => {
+        const matchesYear = (year === 'all' || book.dataset.year === year);
+        const matchesSubject = (subject === 'all' || book.dataset.subject === subject);
+        const matchesSearch = book.textContent.toLowerCase().includes(searchTerm);
+        book.style.display = (matchesYear && matchesSubject && matchesSearch) ? 'block' : 'none';
+      });
+    }
+    document.getElementById('year-filter').addEventListener('change', () => {
       populateSubjects();
       filterBooks();
     });
+    document.getElementById('subject-filter').addEventListener('change', filterBooks);
+    document.getElementById('search').addEventListener('input', filterBooks);
 
-    filters.subject.addEventListener('change', filterBooks);
-    filters.search.addEventListener('input', filterBooks);
-
-    // Initialize
-    populateSubjects();
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      populateSubjects();
+      loadBooks();
+    });
   </script>
 </body>
 </html>
