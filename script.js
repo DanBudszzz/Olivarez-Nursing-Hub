@@ -32,7 +32,7 @@ async function loadFacebookPosts() {
     errorElement.style.display = 'none';
     spinner.style.display = 'block';
 
-    const response = await fetch('https://rss.app/feeds/bfyOgG6aFc2lHiHN.xml');
+    const response = await fetch('https://rss.app/feeds/YcJYp5AdNjDK7Vmq.xml');
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     const xml = await response.text();
