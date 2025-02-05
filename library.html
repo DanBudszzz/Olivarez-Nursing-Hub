@@ -387,32 +387,36 @@
 
     // Admin form submission handler
     document.getElementById('book-form').addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const title = document.getElementById('book-title').value;
-      const year = document.getElementById('book-year').value;
-      const subject = document.getElementById('book-subject').value;
-      const imageUrl = document.getElementById('book-image-url').value;
-      const pdfUrl = document.getElementById('book-pdf-url').value;
-      
-      if (!imageUrl || !pdfUrl) {
-        alert("Please provide a valid image URL and PDF URL.");
-        return;
-      }
-      
-      const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
+  event.preventDefault();
 
-      // Load current books, add new book, and save
-      const response = await fetch('books.json');
-      const books = await response.json();
-      books.push(newBook);
-      await fetch('save_books.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(books)
-      });
-      loadBooks();
-      this.reset();
-    });
+  const title = document.getElementById('book-title').value;
+  const year = document.getElementById('book-year').value;
+  const subject = document.getElementById('book-subject').value;
+  const imageUrl = document.getElementById('book-image-url').value;
+  const pdfUrl = document.getElementById('book-pdf-url').value;
+
+  if (!imageUrl || !pdfUrl) {
+    alert("Please provide a valid image URL and PDF URL.");
+    return;
+  }
+
+  const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
+
+  // Fetch current books from the full URL of books.json
+  const response = await fetch('https://olivareznursinghub.netlify.app/books.json'); 
+  const books = await response.json();
+  books.push(newBook); // Add the new book to the list
+
+  // Send the updated list of books to save_books.php on your server
+  await fetch('http://olivbookhub.free.nf/save_books.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(books) // Send the updated list of books as JSON
+  });
+
+  loadBooks(); // Reload the books after adding the new one
+  this.reset(); // Reset the form
+});
 
     // Filtering code – re-read current book items on each filter action
     function populateSubjects() {
