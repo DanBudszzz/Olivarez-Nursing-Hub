@@ -360,6 +360,7 @@
     async function loadBooks() {
       try {
         const response = await fetch('books.json');
+        if (!response.ok) throw new Error('Failed to fetch books.');
         const books = await response.json();
         const bookCarousel = document.getElementById('book-carousel');
         bookCarousel.innerHTML = '';
@@ -387,36 +388,46 @@
 
     // Admin form submission handler
     document.getElementById('book-form').addEventListener('submit', async function(event) {
-  event.preventDefault();
+      event.preventDefault();
 
-  const title = document.getElementById('book-title').value;
-  const year = document.getElementById('book-year').value;
-  const subject = document.getElementById('book-subject').value;
-  const imageUrl = document.getElementById('book-image-url').value;
-  const pdfUrl = document.getElementById('book-pdf-url').value;
+      const title = document.getElementById('book-title').value.trim();
+      const year = document.getElementById('book-year').value.trim();
+      const subject = document.getElementById('book-subject').value.trim();
+      const imageUrl = document.getElementById('book-image-url').value.trim();
+      const pdfUrl = document.getElementById('book-pdf-url').value.trim();
 
-  if (!imageUrl || !pdfUrl) {
-    alert("Please provide a valid image URL and PDF URL.");
-    return;
-  }
+      if (!imageUrl || !pdfUrl) {
+        alert("Please provide a valid image URL and PDF URL.");
+        return;
+      }
 
-  const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
+      const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
 
-  // Fetch current books from the full URL of books.json
-  const response = await fetch('https://olivareznursinghub.netlify.app/books.json'); 
-  const books = await response.json();
-  books.push(newBook); // Add the new book to the list
+      try {
+        // Fetch current books from books.json (ensure CORS is enabled if hosted remotely)
+        const response = await fetch('https://olivareznursinghub.netlify.app/books.json');
+        if (!response.ok) throw new Error('Failed to fetch the current book list.');
+        const books = await response.json();
 
-  // Send the updated list of books to save_books.php on your server
-  await fetch('http://olivbookhub.free.nf/save_books.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(books) // Send the updated list of books as JSON
-  });
+        books.push(newBook); // Add the new book to the list
 
-  loadBooks(); // Reload the books after adding the new one
-  this.reset(); // Reset the form
-});
+        // Send the updated list of books to save_books.php on your server
+        const saveResponse = await fetch('https://olivbookhub.free.nf/save_books.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(books)
+        });
+        if (!saveResponse.ok) throw new Error('Failed to save the new book.');
+        const saveResult = await saveResponse.json();
+        console.log(saveResult.message);
+
+        loadBooks(); // Reload the books after adding the new one
+        this.reset(); // Reset the form
+      } catch (error) {
+        console.error('Error uploading the book:', error);
+        alert("There was an error uploading the book. Please check the console for details.");
+      }
+    });
 
     // Filtering code – re-read current book items on each filter action
     function populateSubjects() {
@@ -436,6 +447,7 @@
         });
       }
     }
+
     function filterBooks() {
       // Always re-read current book items
       const bookItems = document.querySelectorAll('.book-item');
@@ -449,6 +461,7 @@
         book.style.display = (matchesYear && matchesSubject && matchesSearch) ? 'block' : 'none';
       });
     }
+
     document.getElementById('year-filter').addEventListener('change', () => {
       populateSubjects();
       filterBooks();
