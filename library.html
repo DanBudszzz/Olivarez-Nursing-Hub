@@ -355,125 +355,146 @@
     </div>
   </footer>
 
-  <script>
-    // Function to load books from books.json and render them
+<script>
+    // Configuration - Update with your PHP backend URL
+    const API_BASE = 'https://olivbookhub.free.nf'; // Your InfinityFree domain
+    let allBooks = []; // Maintain local copy of books
+
+    // Improved book loading with error handling
     async function loadBooks() {
       try {
-        const response = await fetch('books.json');
-        if (!response.ok) throw new Error('Failed to fetch books.');
-        const books = await response.json();
-        const bookCarousel = document.getElementById('book-carousel');
-        bookCarousel.innerHTML = '';
-        books.forEach(book => {
-          const bookItem = document.createElement('div');
-          bookItem.classList.add('book-item');
-          // Set data attributes for filtering
-          bookItem.dataset.year = book.year;
-          bookItem.dataset.subject = book.subject.toLowerCase().replace(' ', '-');
-          bookItem.innerHTML = `
-            <img src="${book.image}" class="book-image" alt="${book.title}">
-            <h3 class="book-title">${book.title}</h3>
-            <div class="book-meta">
-              <span>${book.year} Year</span>
-              <span>${book.subject}</span>
-            </div>
-            <a href="${book.pdf}" target="_blank" style="display:block;margin-top: 0.5rem;color: var(--primary);">View PDF</a>
-          `;
-          bookCarousel.appendChild(bookItem);
-        });
+        const response = await fetch(`${API_BASE}/get_books.php`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        allBooks = await response.json();
+        renderBooks(allBooks);
+        updateFilters();
       } catch (error) {
         console.error('Error loading books:', error);
+        alert('Failed to load books. Please try again later.');
       }
     }
 
-    // Admin form submission handler
-    document.getElementById('book-form').addEventListener('submit', async function(event) {
-      event.preventDefault();
-
-      const title = document.getElementById('book-title').value.trim();
-      const year = document.getElementById('book-year').value.trim();
-      const subject = document.getElementById('book-subject').value.trim();
-      const imageUrl = document.getElementById('book-image-url').value.trim();
-      const pdfUrl = document.getElementById('book-pdf-url').value.trim();
-
-      if (!imageUrl || !pdfUrl) {
-        alert("Please provide a valid image URL and PDF URL.");
-        return;
-      }
-
-      const newBook = { title, year, subject, image: imageUrl, pdf: pdfUrl };
-
-      try {
-        // Fetch current books from books.json (ensure CORS is enabled if hosted remotely)
-        const response = await fetch('https://olivareznursinghub.netlify.app/books.json');
-        if (!response.ok) throw new Error('Failed to fetch the current book list.');
-        const books = await response.json();
-
-        books.push(newBook); // Add the new book to the list
-
-        // Send the updated list of books to save_books.php on your server
-        const saveResponse = await fetch('https://olivbookhub.free.nf/save_books.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(books)
-        });
-        if (!saveResponse.ok) throw new Error('Failed to save the new book.');
-        const saveResult = await saveResponse.json();
-        console.log(saveResult.message);
-
-        loadBooks(); // Reload the books after adding the new one
-        this.reset(); // Reset the form
-      } catch (error) {
-        console.error('Error uploading the book:', error);
-        alert("There was an error uploading the book. Please check the console for details.");
-      }
-    });
-
-    // Filtering code – re-read current book items on each filter action
-    function populateSubjects() {
-      const selectedYear = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter');
-      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
-      const subjects = {
-        '1st': ['Anatomy', 'Physiology', 'Biochemistry', 'Fundamentals'],
-        '2nd': ['Pharmacology', 'Microbiology', 'Pathology', 'Parasitology'],
-        '3rd': ['Nursing Skills', 'Patient Care', 'Surgical Nursing', 'Pediatrics'],
-        '4th': ['Critical Care', 'Leadership', 'Community Health', 'Research']
-      };
-      if (selectedYear !== 'all' && subjects[selectedYear]) {
-        subjects[selectedYear].forEach(subject => {
-          const option = new Option(subject, subject.toLowerCase().replace(' ', '-'));
-          subjectFilter.add(option);
-        });
-      }
-    }
-
-    function filterBooks() {
-      // Always re-read current book items
-      const bookItems = document.querySelectorAll('.book-item');
-      const searchTerm = document.getElementById('search').value.toLowerCase();
-      const year = document.getElementById('year-filter').value;
-      const subject = document.getElementById('subject-filter').value;
-      bookItems.forEach(book => {
-        const matchesYear = (year === 'all' || book.dataset.year === year);
-        const matchesSubject = (subject === 'all' || book.dataset.subject === subject);
-        const matchesSearch = book.textContent.toLowerCase().includes(searchTerm);
-        book.style.display = (matchesYear && matchesSubject && matchesSearch) ? 'block' : 'none';
+    // Render books to DOM
+    function renderBooks(books) {
+      const bookCarousel = document.getElementById('book-carousel');
+      bookCarousel.innerHTML = '';
+      
+      books.forEach(book => {
+        const bookItem = document.createElement('div');
+        bookItem.classList.add('book-item');
+        bookItem.dataset.year = book.year;
+        bookItem.dataset.subject = book.subject.toLowerCase().replace(/ /g, '-');
+        
+        bookItem.innerHTML = `
+          <img src="${book.image}" class="book-image" alt="${book.title}">
+          <h3 class="book-title">${book.title}</h3>
+          <div class="book-meta">
+            <span>${book.year} Year</span>
+            <span>${book.subject}</span>
+          </div>
+          <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
+        `;
+        bookCarousel.appendChild(bookItem);
       });
     }
 
-    document.getElementById('year-filter').addEventListener('change', () => {
-      populateSubjects();
-      filterBooks();
+    // Form submission handler
+    document.getElementById('book-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const newBook = {
+        title: document.getElementById('book-title').value.trim(),
+        year: document.getElementById('book-year').value.trim(),
+        subject: document.getElementById('book-subject').value.trim(),
+        image: document.getElementById('book-image-url').value.trim(),
+        pdf: document.getElementById('book-pdf-url').value.trim()
+      };
+
+      // Validation
+      if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
+        alert('Please fill all fields');
+        return;
+      }
+
+      try {
+        // Add to local copy first for immediate feedback
+        allBooks.push(newBook);
+        renderBooks(allBooks);
+        
+        // Send to server
+        const response = await fetch(`${API_BASE}/save_books.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(allBooks)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        this.reset();
+        alert('Book added successfully!');
+      } catch (error) {
+        console.error('Upload error:', error);
+        alert('Error saving book. Changes may not persist.');
+        // Revert local changes
+        allBooks.pop();
+        renderBooks(allBooks);
+      }
     });
+
+    // Filter functions
+    function updateFilters() {
+      updateSubjectFilter();
+      filterBooks();
+    }
+
+    function updateSubjectFilter() {
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter');
+      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+
+      if (yearFilter === 'all') return;
+
+      const subjects = [...new Set(allBooks
+        .filter(book => book.year === yearFilter)
+        .map(book => book.subject)
+      )];
+
+      subjects.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject.toLowerCase().replace(/ /g, '-');
+        option.textContent = subject;
+        subjectFilter.appendChild(option);
+      });
+    }
+
+    function filterBooks() {
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter').value;
+
+      const filtered = allBooks.filter(book => {
+        const matchesYear = yearFilter === 'all' || book.year === yearFilter;
+        const matchesSubject = subjectFilter === 'all' || 
+          book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
+        const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
+          book.subject.toLowerCase().includes(searchTerm);
+
+        return matchesYear && matchesSubject && matchesSearch;
+      });
+
+      renderBooks(filtered);
+    }
+
+    // Event listeners
+    document.getElementById('year-filter').addEventListener('change', updateFilters);
     document.getElementById('subject-filter').addEventListener('change', filterBooks);
     document.getElementById('search').addEventListener('input', filterBooks);
 
-    // Initialize on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      populateSubjects();
-      loadBooks();
-    });
-  </script>
+    // Initial load
+    document.addEventListener('DOMContentLoaded', loadBooks);
+</script>
 </body>
 </html>
