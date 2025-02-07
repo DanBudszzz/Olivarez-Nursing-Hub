@@ -356,26 +356,25 @@
   </footer>
 
 <script>
-    // Configuration - Update with your PHP backend URL
-    const API_BASE = 'https://olivbookhub.free.nf'; // Your InfinityFree domain
-    let allBooks = []; // Maintain local copy of books
+    // CHANGE 1: Use Google Apps Script URL instead of PHP
+    const API_URL = 'https://script.google.com/macros/s/AKfycbx7MFz6Z_lZ5t4OEQPjpyKGjtG_QlZqpmuwn9T_8g-a7zl-zlCkkNWbUM6e37U_bb-V/exec'; // Replace with your deployed script URL
+    let allBooks = [];
 
-    // Improved book loading with error handling
+    // CHANGE 2: Simplified book loading from Google Sheets
     async function loadBooks() {
       try {
-        const response = await fetch(`${API_BASE}/get_books.php`);
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        allBooks = await response.json();
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        allBooks = data;
         renderBooks(allBooks);
         updateFilters();
       } catch (error) {
-        console.error('Error loading books:', error);
-        alert('Failed to load books. Please try again later.');
+        console.error('Error:', error);
+        alert('Failed to load books. Please refresh the page.');
       }
     }
 
-    // Render books to DOM
+    // Render function remains the same
     function renderBooks(books) {
       const bookCarousel = document.getElementById('book-carousel');
       bookCarousel.innerHTML = '';
@@ -399,7 +398,7 @@
       });
     }
 
-    // Form submission handler
+    // CHANGE 3: Modified form submission for Google Sheets
     document.getElementById('book-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       
@@ -411,40 +410,37 @@
         pdf: document.getElementById('book-pdf-url').value.trim()
       };
 
-      // Validation
       if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
         alert('Please fill all fields');
         return;
       }
 
       try {
-        // Add to local copy first for immediate feedback
+        // Temporary local update
         allBooks.push(newBook);
         renderBooks(allBooks);
-        
-        // Send to server
-        const response = await fetch(`${API_BASE}/save_books.php`, {
+
+        // Send to Google Sheets
+        const response = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(allBooks)
+          body: JSON.stringify(newBook)
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error('Server error');
+        
         this.reset();
-        alert('Book added successfully!');
+        alert('Book added! Reloading latest data...');
+        await loadBooks(); // Refresh from server
       } catch (error) {
-        console.error('Upload error:', error);
-        alert('Error saving book. Changes may not persist.');
-        // Revert local changes
+        console.error('Upload failed:', error);
+        alert('Failed to save. Rolling back changes.');
+        // Remove temporary addition
         allBooks.pop();
         renderBooks(allBooks);
       }
     });
 
-    // Filter functions
+    // Rest of the filtering code remains the same
     function updateFilters() {
       updateSubjectFilter();
       filterBooks();
@@ -488,12 +484,10 @@
       renderBooks(filtered);
     }
 
-    // Event listeners
     document.getElementById('year-filter').addEventListener('change', updateFilters);
     document.getElementById('subject-filter').addEventListener('change', filterBooks);
     document.getElementById('search').addEventListener('input', filterBooks);
 
-    // Initial load
     document.addEventListener('DOMContentLoaded', loadBooks);
 </script>
 </body>
