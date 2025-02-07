@@ -357,7 +357,7 @@
 
 <script>
     // CHANGE 1: Use Google Apps Script URL instead of PHP
-    const API_URL = 'https://script.google.com/a/macros/olivarezcollegetagaytay.edu.ph/s/AKfycbyJBlDFAxxUOC_qWdGB4U9cgCAjSQRO49HrNvd4kfzObgDypId9xydQpLrJgrTjWhoX/exec'; // Replace with your deployed script URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxX6KjDDV02Jo5eC99w6hY8Bc-hrERKplgY-FKJt4Q/dev'; // Replace with your deployed script URL
     let allBooks = [];
 
     // CHANGE 2: Simplified book loading from Google Sheets
@@ -398,47 +398,50 @@
       });
     }
 
-    // CHANGE 3: Modified form submission for Google Sheets
-    document.getElementById('book-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      
-      const newBook = {
-        title: document.getElementById('book-title').value.trim(),
-        year: document.getElementById('book-year').value.trim(),
-        subject: document.getElementById('book-subject').value.trim(),
-        image: document.getElementById('book-image-url').value.trim(),
-        pdf: document.getElementById('book-pdf-url').value.trim()
-      };
+   // CHANGE 3: Modified form submission for Google Sheets
+   document.getElementById('book-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const newBook = {
+    title: document.getElementById('book-title').value.trim(),
+    year: document.getElementById('book-year').value.trim(),
+    subject: document.getElementById('book-subject').value.trim(),
+    image: document.getElementById('book-image-url').value.trim(),
+    pdf: document.getElementById('book-pdf-url').value.trim()
+  };
 
-      if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
-        alert('Please fill all fields');
-        return;
-      }
+  if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
+    alert('Please fill all fields');
+    return;
+  }
 
-      try {
-        // Temporary local update
-        allBooks.push(newBook);
-        renderBooks(allBooks);
-
-        // Send to Google Sheets
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          body: JSON.stringify(newBook)
-        });
-
-        if (!response.ok) throw new Error('Server error');
-        
-        this.reset();
-        alert('Book added! Reloading latest data...');
-        await loadBooks(); // Refresh from server
-      } catch (error) {
-        console.error('Upload failed:', error);
-        alert('Failed to save. Rolling back changes.');
-        // Remove temporary addition
-        allBooks.pop();
-        renderBooks(allBooks);
-      }
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(newBook)
     });
+
+    const result = await response.json();
+    
+    if (!response.ok || result.error) {
+      throw new Error(result.error || 'Unknown error');
+    }
+
+    alert('Book added successfully!');
+    await loadBooks(); // Refresh data
+    this.reset();
+    
+  } catch (error) {
+    console.error('Upload failed:', error);
+    alert(`Upload failed: ${error.message}`);
+    // Remove temporary addition if needed
+    if(allBooks.length > 0) {
+      allBooks.pop();
+      renderBooks(allBooks);
+    }
+  }
+});
 
     // Rest of the filtering code remains the same
     function updateFilters() {
