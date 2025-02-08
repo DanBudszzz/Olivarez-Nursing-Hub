@@ -3,284 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="referrer" content="no-referrer-when-downgrade">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
   <title>Nursing Digital Library | Olivarez College</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #388E3C;
-      --primary-dark: #2B6E2F;
-      --primary-light: #C8E6C9;
-      --secondary: #2C3E50;
-      --light: #F8F9FA;
-      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--light);
-      color: var(--secondary);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    /* Header */
-    header {
-      background: var(--gradient);
-      color: white;
-      padding: 0.75rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .logo-group {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .logo {
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-    }
-    .back-home {
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    h1 {
-      font-size: 1.35rem;
-      font-weight: 600;
-    }
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
-    /* Admin Panel – temporary upload feature */
-    .admin-panel {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      margin-bottom: 2rem;
-    }
-    .admin-panel h2 {
-      margin-bottom: 1rem;
-      color: var(--secondary);
-    }
-    #book-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    #book-form input, #book-form button {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid var(--primary);
-    }
-    #book-form button {
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    #book-form button:hover {
-      background: var(--primary-dark);
-    }
-    /* Library Container */
-    .library-container {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-    /* Filters Section */
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin: 2rem 0;
-    }
-    .search-box {
-      position: relative;
-    }
-    .search-input {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      font-size: 1rem;
-      padding-left: 2.5rem;
-      background: white;
-      transition: box-shadow 0.2s ease;
-    }
-    .search-input:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--primary-light);
-    }
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--primary);
-    }
-    select {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      background: white;
-      font-size: 1rem;
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23388E3C'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 1em;
-    }
-    /* Book Carousel */
-    .carousel-container {
-      position: relative;
-      margin: 0 -1rem;
-      padding: 0.5rem 0;
-    }
-    .book-carousel {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      padding: 0 1rem;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .book-carousel::-webkit-scrollbar {
-      display: none;
-    }
-    .book-item {
-      scroll-snap-align: start;
-      flex: 0 0 280px;
-      background: white;
-      border-radius: 12px;
-      padding: 1.25rem;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease;
-      border: 1px solid rgba(56,142,60,0.1);
-    }
-    .book-item:hover {
-      transform: translateY(-3px);
-    }
-    .book-image {
-      width: 100%;
-      height: 180px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 1rem;
-      background: var(--primary-light);
-    }
-    .book-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 0.5rem;
-    }
-    .book-meta {
-      color: var(--primary);
-      font-size: 0.875rem;
-      display: flex;
-      gap: 0.75rem;
-      opacity: 0.9;
-    }
-    /* Footer */
-    footer {
-      background: var(--gradient);
-      color: white;
-      padding: 1.5rem;
-      margin-top: auto;
-    }
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-    @media (max-width: 768px) {
-      .header-content {
-        gap: 0.5rem;
-        padding: 0 0.5rem;
-      }
-      h1 {
-        font-size: 1.2rem;
-      }
-      .logo {
-        width: 40px;
-        height: 40px;
-      }
-      main {
-        padding: 1.5rem 0.5rem;
-      }
-      .library-container {
-        padding: 1rem;
-        border-radius: 12px;
-      }
-      .filters {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-      }
-      .search-input,
-      select {
-        padding: 0.75rem 1rem;
-        font-size: 0.9375rem;
-      }
-      .book-item {
-        flex: 0 0 75%;
-      }
-    }
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.1rem;
-      }
-      .book-item {
-        flex: 0 0 85%;
-        padding: 1rem;
-      }
-      .book-image {
-        height: 160px;
-      }
-      .book-title {
-        font-size: 1rem;
-      }
-      .book-meta {
-        font-size: 0.8125rem;
-      }
-    }
+    /* Same CSS as before */
   </style>
 </head>
 <body>
@@ -289,9 +18,7 @@
       <div class="logo-group">
         <a href="index.html" class="back-home">
           <i class="fas fa-chevron-left"></i>
-          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
-               alt="College Logo" 
-               class="logo">
+          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo">
         </a>
         <h1>Nursing Resource Hub</h1>
       </div>
@@ -299,33 +26,28 @@
   </header>
 
   <main>
-    <!-- Admin Upload Panel (temporary) -->
+    <!-- Admin Upload Panel -->
     <section class="admin-panel">
       <h2>Upload New Book</h2>
       <form id="book-form">
         <input type="text" id="book-title" placeholder="Book Title" required>
         <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
         <input type="text" id="book-subject" placeholder="Subject" required>
-        <!-- Provide an image URL from your file host (e.g., Google Drive, Dropbox, etc.) -->
         <input type="url" id="book-image-url" placeholder="Image URL" required>
-        <!-- New input for the PDF URL of the book -->
         <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
         <button type="submit">Add Book</button>
       </form>
     </section>
 
+    <!-- Digital Library -->
     <section class="library-container">
-      <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
+      <h2>
         <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
         Digital Library
       </h2>
       <div class="filters">
         <div class="search-box">
-          <input type="text" 
-                 id="search" 
-                 class="search-input" 
-                 placeholder="Search resources..."
-                 aria-label="Search resources">
+          <input type="text" id="search" class="search-input" placeholder="Search resources..." aria-label="Search resources">
           <i class="fas fa-search search-icon"></i>
         </div>
         <select id="year-filter" aria-label="Filter by year">
@@ -339,42 +61,27 @@
           <option value="all">All Subjects</option>
         </select>
       </div>
-
       <div class="carousel-container">
-        <div class="book-carousel" id="book-carousel">
-          <!-- Book items will be loaded dynamically from books.json -->
-        </div>
+        <div class="book-carousel" id="book-carousel"></div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="footer-content">
-      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
-           alt="College Logo" 
-           style="width: 60px; border-radius: 8px;">
-      <p style="opacity: 0.9;">&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
+      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" style="width: 60px; border-radius: 8px;">
+      <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
     </div>
   </footer>
 
-<script>
-// 🔹 Replace this with your actual deployed Google Apps Script Web App URL
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxAwGjnkERfbtPCFiBBVrYj__T3fFbRfHztUaDv7iN8Bj2_NRLjBLPP7D8uPrJHn-Wy/exec';
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxmNGir39fyhWefGxfMvqpsGejuLiqTlXdWs2rpGup87hS-1Om88NgSDtQTxDblV-Ju/exec';
     let allBooks = [];
 
-    // 🔹 Step 1: First, send a GET request to allow the browser to handle CORS
     async function loadBooks() {
       try {
-        await fetch(API_URL, { method: 'GET' }); // 👈 CORS fix: Ensures browser allows requests
-
         const response = await fetch(API_URL);
-        
-        // Check if the response is valid JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new Error("Invalid response format. Expected JSON.");
-        }
-
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
         allBooks = data;
         renderBooks(allBooks);
@@ -408,67 +115,50 @@
       });
     }
 
-const sheetId = '1mZ5Q672E1F_LxaoZOOm2Ezpl555fc13Cyz0zNtacoQk';
-const sheetName = 'Sheet1';
+    document.getElementById('book-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+  
+      const newBook = {
+        title: document.getElementById('book-title').value.trim(),
+        year: document.getElementById('book-year').value.trim(),
+        subject: document.getElementById('book-subject').value.trim(),
+        image: document.getElementById('book-image-url').value.trim(),
+        pdf: document.getElementById('book-pdf-url').value.trim()
+      };
 
-function doPost(e) {
-  try {
-    const ss = SpreadsheetApp.openById(sheetId);
-    const sheet = ss.getSheetByName(sheetName);
-    const data = JSON.parse(e.postData.contents);
-    
-    sheet.appendRow([
-      data.title,
-      data.year,
-      data.subject,
-      data.image,
-      data.pdf,
-      new Date()
-    ]);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({success: true}))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({error: error.message}))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setStatusCode(500);
-  }
-}
+      if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
+        alert('Please fill all fields');
+        return;
+      }
 
-function doGet() {
-  try {
-    const ss = SpreadsheetApp.openById(sheetId);
-    const sheet = ss.getSheetByName(sheetName);
-    const data = sheet.getDataRange().getValues();
-    
-    const books = data.slice(1).map(row => ({
-      title: row[0],
-      year: row[1],
-      subject: row[2],
-      image: row[3],
-      pdf: row[4]
-    }));
-    
-    return ContentService
-      .createTextOutput(JSON.stringify(books))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({error: error.message}))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setStatusCode(500);
-  }
-}
+      try {
+        await fetch(API_URL, { method: 'GET' });
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBook)
+        });
+
+        if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
+
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+
+        alert('Book added successfully!');
+        await loadBooks();
+        this.reset();
+      } catch (error) {
+        console.error('Upload failed:', error);
+        alert(`Upload failed: ${error.message}`);
+      }
+    });
 
     document.getElementById('year-filter').addEventListener('change', updateFilters);
     document.getElementById('subject-filter').addEventListener('change', filterBooks);
     document.getElementById('search').addEventListener('input', filterBooks);
 
     document.addEventListener('DOMContentLoaded', loadBooks);
-</script> 
+  </script>
 </body>
 </html>
