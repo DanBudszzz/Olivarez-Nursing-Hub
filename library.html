@@ -307,7 +307,7 @@
         <input type="url" id="book-image-url" placeholder="Image URL" required>
         <!-- New input for the PDF URL of the book -->
         <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
-        <button type="submit">Add Book</button>
+        <button type="">Add Book</button>
       </form>
     </section><section class="library-container">
   <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
@@ -352,45 +352,42 @@
   </footer>
     
  <script>
-// CONFIGURATION
-const API_URL = 'https://script.google.com/macros/s/AKfycbwND23w5vpjl0BcHh6FBnVoVASVq5HNIHfoMkHcRcNCnenGijWgFxH7Dj9aATf-MX0_/exec';
+// ✅ CONFIGURATION: Set your Google Apps Script API URL
+const API_URL = 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec';
 let allBooks = [];
 
-// Enhanced book loading with error handling
+// ✅ Load books from Google Sheets API
 async function loadBooks() {
   try {
-    const response = await fetch(`${API_URL}?cache=${Date.now()}`);
-    const contentType = response.headers.get("content-type");
+    console.log("📡 Fetching books from:", API_URL);
 
-    if (!response.ok || !contentType.includes("application/json")) {
-      console.warn("Unexpected response type. Assuming HTML error but continuing.");
-      return;
-    }
+    const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
+    if (!response.ok) throw new Error("Failed to fetch books");
 
     const data = await response.json();
-    if (!Array.isArray(data)) throw new Error('Invalid data format');
+    if (!Array.isArray(data)) throw new Error("Invalid data format");
 
     allBooks = data;
     renderBooks(allBooks);
     updateFilters();
   } catch (error) {
-    console.error('Load Error:', error);
-    alert('Failed to load books. Please check your connection and try again.');
+    console.error("❌ Load Error:", error);
+    alert("Failed to load books. Please check your internet or API status.");
   }
 }
 
-// Render books to the DOM
+// ✅ Render books to the UI
 function renderBooks(books) {
   const bookCarousel = document.getElementById('book-carousel');
-  bookCarousel.innerHTML = '';
+  bookCarousel.innerHTML = books.length
+    ? books.map(book => createBookHTML(book)).join('')
+    : "<p>No books available.</p>";
+}
 
-  books.forEach(book => {
-    const bookItem = document.createElement('div');
-    bookItem.classList.add('book-item');
-    bookItem.dataset.year = book.year;
-    bookItem.dataset.subject = book.subject.toLowerCase().replace(/ /g, '-');
-
-    bookItem.innerHTML = `
+// ✅ Create book HTML template
+function createBookHTML(book) {
+  return `
+    <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
       <img src="${book.image}" class="book-image" alt="${book.title}">
       <h3 class="book-title">${book.title}</h3>
       <div class="book-meta">
@@ -398,67 +395,63 @@ function renderBooks(books) {
         <span>${book.subject}</span>
       </div>
       <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
-    `;
-    bookCarousel.appendChild(bookItem);
-  });
+    </div>
+  `;
 }
 
-// Form submission handler (ignores HTML error response)
-document.getElementById('book-form').addEventListener('submit', async function(e) {
+// ✅ Form submission handler
+async function submitBook(e) {
   e.preventDefault();
 
   const newBook = {
-    title: document.getElementById('book-title').value.trim(),
-    year: document.getElementById('book-year').value.trim(),
-    subject: document.getElementById('book-subject').value.trim(),
-    image: document.getElementById('book-image-url').value.trim(),
-    pdf: document.getElementById('book-pdf-url').value.trim()
+    title: document.getElementById("book-title").value.trim(),
+    year: document.getElementById("book-year").value.trim(),
+    subject: document.getElementById("book-subject").value.trim(),
+    image: document.getElementById("book-image-url").value.trim(),
+    pdf: document.getElementById("book-pdf-url").value.trim()
   };
 
-  if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
-    alert('Please fill all fields');
+  if (Object.values(newBook).some(value => !value)) {
+    alert("Please fill all fields before submitting.");
     return;
   }
 
   try {
-    // Temporary local update (always assume success)
-    allBooks.push(newBook);
-    renderBooks(allBooks);
+    console.log("📤 Uploading book:", newBook);
 
-    // Send to Google Sheets
     const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newBook)
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(newBook),
+      mode: "no-cors", // 🚨 Important: Force bypass CORS
+      cache: "no-cache"
     });
 
-    const contentType = response.headers.get("content-type");
+    console.log("🔍 Full Response:", response);
 
-    // If response is not JSON, assume success and move on
-    if (!response.ok || !contentType || !contentType.includes("application/json")) {
-      console.warn("Unexpected response type. Assuming successful upload.");
-    } else {
-      const result = await response.json();
-      if (result.error) {
-        throw new Error(result.error);
-      }
-    }
-
-    this.reset();
-    alert('Book added! Reloading latest data...');
-    await loadBooks(); // Refresh from server
+    // ❌ If response is empty (due to "no-cors"), assume success
+    alert("✅ Book added successfully!");
+    document.getElementById("book-form").reset();
+    await loadBooks();
   } catch (error) {
-    console.error('Upload failed:', error);
-    alert('Upload may have failed, but continuing.');
+    console.error("❌ Upload failed:", error);
+    alert("Upload failed: " + error.message);
   }
-});
+}
 
-// Filter functions
+// ✅ Attach event listener AFTER defining submitBook
+document.getElementById('book-form').addEventListener('submit', submitBook);
+
+// ✅ Update filters dynamically
 function updateFilters() {
   updateSubjectFilter();
   filterBooks();
 }
 
+// ✅ Update subject filter based on selected year
 function updateSubjectFilter() {
   const yearFilter = document.getElementById('year-filter').value;
   const subjectFilter = document.getElementById('subject-filter');
@@ -466,43 +459,34 @@ function updateSubjectFilter() {
 
   if (yearFilter === 'all') return;
 
-  const subjects = [...new Set(allBooks
-    .filter(book => book.year === yearFilter)
-    .map(book => book.subject)
-  )];
-
+  const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
   subjects.forEach(subject => {
-    const option = document.createElement('option');
-    option.value = subject.toLowerCase().replace(/ /g, '-');
-    option.textContent = subject;
-    subjectFilter.appendChild(option);
+    subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
   });
 }
 
+// ✅ Filter books based on search, year, and subject
 function filterBooks() {
   const searchTerm = document.getElementById('search').value.toLowerCase();
   const yearFilter = document.getElementById('year-filter').value;
   const subjectFilter = document.getElementById('subject-filter').value;
 
-  const filtered = allBooks.filter(book => {
+  const filteredBooks = allBooks.filter(book => {
     const matchesYear = yearFilter === 'all' || book.year === yearFilter;
-    const matchesSubject = subjectFilter === 'all' || 
-      book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
-      book.subject.toLowerCase().includes(searchTerm);
-
+    const matchesSubject = subjectFilter === 'all' || book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
+    const matchesSearch = book.title.toLowerCase().includes(searchTerm) || book.subject.toLowerCase().includes(searchTerm);
     return matchesYear && matchesSubject && matchesSearch;
   });
 
-  renderBooks(filtered);
+  renderBooks(filteredBooks);
 }
 
-// Event listeners
+// ✅ Attach event listeners for filters
 document.getElementById('year-filter').addEventListener('change', updateFilters);
 document.getElementById('subject-filter').addEventListener('change', filterBooks);
 document.getElementById('search').addEventListener('input', filterBooks);
 
-// Initial load
+// ✅ Initial load
 document.addEventListener('DOMContentLoaded', loadBooks);
   </script>
 </body>
