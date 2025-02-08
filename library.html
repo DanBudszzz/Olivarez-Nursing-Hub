@@ -358,25 +358,33 @@
   </footer>
 
 <script>
-    // CHANGE 1: Use Google Apps Script URL instead of PHP
-    const API_URL = 'https://script.google.com/macros/s/AKfycbzPxWTI2qzY2PB0G0QX4rJ01j5S16sgD8bzGJxN7op-Z4OhJj6gI1uUNYsJKW38m8r1/exec'; // Replace with your deployed script URL
+// 🔹 Replace this with your actual deployed Google Apps Script Web App URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxAwGjnkERfbtPCFiBBVrYj__T3fFbRfHztUaDv7iN8Bj2_NRLjBLPP7D8uPrJHn-Wy/exec';
     let allBooks = [];
 
-    // CHANGE 2: Simplified book loading from Google Sheets
+    // 🔹 Step 1: First, send a GET request to allow the browser to handle CORS
     async function loadBooks() {
       try {
+        await fetch(API_URL, { method: 'GET' }); // 👈 CORS fix: Ensures browser allows requests
+
         const response = await fetch(API_URL);
+        
+        // Check if the response is valid JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Invalid response format. Expected JSON.");
+        }
+
         const data = await response.json();
         allBooks = data;
         renderBooks(allBooks);
         updateFilters();
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error loading books:', error);
         alert('Failed to load books. Please refresh the page.');
       }
     }
 
-    // Render function remains the same
     function renderBooks(books) {
       const bookCarousel = document.getElementById('book-carousel');
       bookCarousel.innerHTML = '';
@@ -400,52 +408,57 @@
       });
     }
 
-   // CHANGE 3: Modified form submission for Google Sheets
+   // 🔹 Step 2: Fix the book upload logic with better error handling & CORS fix
    document.getElementById('book-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
+      e.preventDefault();
   
-  const newBook = {
-    title: document.getElementById('book-title').value.trim(),
-    year: document.getElementById('book-year').value.trim(),
-    subject: document.getElementById('book-subject').value.trim(),
-    image: document.getElementById('book-image-url').value.trim(),
-    pdf: document.getElementById('book-pdf-url').value.trim()
-  };
+      const newBook = {
+        title: document.getElementById('book-title').value.trim(),
+        year: document.getElementById('book-year').value.trim(),
+        subject: document.getElementById('book-subject').value.trim(),
+        image: document.getElementById('book-image-url').value.trim(),
+        pdf: document.getElementById('book-pdf-url').value.trim()
+      };
 
-  if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
-    alert('Please fill all fields');
-    return;
-  }
+      if (!newBook.title || !newBook.year || !newBook.subject || !newBook.image || !newBook.pdf) {
+        alert('Please fill all fields');
+        return;
+      }
 
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(newBook)
+      try {
+        // 🔹 Step 3: Send an initial GET request to avoid CORS issues
+        await fetch(API_URL, { method: 'GET' });
+
+        // 🔹 Step 4: Send the actual POST request to upload the book
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newBook)
+        });
+
+        // Check if response is valid
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("Invalid response format. Expected JSON.");
+        }
+
+        const result = await response.json();
+        
+        if (!response.ok || result.error) {
+          throw new Error(result.error || 'Unknown error occurred while uploading.');
+        }
+
+        alert('Book added successfully!');
+        await loadBooks(); // Refresh the library
+        this.reset(); // Reset the form fields
+  
+      } catch (error) {
+        console.error('Upload failed:', error);
+        alert(`Upload failed: ${error.message}`);
+      }
     });
 
-    const result = await response.json();
-    
-    if (!response.ok || result.error) {
-      throw new Error(result.error || 'Unknown error');
-    }
-
-    alert('Book added successfully!');
-    await loadBooks(); // Refresh data
-    this.reset();
-    
-  } catch (error) {
-    console.error('Upload failed:', error);
-    alert(`Upload failed: ${error.message}`);
-    // Remove temporary addition if needed
-    if(allBooks.length > 0) {
-      allBooks.pop();
-      renderBooks(allBooks);
-    }
-  }
-});
-
-    // Rest of the filtering code remains the same
+    // 🔹 Step 5: Update filters dynamically based on available books
     function updateFilters() {
       updateSubjectFilter();
       filterBooks();
@@ -494,6 +507,6 @@
     document.getElementById('search').addEventListener('input', filterBooks);
 
     document.addEventListener('DOMContentLoaded', loadBooks);
-</script>
+</script> 
 </body>
 </html>
