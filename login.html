@@ -3,86 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Register</title>
+    <title>User Registration</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 50px; text-align: center; }
-        form { margin: 20px auto; padding: 20px; width: 300px; border: 1px solid #ccc; border-radius: 5px; }
-        input, button { width: 90%; padding: 10px; margin: 10px 0; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .message { font-weight: bold; margin-top: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h2>User Registration</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter username" required>
 
-    <h2>User Login & Registration</h2>
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter password" required>
 
-    <!-- Registration Form -->
-    <form id="register-form">
-        <h3>Register</h3>
-        <input type="text" id="register-username" placeholder="Username" required>
-        <input type="password" id="register-password" placeholder="Password" required>
-        <button type="submit">Register</button>
-        <p id="register-message" class="message"></p>
-    </form>
+        <button onclick="registerUser()">Register</button>
 
-    <!-- Login Form -->
-    <form id="login-form">
-        <h3>Login</h3>
-        <input type="text" id="login-username" placeholder="Username" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <button type="submit">Login</button>
-        <p id="login-message" class="message"></p>
-    </form>
+        <div id="message" class="message"></div>
+    </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFDB52mbeL6f0m_KDZ3E_FeKWXjnsT8XXITraZTlgqmcQFzINM5hgHB5WU2jhqUnr5qQ/exec";
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxxUa7FLLcpRAbCABcaWHWK6SH-Wyq_wvTTPIjPfTz8W3kb4pICEBw4nniWDofd6sTbvA/exec';  // Replace with your actual Web App URL
 
-async function handleFormSubmit(e, action) {
-    e.preventDefault();
-    const form = e.target;
-    const messageEl = form.querySelector(".message");
-    const username = form.querySelector("input[type='text']").value;
-    const password = form.querySelector("input[type='password']").value;
+        function registerUser() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageEl = document.getElementById('message');
 
-    messageEl.textContent = "Checking connection...";
-    messageEl.style.color = "black";
+            // Clear previous messages
+            messageEl.textContent = '';
 
-    try {
-        // First, check if Web App is reachable
-        const testResponse = await fetch(SCRIPT_URL);
-        if (!testResponse.ok) throw new Error("Web App unreachable!");
+            if (!username || !password) {
+                messageEl.textContent = 'Please enter both username and password.';
+                messageEl.classList.add('error');
+                return;
+            }
 
-        // Now proceed with actual request
-        messageEl.textContent = "Processing...";
+            const data = {
+                username: username,
+                password: password
+            };
 
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action, username, password }),
-            redirect: "follow"
-        });
-
-        const data = await response.json();
-        messageEl.textContent = data.message;
-        messageEl.style.color = data.success ? "green" : "red";
-
-        if (data.success && action === "login") {
-            localStorage.setItem("username", username);
-            localStorage.setItem("role", data.role);
-            window.location.href = "dashboard.html";
+            // Send POST request to the Apps Script Web App
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                // If the response is successful
+                if (result.success) {
+                    messageEl.textContent = result.message;
+                    messageEl.classList.remove('error');
+                    messageEl.classList.add('success');
+                } else {
+                    // If there is an error in the response
+                    messageEl.textContent = result.error || 'Something went wrong.';
+                    messageEl.classList.remove('success');
+                    messageEl.classList.add('error');
+                }
+            })
+            .catch(error => {
+                // Catch any errors during fetch request
+                console.error('Error:', error);
+                messageEl.textContent = 'Network error or server issue. Check console for details.';
+                messageEl.classList.add('error');
+            });
         }
-
-    } catch (error) {
-        console.error("Fetch Error:", error);
-        messageEl.textContent = `Error: ${error.message}`;
-        messageEl.style.color = "red";
-    }
-}
-
-        document.getElementById("register-form").addEventListener("submit", (e) => handleFormSubmit(e, "register"));
-        document.getElementById("login-form").addEventListener("submit", (e) => handleFormSubmit(e, "login"));
     </script>
-
 </body>
 </html>
