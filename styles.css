@@ -27,6 +27,12 @@ body {
   line-height: 1.6;
   background-color: var(--bg-color);
   color: var(--text-color);
+  animation: fadeInBody 1s ease-out forwards; /* Fade in the entire body */
+}
+
+@keyframes fadeInBody {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Accessibility Features */
@@ -59,22 +65,23 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: transform var(--transition-timing);
+  transition: transform var(--transition-timing), box-shadow 0.3s ease; /* Added box-shadow transition */
 }
 
 header.hidden {
   transform: translateY(-100%);
+  box-shadow: none; /* Remove shadow when hidden */
 }
 
 .logo {
   height: 50px;
   width: auto;
   aspect-ratio: 1;
-  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94); /* More engaging transition */
+  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94);
 }
 
 .logo:hover {
-  transform: rotate(-5deg) scale(1.1); /* Added slight scale on hover */
+  transform: rotate(-5deg) scale(1.1);
 }
 
 /* Navigation Styles */
@@ -94,14 +101,15 @@ nav a {
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 4px;
-  transition: background-color var(--transition-timing), transform 0.2s ease; /* Added transform transition */
+  transition: background-color var(--transition-timing), transform 0.2s ease, color 0.2s ease;
 }
 
 nav a:hover,
 nav a:focus {
   background-color: var(--accent-color);
   outline: none;
-  transform: translateY(-2px); /* Subtle lift on hover */
+  transform: translateY(-2px);
+  color: var(--secondary-color); /* Change text color on hover */
 }
 
 .menu-toggle {
@@ -112,7 +120,7 @@ nav a:focus {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
-  transition: transform 0.3s ease; /* Smooth rotation on click */
+  transition: transform 0.3s ease;
 }
 .menu-toggle:hover, .menu-toggle:focus{
     transform: scale(1.1);
@@ -124,8 +132,14 @@ nav a:focus {
   color: white;
   text-align: center;
   padding: 4rem 1rem;
-  animation: fadeIn 1.5s ease-out, slideIn 1s ease-out; /*Combined and improved animations */
+  animation: fadeInHero 1.5s ease-out; /* Dedicated fade-in for hero */
 }
+
+@keyframes fadeInHero {
+    from { opacity: 0; transform: translateY(-20px); } /* Start from above */
+    to { opacity: 1; transform: translateY(0); }
+}
+
 
 .hero::before {
   content: '';
@@ -147,6 +161,12 @@ nav a:focus {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+   animation: pulsate 3s ease-in-out infinite; /* Subtle pulsing animation */
+}
+
+@keyframes pulsate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
 }
 
 .cta-btn {
@@ -158,16 +178,23 @@ nav a:focus {
   font-size: 1.2rem;
   border-radius: 30px;
   margin-top: 1rem;
-  transition: background-color 0.3s, transform 0.3s cubic-bezier(.25,.46,.45,.94); /* Enhanced transform */
-  border: 2px solid transparent; /* For a nice hover effect */
+  transition: background-color 0.3s, transform 0.3s cubic-bezier(.25,.46,.45,.94), box-shadow 0.3s ease;
+  border: 2px solid transparent;
+    animation: bounce 1.5s ease-in-out infinite;
 }
 
 .cta-btn:hover {
   background-color: var(--accent-color);
   transform: scale(1.1);
-  border-color: white; /* Add a border on hover */
+  border-color: white;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8); /* Add a glow effect */
 }
 
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+}
 /* Main Content Styles */
 .container {
   max-width: var(--max-width);
@@ -181,12 +208,26 @@ nav a:focus {
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: var(--card-shadow);
-  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), box-shadow var(--transition-timing); /* More interesting transform */
+  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), box-shadow var(--transition-timing);
+    animation: fadeInUp 1s ease-out forwards; /* Apply fadeInUp to each card */
+    opacity: 0; /* Start invisible for the animation */
+    animation-delay: 0.2s; /* Stagger the animation slightly */
+}
+.card:nth-child(2){
+     animation-delay: 0.4s;
+}
+.card:nth-child(3){
+      animation-delay: 0.6s;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .card:hover {
-  transform: translateY(-8px) scale(1.02); /* Increased translateY and added slight scale */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .card h2 {
@@ -196,6 +237,15 @@ nav a:focus {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  animation: colorCycle 5s linear infinite; /* Color cycling animation */
+}
+
+@keyframes colorCycle {
+    0% { color: var(--primary-color); }
+    25% { color: var(--accent-color); }
+    50% { color: var(--secondary-color); }
+    75% { color: #6AB04C; } /* Slightly different green */
+    100% { color: var(--primary-color); }
 }
 
 /* Facebook Feed Styles */
@@ -225,11 +275,17 @@ nav a:focus {
   padding: 1rem;
   scroll-snap-align: start;
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Added transitions */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: scaleIn 0.6s ease forwards;  /*Scale-in each post */
 }
 .fb-post:hover{
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .fb-post img {
@@ -238,7 +294,7 @@ nav a:focus {
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 1rem;
-  transition: transform 0.3s ease;  /* Smooth image zoom */
+  transition: transform 0.3s ease;
 }
 .fb-post:hover img{
   transform: scale(1.1);
@@ -260,17 +316,6 @@ nav a:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); } /* Start slightly down */
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-  0% { transform: translateX(-100%); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1;}
-}
-
 
 .error-message {
   color: #dc3545;
@@ -295,8 +340,9 @@ footer img:hover{
     transform: scale(1.1);
 }
 footer p {
-  animation: fadeIn 2s ease; /* Apply fadeIn to footer text */
+  animation: fadeIn 2s ease;
 }
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   header {
@@ -313,15 +359,15 @@ footer p {
     height: calc(100vh - var(--header-height));
     padding: 1rem;
     transition: right var(--transition-timing);
-    z-index: 1010; /* Ensure menu is above other content */
+    z-index: 1010;
   }
 
   nav ul.active {
     right: 0;
-      box-shadow: -5px 0 15px rgba(0,0,0,0.2); /* Add a shadow when menu is open */
+      box-shadow: -5px 0 15px rgba(0,0,0,0.2);
   }
     nav ul li{
-        margin-bottom: 0.8rem; /*Add spacing between items*/
+        margin-bottom: 0.8rem;
     }
     nav ul li:last-child{
         margin-bottom: 0;
@@ -338,14 +384,13 @@ footer p {
   .container {
     padding: 0 1rem;
   }
-    /* Make cards stack vertically on small screens */
     #facebook-feed-container{
         flex-direction: column;
-        align-items: center; /* Center cards */
+        align-items: center;
         overflow-x: hidden;
     }
      .fb-post{
-         width: 90%; /* Make posts wider */
+         width: 90%;
          margin-bottom: 1rem;
          flex: 0 0 auto;
 
