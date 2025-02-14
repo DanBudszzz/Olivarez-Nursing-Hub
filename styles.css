@@ -70,11 +70,11 @@ header.hidden {
   height: 50px;
   width: auto;
   aspect-ratio: 1;
-  transition: transform var(--transition-timing);
+  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94); /* More engaging transition */
 }
 
 .logo:hover {
-  transform: rotate(-5deg);
+  transform: rotate(-5deg) scale(1.1); /* Added slight scale on hover */
 }
 
 /* Navigation Styles */
@@ -94,13 +94,14 @@ nav a {
   gap: 0.5rem;
   padding: 0.5rem;
   border-radius: 4px;
-  transition: background-color var(--transition-timing);
+  transition: background-color var(--transition-timing), transform 0.2s ease; /* Added transform transition */
 }
 
 nav a:hover,
 nav a:focus {
   background-color: var(--accent-color);
   outline: none;
+  transform: translateY(-2px); /* Subtle lift on hover */
 }
 
 .menu-toggle {
@@ -111,6 +112,10 @@ nav a:focus {
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0.5rem;
+  transition: transform 0.3s ease; /* Smooth rotation on click */
+}
+.menu-toggle:hover, .menu-toggle:focus{
+    transform: scale(1.1);
 }
 
 /* Hero Section */
@@ -119,7 +124,7 @@ nav a:focus {
   color: white;
   text-align: center;
   padding: 4rem 1rem;
-  animation: slideIn 1s ease-out;
+  animation: fadeIn 1.5s ease-out, slideIn 1s ease-out; /*Combined and improved animations */
 }
 
 .hero::before {
@@ -146,19 +151,21 @@ nav a:focus {
 
 .cta-btn {
   display: inline-block;
-  background-color: #388E3C;
+  background-color: var(--secondary-color);
   color: white;
   padding: 1rem 2rem;
   text-decoration: none;
   font-size: 1.2rem;
   border-radius: 30px;
   margin-top: 1rem;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s cubic-bezier(.25,.46,.45,.94); /* Enhanced transform */
+  border: 2px solid transparent; /* For a nice hover effect */
 }
 
 .cta-btn:hover {
-  background-color: #81C784;
+  background-color: var(--accent-color);
   transform: scale(1.1);
+  border-color: white; /* Add a border on hover */
 }
 
 /* Main Content Styles */
@@ -174,12 +181,12 @@ nav a:focus {
   padding: 2rem;
   margin-bottom: 2rem;
   box-shadow: var(--card-shadow);
-  transition: transform var(--transition-timing), box-shadow var(--transition-timing);
+  transition: transform 0.3s cubic-bezier(.25,.46,.45,.94), box-shadow var(--transition-timing); /* More interesting transform */
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02); /* Increased translateY and added slight scale */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
 }
 
 .card h2 {
@@ -218,6 +225,11 @@ nav a:focus {
   padding: 1rem;
   scroll-snap-align: start;
   box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Added transitions */
+}
+.fb-post:hover{
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .fb-post img {
@@ -226,6 +238,10 @@ nav a:focus {
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 1rem;
+  transition: transform 0.3s ease;  /* Smooth image zoom */
+}
+.fb-post:hover img{
+  transform: scale(1.1);
 }
 
 /* Loading States */
@@ -246,14 +262,15 @@ nav a:focus {
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  from { opacity: 0; transform: translateY(20px); } /* Start slightly down */
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes slideIn {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(0); }
+  0% { transform: translateX(-100%); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1;}
 }
+
 
 .error-message {
   color: #dc3545;
@@ -272,10 +289,14 @@ footer {
 }
 
 footer img {
-  height: 50px;
-  margin-bottom: 1rem;
+    transition: transform 0.3s ease;
 }
-
+footer img:hover{
+    transform: scale(1.1);
+}
+footer p {
+  animation: fadeIn 2s ease; /* Apply fadeIn to footer text */
+}
 /* Mobile Responsive */
 @media (max-width: 768px) {
   header {
@@ -292,11 +313,19 @@ footer img {
     height: calc(100vh - var(--header-height));
     padding: 1rem;
     transition: right var(--transition-timing);
+    z-index: 1010; /* Ensure menu is above other content */
   }
 
   nav ul.active {
     right: 0;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.2); /* Add a shadow when menu is open */
   }
+    nav ul li{
+        margin-bottom: 0.8rem; /*Add spacing between items*/
+    }
+    nav ul li:last-child{
+        margin-bottom: 0;
+    }
 
   .menu-toggle {
     display: block;
@@ -309,4 +338,16 @@ footer img {
   .container {
     padding: 0 1rem;
   }
+    /* Make cards stack vertically on small screens */
+    #facebook-feed-container{
+        flex-direction: column;
+        align-items: center; /* Center cards */
+        overflow-x: hidden;
+    }
+     .fb-post{
+         width: 90%; /* Make posts wider */
+         margin-bottom: 1rem;
+         flex: 0 0 auto;
+
+     }
 }
