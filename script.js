@@ -7,7 +7,6 @@ menuToggle.addEventListener('click', () => {
   const isExpanded = navMenu.classList.contains('active');
   menuToggle.setAttribute('aria-expanded', isExpanded);
 
-    // Rotate the menu toggle icon for a visual cue
    menuToggle.style.transform = isExpanded ? 'rotate(90deg)' : 'rotate(0deg)';
 });
 
@@ -22,7 +21,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         block: 'start'
       });
 
-      // Close mobile menu after clicking a link.  Important for UX.
       if (navMenu.classList.contains('active')) {
             navMenu.classList.remove('active');
             menuToggle.setAttribute('aria-expanded', false);
@@ -50,8 +48,7 @@ async function loadFacebookPosts() {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xml, "text/xml");
     const items = xmlDoc.querySelectorAll('item');
-
-    items.forEach(item => {
+    items.forEach((item, index) => { // Add index for staggered animation
       const title = item.querySelector('title').textContent;
       const link = item.querySelector('link').textContent;
       const date = new Date(item.querySelector('pubDate').textContent).toLocaleDateString();
@@ -59,14 +56,14 @@ async function loadFacebookPosts() {
 
       const article = document.createElement('article');
         article.classList.add('fb-post');
-        article.style.animation = 'fadeIn 0.8s ease forwards'; // Apply fadeIn
+        article.style.animation = `scaleIn 0.6s ease forwards ${index * 0.1}s`; // Staggered animation
 
         let contentHTML = '';
         if(image){
           const img = document.createElement('img');
             img.src = image;
-            img.alt = title; // More descriptive alt text
-            img.loading = "lazy"; // Ensure lazy loading
+            img.alt = title;
+            img.loading = "lazy";
             contentHTML += img.outerHTML;
         }
       contentHTML += `<h3><a href="${link}" target="_blank" rel="noopener">${title}</a></h3>`;
@@ -92,18 +89,4 @@ async function loadFacebookPosts() {
 // Intersection Observer for Header
 const header = document.querySelector('header');
 const observerOptions = {
-  threshold: 0,  // Trigger as soon as any part of the header leaves
-  rootMargin: '-1px 0px 0px 0px' // Add a small negative margin
-};
-
-const headerObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    // Use more specific condition, checking if the top of the header is above the viewport
-    header.classList.toggle('hidden', !entry.isIntersecting && window.scrollY > header.offsetHeight );
-  });
-}, observerOptions);
-
-headerObserver.observe(header);
-
-// Initialize Feed Loader
-window.addEventListener('DOMContentLoaded', loadFacebookPosts);
+  threshold: 0,
