@@ -7,82 +7,73 @@
   <title>Digital Library - Nursing Resource Hub</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Skip to Content -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
+  <!-- Header -->
   <header>
-    <div class="header-inner">
-        <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-            alt="Olivarez College Logo"
-            class="logo"
-            width="70"
-            height="70"
-            loading="lazy">
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+         alt="Olivarez College Logo"
+         class="logo"
+         width="70"
+         height="70"
+         loading="lazy">
 
-        <nav>
-        <button class="menu-toggle" aria-label="Toggle navigation menu">
-            <i class="fas fa-bars"></i>
-        </button>
-        <ul>
-            <li><a href="#info"><i class="fas fa-info-circle"></i>Information</a></li>
-            <li><a href="#library"><i class="fas fa-book"></i>Library</a></li>
-            <li><a href="#practice"><i class="fas fa-pencil-alt"></i>Practice</a></li>
-            <li><a href="#videos"><i class="fas fa-video"></i>Videos</a></li>
-        </ul>
-        </nav>
-    </div>
+    <nav>
+      <button class="menu-toggle" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul>
+        <li><a href="#info"><i class="fas fa-info-circle"></i>Information</a></li>
+        <li><a href="#library"><i class="fas fa-book"></i>Library</a></li>
+        <li><a href="#practice"><i class="fas fa-pencil-alt"></i>Practice</a></li>
+        <li><a href="#videos"><i class="fas fa-video"></i>Videos</a></li>
+      </ul>
+    </nav>
   </header>
 
+  <!-- Hero Section -->
   <section class="hero" aria-labelledby="hero-heading">
-    <div class="hero-content">
-        <h1 id="hero-heading">Welcome to the Nursing Resource Hub</h1>
-        <p>Your comprehensive digital learning platform.</p>
-        <a href="#info" class="cta-btn">Explore Resources</a>
-    </div>
+    <h2 id="hero-heading">Welcome to Nursing Resource Hub</h2>
+    <p>Your comprehensive digital learning platform</p>
+    <a href="#info" class="cta-btn">Explore Resources</a>
   </section>
 
-  <main id="main-content">
-    <section id="info" class="section info-section" aria-labelledby="info-heading">
-      <div class="container">
-        <h2 id="info-heading" class="section-title"><i class="fas fa-info-circle"></i> Latest Updates</h2>
-        <div class="loading-spinner"></div>
-        <div id="facebook-feed-container" role="region" aria-live="polite">
-          </div>
-        <div id="feed-error" class="error-message" role="alert"></div>
-      </div>
+  <!-- Main Content -->
+  <main id="main-content" class="container">
+    <!-- Information Section -->
+    <section id="info" class="card" aria-labelledby="info-heading">
+      <h2 id="info-heading"><i class="fas fa-info-circle"></i>Latest Updates</h2>
+      <div class="loading-spinner"></div>
+      <div id="facebook-feed-container" role="region" aria-live="polite"></div>
+      <div id="feed-error" class="error-message" role="alert"></div>
     </section>
 
-    <section id="library" class="section library-section" aria-labelledby="library-heading">
-      <div class="container">
-          <h2 id="library-heading" class="section-title"><i class="fas fa-book"></i> Digital Library</h2>
-          <p class="section-description">Access our curated collection of nursing resources, including e-books, journals, and articles.</p>
-          <button onclick="window.location.href='library.html'" class="cta-btn">Go to Digital Library</button>
-      </div>
+    <!-- Digital Library -->
+    <section id="library" class="card" aria-labelledby="library-heading">
+      <h2 id="library-heading"><i class="fas fa-book"></i> Digital Library</h2>
+      <p>Access our curated collection of nursing resources:</p>
+      <button onclick="window.location.href='library.html'" class="cta-btn">Go to Digital Library</button>
     </section>
 
-    <section id="practice" class="section practice-section" aria-labelledby="practice-heading">
-      <div class="container">
-        <h2 id="practice-heading" class="section-title"><i class="fas fa-pencil-alt"></i> Practice Tests</h2>
-        <p class="section-description">Prepare for your exams with our interactive practice tests and quizzes.  Get instant feedback and track your progress.</p>
-        </div>
+    <!-- Practice Section -->
+    <section id="practice" class="card" aria-labelledby="practice-heading">
+      <h2 id="practice-heading"><i class="fas fa-pencil-alt"></i>Practice Tests</h2>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer>
-      <div class="footer-content">
-            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-            alt="College Logo"
-            width="70"
-            height="70"
-            loading="lazy"
-            class="footer-logo">
-          <div class="footer-text">
-              <p>&copy; 2025 Olivarez College Nursing Department</p>
-              <p>Contact: <a href="mailto:nursing@olivarezcollege.edu.ph">nursing@olivarezcollege.edu.ph</a></p>
-          </div>
-      </div>
+    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+         alt="College Logo"
+         width="70"
+         height="70"
+         loading="lazy">
+    <p>&copy; 2025 Olivarez College Nursing Department</p>
+    <p>Contact: nursing@olivarezcollege.edu.ph</p>
   </footer>
 
   <script src="script.js"></script>
