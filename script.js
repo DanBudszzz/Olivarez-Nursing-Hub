@@ -90,3 +90,16 @@ async function loadFacebookPosts() {
 const header = document.querySelector('header');
 const observerOptions = {
   threshold: 0,
+  rootMargin: '-1px 0px 0px 0px'
+};
+
+const headerObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    header.classList.toggle('hidden', !entry.isIntersecting && window.scrollY > header.offsetHeight );
+  });
+}, observerOptions);
+
+headerObserver.observe(header);
+
+// Initialize Feed Loader
+window.addEventListener('DOMContentLoaded', loadFacebookPosts);
