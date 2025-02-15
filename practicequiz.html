@@ -1,0 +1,584 @@
+<!<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nursing Practice Questions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://script.google.com/macros/s/AKfycbz8P7BweGSSoYQmeQ7CodCobnqSvGT8lYBN9yi1Fm3z18fI_GRe7IljTlcRxiF1paExdw/exec" defer></script>
+</head>
+<body>
+    <style>
+        /* ... (Your existing CSS) ... */
+        :root {
+            --primary: #388E3C;
+            --primary-dark: #2B6E2F;
+            --primary-light: #C8E6C9;
+            --secondary: #2C3E50;
+            --light: #F8F9FA;
+            --gray: #6c757d;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif; background: var(--light); color: var(--secondary);
+            line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+        }
+        header {
+            background: var(--gradient); color: white; padding: 0.75rem 0; position: sticky;
+            top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+             transition: background-color 0.3s ease;
+        }
+
+         header:hover {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            color: var(--secondary);
+        }
+        .header-content {
+            max-width: 1200px; margin: 0 auto; padding: 0 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo-group { display: flex; align-items: center; gap: 0.75rem; }
+        .logo { width: 45px; height: 45px; border-radius: 8px; }
+        .back-home { color: inherit;  text-decoration: none;
+            display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease;
+        }
+        .back-home:hover { transform: translateX(-5px);  }
+        h1 { font-size: 1.35rem; font-weight: 600; }
+
+        main { flex: 1; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .main-container {
+            background: white; border-radius: 16px; padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* REMOVED ANIMATED BORDER
+        .main-container::before {
+            ...
+        }
+        @keyframes rotateBorder {
+           ...
+        }
+        */
+
+
+        .main-container h2 {
+            margin-bottom: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            /* Modified pulse animation */
+            animation: subtlePulse 3s infinite alternate;
+        }
+
+        @keyframes subtlePulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.02); } /* Reduced scale */
+        }
+
+        .main-container h2 i {
+            color: var(--primary);
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease; /* Icon animation */
+        }
+
+        .main-container:hover h2 i {
+            /* Removed rotation on hover.  Keep if you like it, but it contributes to visual busyness */
+            /* transform: rotate(360deg); */
+            transform: scale(1.2); /* Scale up the icon on hover */
+        }
+
+
+          /* Year Level Grid */
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .year-card {
+            background-color: var(--primary-light); border: 2px solid var(--primary); border-radius: 12px;
+            padding: 1.2rem; text-align: center; cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .year-card:hover {
+            background-color: var(--primary); color: white; transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .year-card.selected { background-color: var(--primary-dark); color: white; border-color: var(--primary-dark); }
+
+        /* Subject Grid */
+        .subject-grid {
+            display: none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .subject-card {
+            background-color: var(--primary-light); border: 2px solid var(--primary);
+            border-radius: 12px; padding: 1.2rem; text-align: center; cursor: pointer;
+            transition: all 0.4s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+             animation: fadeInUp 0.6s ease forwards;
+
+        }
+
+        /* Staggered animation for subject cards */
+        .subject-grid.show > .subject-card {
+          animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Apply staggered delay -  Important! */
+        .subject-grid.show .subject-card:nth-child(1) { animation-delay: 0.1s; }
+        .subject-grid.show .subject-card:nth-child(2) { animation-delay: 0.2s; }
+        .subject-grid.show .subject-card:nth-child(3) { animation-delay: 0.3s; }
+        .subject-grid.show .subject-card:nth-child(4) { animation-delay: 0.4s; }
+        .subject-grid.show .subject-card:nth-child(5) { animation-delay: 0.5s;}
+        /* Add more as needed */
+
+
+
+        .subject-card:hover { background-color: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);}
+        .subject-card.selected { background-color: var(--primary-dark); color: white; border-color: var(--primary-dark);}
+
+        /* Topic Grid */
+        .topic-grid {
+            display: none; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem; margin-bottom: 2rem;
+        }
+        .topic-card {
+            background-color: var(--light); border: 2px solid var(--gray);
+            border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer;
+             transition: all 0.4s ease;
+             opacity: 0;
+             transform: scale(0.95);
+             animation: scaleIn 0.5s ease forwards;
+        }
+
+        .topic-card:hover {
+            background-color: var(--primary-light); border-color: var(--primary); transform: translateY(-5px);
+        }
+        .topic-card.selected {
+             background-color: var(--primary-light); border: 2px solid var(--primary);
+              animation: popIn 0.3s ease forwards;
+        }
+         @keyframes popIn {
+              0% { transform: scale(0.8); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        /* Staggered delay for topic cards */
+        .topic-grid.show .topic-card:nth-child(1) { animation-delay: 0.1s; }
+        .topic-grid.show .topic-card:nth-child(2) { animation-delay: 0.2s; }
+        .topic-grid.show .topic-card:nth-child(3) { animation-delay: 0.3s; }
+        .topic-grid.show .topic-card:nth-child(4) { animation-delay: 0.4s;}
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Questions Container */
+        .questions-container {
+            display: none; margin-top: 1rem;
+        }
+
+        .question {
+            margin-bottom: 1.5rem; padding: 1.5rem; border: 1px solid var(--gray);
+            border-radius: 8px; background-color: var(--light);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: questionFadeIn 0.5s ease forwards;
+
+        }
+          /* Staggered animation for questions */
+          .questions-container.show .question:nth-child(1) { animation-delay: 0.1s; }
+          .questions-container.show .question:nth-child(2) { animation-delay: 0.3s; }
+          .questions-container.show .question:nth-child(3) { animation-delay: 0.5s; }
+          .questions-container.show .question:nth-child(4) { animation-delay: 0.7s; }
+
+            @keyframes questionFadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+
+        .question-text {
+            font-weight: 600; margin-bottom: 1rem; color: var(--secondary);
+        }
+
+        .choices-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .choice-label {
+            display: flex; align-items: center; padding: 1rem;
+            border: 2px solid var(--gray); border-radius: 10px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+
+        .choice-label:hover, .choice-label input:checked + .choice-text {
+            border-color: var(--primary); background-color: var(--primary-light);
+        }
+
+        .choice-label input {
+             margin-right: 1rem;
+            cursor: pointer;
+            accent-color: var(--primary);
+            transform: scale(1.2);
+              /* Click effect */
+            transition: transform 0.2s ease;
+        }
+        .choice-label input:checked{
+              transform: scale(1.3); /* Slightly larger when checked */
+        }
+
+        .choice-text {
+            color: var(--secondary); transition: color 0.3s ease;
+             font-size: 1rem;
+        }
+
+         /* Feedback Styles */
+        .feedback {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .correct {
+            background-color: rgba(40, 167, 69, 0.2); /* Light green */
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .incorrect {
+            background-color: rgba(220, 53, 69, 0.2); /* Light red */
+            border: 1px solid var(--danger);
+            color: var(--danger);
+        }
+        .rationale {
+             margin-top: 0.5rem;
+            font-style: italic;
+            color: var(--gray);
+            display: none; /* Hidden by default*/
+        }
+        .rationale.show{
+            display: block;
+             animation: fadeIn 0.5s ease; /* Add a fade-in animation */
+        }
+
+        /* Image Styles */
+        .question-image {
+            max-width: 100%; /* Ensure image doesn't overflow */
+            height: auto;    /* Maintain aspect ratio */
+            margin-bottom: 1rem; /* Space between image and question */
+            display: block; /* Important for consistent spacing */
+            border: 1px solid var(--gray); /* Optional: Add a border */
+            border-radius: 8px;
+        }
+
+        footer {
+            background: var(--gradient); color: white; padding: 1.5rem; margin-top: auto; text-align: center;
+        }
+        footer p { opacity: 0.9; }
+        .footer-content {
+            max-width: 1200px; margin: 0 auto; display: flex;
+            flex-direction: column; align-items: center; gap: 1rem;
+        }
+        .footer-logo { width: 60px; border-radius: 8px; }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-group">
+                <a href="index.html" class="back-home">
+                    <i class="fas fa-chevron-left"></i>
+                    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo">
+                </a>
+                <h1>Nursing Practice Questions</h1>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="main-container">
+            <h2><i class="fas fa-graduation-cap"></i> Select Year Level</h2>
+            <div class="year-grid" id="year-grid">
+                </div>
+
+            <div class="subject-grid" id="subject-grid">
+                </div>
+
+            <div class="topic-grid" id="topic-grid">
+               </div>
+
+            <div class="questions-container" id="questions-container">
+               </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="footer-logo">
+            <p>© 2025 Olivarez College Tagaytay - Nursing Department</p>
+        </div>
+    </footer>
+
+    <script>
+        const yearGrid = document.getElementById('year-grid');
+        const subjectGrid = document.getElementById('subject-grid');
+        const topicGrid = document.getElementById('topic-grid');
+        const questionsContainer = document.getElementById('questions-container');
+
+        let selectedYear = null;
+        let selectedSubject = null;
+        let selectedTopic = null;
+
+       // --- No longer needed ---
+       // const sampleData = { ... };
+
+        // --- Functions ---
+
+        // Fetch data from Google Sheet using Apps Script
+        function fetchData() {
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbz8P7BweGSSoYQmeQ7CodCobnqSvGT8lYBN9yi1Fm3z18fI_GRe7IljTlcRxiF1paExdw/exec"; // Replace with your actual deployment URL
+
+    fetch(GAS_URL)
+        .then(response => response.json())  // Convert response to JSON
+        .then(data => displayYearLevels(data))  // Pass data to display function
+        .catch(error => handleError(error));  // Handle errors
+}
+
+        function handleError(error) {
+            // Handle errors, e.g., display an error message to the user.
+            console.error(error);
+            questionsContainer.innerHTML = `<p>Error loading data: ${error.message}</p>`;
+            questionsContainer.style.display = 'block';
+        }
+
+        function displayYearLevels(questionsData) {
+             // Store fetched data in a variable accessible to other functions
+            window.questionsData = questionsData; // Use window to make it global
+
+            yearGrid.innerHTML = ''; // Clear previous content
+            const yearLevels = Object.keys(questionsData);
+
+            yearLevels.forEach(year => {
+                const yearCard = document.createElement('div');
+                yearCard.classList.add('year-card');
+                yearCard.textContent = year;
+                yearCard.dataset.year = year;
+                yearCard.addEventListener('click', () => selectYear(year, yearCard));
+                yearGrid.appendChild(yearCard);
+            });
+                subjectGrid.style.display = 'none';
+                topicGrid.style.display = 'none';
+                questionsContainer.style.display = 'none';
+                yearGrid.style.opacity = 1; // Ensure it's visible
+        }
+
+       function selectYear(year, element) {
+            //Deselect
+            document.querySelectorAll('.year-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected'); //Highlight
+            selectedYear = year;
+            selectedSubject = null; //Reset
+            selectedTopic = null;
+            displaySubjects(year);
+
+            topicGrid.innerHTML = ''; // Clear topics
+            topicGrid.style.display = 'none';
+            questionsContainer.innerHTML = '';
+            questionsContainer.style.display = 'none';
+        }
+
+        function displaySubjects(year) {
+            subjectGrid.innerHTML = '';
+            const subjects = window.questionsData[year] ? Object.keys(window.questionsData[year]) : [];
+
+            if (subjects.length === 0) {
+                subjectGrid.innerHTML = '<p>No subjects available for this year level.</p>';
+                 subjectGrid.style.display = 'none';
+                return;
+            }
+
+            subjects.forEach(subject => {
+                const subjectCard = document.createElement('div');
+                subjectCard.classList.add('subject-card');
+                subjectCard.textContent = subject.charAt(0).toUpperCase() + subject.slice(1);
+                subjectCard.dataset.subject = subject;
+                subjectCard.addEventListener('click', () => selectSubject(subject, subjectCard));
+                subjectGrid.appendChild(subjectCard);
+            });
+
+            subjectGrid.style.display = 'grid';
+            subjectGrid.classList.add('show');
+            topicGrid.innerHTML = '';
+            topicGrid.style.display = 'none';
+            questionsContainer.innerHTML = '';
+            questionsContainer.style.display = 'none';
+        }
+
+         function selectSubject(subject, element) {
+            document.querySelectorAll('.subject-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedSubject = subject;
+            selectedTopic = null; // Reset topic
+            displayTopics(selectedYear, subject);
+
+            questionsContainer.innerHTML = ''; //Clear previous
+            questionsContainer.style.display = 'none';
+        }
+
+        function displayTopics(year, subject) {
+            topicGrid.innerHTML = ''; // Clear previous topics
+            const topics = window.questionsData[year] && window.questionsData[year][subject] ? Object.keys(window.questionsData[year][subject]) : [];
+
+            if (topics.length === 0) {
+                topicGrid.innerHTML = '<p>No topics available for this subject.</p>';
+                topicGrid.style.display = 'none';
+                return;
+            }
+            topicGrid.style.display = 'grid';
+            topicGrid.classList.add('show');
+
+            topics.forEach(topic => {
+                const topicCard = document.createElement('div');
+                topicCard.classList.add('topic-card');
+                topicCard.textContent = topic;
+                topicCard.dataset.topic = topic;
+                topicCard.addEventListener('click', () => selectTopic(topic, topicCard));
+                topicGrid.appendChild(topicCard);
+            });
+            questionsContainer.innerHTML = '';  // Clear any previous questions
+            questionsContainer.style.display = 'none';
+        }
+
+        function selectTopic(topic, element) {
+          document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('selected'));
+          element.classList.add('selected');
+          selectedTopic = topic;
+          displayQuestions(selectedYear, selectedSubject, selectedTopic); //Pass all
+        }
+
+        function displayQuestions(year, subject, topic) {
+            questionsContainer.innerHTML = ''; // Clear previous content
+            const questions = window.questionsData[year] && window.questionsData[year][subject] && window.questionsData[year][subject][topic]
+                ? window.questionsData[year][subject][topic]
+                : [];
+
+            if (questions.length === 0) {
+                questionsContainer.innerHTML = '<p>No questions available for this topic.</p>';
+                questionsContainer.style.display = 'none';
+                return;
+            }
+
+            questionsContainer.style.display = 'block';
+            questionsContainer.classList.add('show');
+
+            questions.forEach((question, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question');
+
+                // Add image display (if URL is present)
+                let imageHtml = '';
+                if (question.imageUrl) {
+                    imageHtml = `<img src="${question.imageUrl}" alt="Question Image" class="question-image">`;
+                }
+
+                questionDiv.innerHTML = `
+                    ${imageHtml}
+                    <p class="question-text">${index + 1}. ${question.questionText}</p>
+                    <div class="choices-container">
+                        ${question.choices.map((choice, choiceIndex) => {
+                            const choiceId = `question-${index}-choice-${choiceIndex}`;
+                            return `
+                                <label class="choice-label" for="${choiceId}">
+                                    <input type="radio" id="${choiceId}" name="question-${index}" value="${String.fromCharCode(65 + choiceIndex)}">
+                                    <span class="choice-text">${choice}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <div class="feedback"></div>
+                    <p class="rationale"></p>
+                `;
+                questionsContainer.appendChild(questionDiv);
+
+                const choices = questionDiv.querySelectorAll('input[type="radio"]');
+                choices.forEach(choice => {
+                    choice.addEventListener('change', () => checkAnswer(question, choice, questionDiv));
+                });
+            });
+        }
+
+        function checkAnswer(question, selectedChoice, questionDiv) {
+            const userAnswer = selectedChoice.value;
+            const isCorrect = userAnswer === question.correctAnswer;
+            const feedbackDiv = questionDiv.querySelector('.feedback');
+            const rationalePara = questionDiv.querySelector('.rationale');
+
+            //Disable all radio buttons in this question after
+            const allChoices = questionDiv.querySelectorAll('input[type="radio"]');
+            allChoices.forEach(choice => {
+                choice.disabled = true;
+            });
+
+            feedbackDiv.textContent = isCorrect ? 'Correct!' : 'Incorrect!';
+            feedbackDiv.classList.remove('correct', 'incorrect');
+            feedbackDiv.classList.add(isCorrect ? 'correct' : 'incorrect');
+
+            rationalePara.textContent = question.rationale;
+            rationalePara.classList.add('show');
+
+             // Visual feedback on selected choice
+            const selectedLabel = selectedChoice.closest('.choice-label'); // Find parent
+            if (isCorrect) {
+                selectedLabel.classList.add('correct'); // Add correct class
+
+            } else {
+                selectedLabel.classList.add('incorrect'); // Add incorrect class
+                // Highlight correct answer
+                const correctChoice = questionDiv.querySelector(`input[value="${question.correctAnswer}"]`);
+                if(correctChoice){
+                     correctChoice.closest('.choice-label').classList.add('correct');
+                }
+            }
+        }
+
+        // --- Initial Setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+          //  displayYearLevels(); // Don't call this directly anymore
+          fetchData(); // Call fetchData to load data from the sheet
+        });
+    </script>
+</body>
+</html>
