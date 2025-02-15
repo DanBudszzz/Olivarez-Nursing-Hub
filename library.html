@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer-when-downgrade">
+  <meta name="referrer" content="no-referrer-when-downgrade">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
   <title>Nursing Digital Library | Olivarez College</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -15,6 +16,7 @@
       --secondary: #2C3E50;
       --light: #F8F9FA;
       --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      --transition: all 0.3s ease; /* Smooth transitions */
     }
     * {
       margin: 0;
@@ -30,6 +32,7 @@
       display: flex;
       flex-direction: column;
     }
+
     /* Header */
     header {
       background: var(--gradient);
@@ -39,6 +42,7 @@
       top: 0;
       z-index: 1000;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: var(--transition); /* Add transition */
     }
     .header-content {
       max-width: 1200px;
@@ -47,28 +51,44 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      transition: var(--transition);
     }
+      .header-content:hover{
+           transform: scale(1.02);
+      }
     .logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+        transition: var(--transition)
     }
+      .logo-group:hover{
+        transform: scale(1.01);
+      }
     .logo {
       width: 45px;
       height: 45px;
       border-radius: 8px;
+      transition: var(--transition);
     }
+
     .back-home {
       color: white;
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .back-home:hover {
+      opacity: 0.8; /* Subtle hover effect */
     }
     h1 {
       font-size: 1.35rem;
       font-weight: 600;
+      transition: var(--transition);
     }
+
     /* Main Content */
     main {
       flex: 1;
@@ -77,17 +97,21 @@
       margin: 0 auto;
       width: 100%;
     }
-    /* Admin Panel – temporary upload feature */
+
+    /* Admin Panel */
     .admin-panel {
       background: white;
       border-radius: 16px;
       padding: 1.5rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       margin-bottom: 2rem;
+      display: none;  /* Initially hidden */
+      transition: var(--transition); /* Add transition */
     }
     .admin-panel h2 {
       margin-bottom: 1rem;
       color: var(--secondary);
+      transition: var(--transition);
     }
     #book-form {
       display: flex;
@@ -99,22 +123,50 @@
       font-size: 1rem;
       border-radius: 8px;
       border: 2px solid var(--primary);
+      transition: var(--transition);
     }
     #book-form button {
       background: var(--primary);
       color: white;
       cursor: pointer;
       font-weight: bold;
+       transition: var(--transition);
     }
     #book-form button:hover {
       background: var(--primary-dark);
+      transform: scale(1.05);
     }
+
+    /* Show Admin Button */
+    #show-admin-button {
+      background-color: var(--primary);
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      transition: var(--transition); /* Add transition */
+    }
+    #show-admin-button:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.05); /* Slight scale on hover */
+    }
+
     /* Library Container */
     .library-container {
       background: white;
       border-radius: 16px;
       padding: 1.5rem;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: var(--transition);
+    }
+    .library-container:hover{
+          transform: scale(1.01);
     }
     /* Filters Section */
     .filters {
@@ -122,10 +174,19 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1rem;
       margin: 2rem 0;
+       transition: var(--transition);
+    }
+     .filters:hover{
+          transform: scale(1.01);
     }
     .search-box {
       position: relative;
+        transition: var(--transition)
     }
+    .search-box:hover{
+ transform: scale(1.02);
+    }
+
     .search-input {
       width: 100%;
       padding: 0.875rem 1.25rem;
@@ -134,11 +195,12 @@
       font-size: 1rem;
       padding-left: 2.5rem;
       background: white;
-      transition: box-shadow 0.2s ease;
+      transition: box-shadow 0.2s ease, transform 0.2s ease; /* Include transform */
     }
     .search-input:focus {
       outline: none;
       box-shadow: 0 0 0 3px var(--primary-light);
+      transform: scale(1.02); /* Slightly enlarge on focus */
     }
     .search-icon {
       position: absolute;
@@ -146,6 +208,7 @@
       top: 50%;
       transform: translateY(-50%);
       color: var(--primary);
+      transition: var(--transition);
     }
     select {
       width: 100%;
@@ -159,12 +222,18 @@
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1em;
+      transition: var(--transition);
+    }
+
+    select:focus{
+         transform: scale(1.02);
     }
     /* Book Carousel */
     .carousel-container {
       position: relative;
       margin: 0 -1rem;
       padding: 0.5rem 0;
+      transition: var(--transition)
     }
     .book-carousel {
       display: flex;
@@ -175,6 +244,7 @@
       padding: 0 1rem;
       -ms-overflow-style: none;
       scrollbar-width: none;
+        transition: var(--transition)
     }
     .book-carousel::-webkit-scrollbar {
       display: none;
@@ -186,11 +256,13 @@
       border-radius: 12px;
       padding: 1.25rem;
       box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease; /* Add transition */
       border: 1px solid rgba(56,142,60,0.1);
+      transition: var(--transition);
     }
     .book-item:hover {
-      transform: translateY(-3px);
+      transform: translateY(-5px); /* More pronounced hover */
+       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
     }
     .book-image {
       width: 100%;
@@ -199,26 +271,50 @@
       object-fit: cover;
       margin-bottom: 1rem;
       background: var(--primary-light);
+       transition: var(--transition)
+    }
+    .book-image:hover{
+        transform: scale(1.02);
     }
     .book-title {
       font-size: 1.1rem;
       font-weight: 600;
       color: var(--secondary);
       margin-bottom: 0.5rem;
+      transition: var(--transition);
     }
+
     .book-meta {
       color: var(--primary);
       font-size: 0.875rem;
       display: flex;
       gap: 0.75rem;
       opacity: 0.9;
+        transition: var(--transition);
     }
+    .view-pdf {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .view-pdf:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.03); /*Consistent scaling*/
+    }
+
     /* Footer */
     footer {
       background: var(--gradient);
       color: white;
       padding: 1.5rem;
       margin-top: auto;
+      transition: var(--transition);
     }
     .footer-content {
       max-width: 1200px;
@@ -228,57 +324,97 @@
       flex-direction: column;
       align-items: center;
       gap: 1rem;
+      transition: var(--transition);
     }
+
+    /* Password Modal */
+    #password-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.3s ease; /* Fade in/out */
+      opacity: 0; /* Start hidden */
+    }
+
+    #password-modal.show {
+        opacity: 1; /* Fade in */
+        display: flex; /* Use flex for centering */
+    }
+
+    #password-form {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 300px;
+      width: 90%;
+      transition: var(--transition);
+      transform: scale(0.95); /* Start slightly smaller */
+      opacity: 0;
+    }
+    #password-modal.show #password-form {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+    #password-input {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--primary);
+      transition: var(--transition);
+    }
+
+    #password-submit {
+      padding: 0.75rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    #password-submit:hover {
+      background-color: var(--primary-dark);
+       transform: scale(1.05);
+    }
+
+    .error-message {
+      color: red;
+      text-align: center;
+      margin-top: 0.5rem;
+      transition: var(--transition);
+    }
+
+    /* Responsive Styles */
     @media (max-width: 768px) {
-      .header-content {
-        gap: 0.5rem;
-        padding: 0 0.5rem;
-      }
-      h1 {
-        font-size: 1.2rem;
-      }
-      .logo {
-        width: 40px;
-        height: 40px;
-      }
-      main {
-        padding: 1.5rem 0.5rem;
-      }
-      .library-container {
-        padding: 1rem;
-        border-radius: 12px;
-      }
-      .filters {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-        margin: 1.5rem 0;
-      }
-      .search-input,
-      select {
-        padding: 0.75rem 1rem;
-        font-size: 0.9375rem;
-      }
-      .book-item {
-        flex: 0 0 75%;
-      }
+      .header-content { gap: 0.5rem; padding: 0 0.5rem; }
+      h1 { font-size: 1.2rem; }
+      .logo { width: 40px; height: 40px; }
+      main { padding: 1.5rem 0.5rem; }
+      .library-container { padding: 1rem; border-radius: 12px; }
+      .filters { grid-template-columns: 1fr; gap: 0.75rem; margin: 1.5rem 0; }
+      .search-input, select { padding: 0.75rem 1rem; font-size: 0.9375rem; }
+      .book-item { flex: 0 0 75%; }
+      #show-admin-button { font-size: 0.9rem; padding: 8px 12px; }
     }
     @media (max-width: 480px) {
-      h1 {
-        font-size: 1.1rem;
-      }
-      .book-item {
-        flex: 0 0 85%;
-        padding: 1rem;
-      }
-      .book-image {
-        height: 160px;
-      }
-      .book-title {
-        font-size: 1rem;
-      }
-      .book-meta {
-        font-size: 0.8125rem;
-      }
+      h1 { font-size: 1.1rem; }
+      .book-item { flex: 0 0 85%; padding: 1rem; }
+      .book-image { height: 160px; }
+      .book-title { font-size: 1rem; }
+      .book-meta { font-size: 0.8125rem; }
     }
   </style>
 </head>
@@ -288,206 +424,268 @@
       <div class="logo-group">
         <a href="index.html" class="back-home">
           <i class="fas fa-chevron-left"></i>
-          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
-               alt="College Logo" 
+          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+               alt="College Logo"
                class="logo">
         </a>
         <h1>Nursing Resource Hub</h1>
       </div>
     </div>
-  </header>  <main>
-    <!-- Admin Upload Panel (temporary) -->
+  </header>
+    <main>
+    <div id="password-modal">
+      <form id="password-form">
+        <label for="password-input">Enter Password:</label>
+        <input type="password" id="password-input" required>
+        <button type="submit" id="password-submit">Unlock</button>
+        <<p id="error-message" class="error-message" style="display: none;"></p>
+      </form>
+    </div>
+
+    <button id="show-admin-button">Upload New Book</button>
+
     <section class="admin-panel">
       <h2>Upload New Book</h2>
       <form id="book-form">
         <input type="text" id="book-title" placeholder="Book Title" required>
         <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
         <input type="text" id="book-subject" placeholder="Subject" required>
-        <!-- Provide an image URL from your file host (e.g., Google Drive, Dropbox, etc.) -->
         <input type="url" id="book-image-url" placeholder="Image URL" required>
-        <!-- New input for the PDF URL of the book -->
         <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
         <button type="">Add Book</button>
       </form>
-    </section><section class="library-container">
-  <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
-    <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
-    Digital Library
-  </h2>
-  <div class="filters">
-    <div class="search-box">
-      <input type="text" 
-             id="search" 
-             class="search-input" 
-             placeholder="Search resources..."
-             aria-label="Search resources">
-      <i class="fas fa-search search-icon"></i>
-    </div>
-    <select id="year-filter" aria-label="Filter by year">
-      <option value="all">All Year Levels</option>
-      <option value="1st">1st Year</option>
-      <option value="2nd">2nd Year</option>
-      <option value="3rd">3rd Year</option>
-      <option value="4th">4th Year</option>
-    </select>
-    <select id="subject-filter" aria-label="Filter by subject">
-      <option value="all">All Subjects</option>
-    </select>
-  </div>
+    </section>
 
-  <div class="carousel-container">
-    <div class="book-carousel" id="book-carousel">
-      <!-- Book items will be loaded dynamically from books.json -->
-    </div>
-  </div>
-</section>
+    <section class="library-container">
+      <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
+        <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
+        Digital Library
+      </h2>
+      <div class="filters">
+        <div class="search-box">
+          <input type="text"
+                 id="search"
+                 class="search-input"
+                 placeholder="Search resources..."
+                 aria-label="Search resources">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        <select id="year-filter" aria-label="Filter by year">
+          <option value="all">All Year Levels</option>
+          <option value="1st">1st Year</option>
+          <option value="2nd">2nd Year</option>
+          <option value="3rd">3rd Year</option>
+          <option value="4th">4th Year</option>
+        </select>
+        <select id="subject-filter" aria-label="Filter by subject">
+          <option value="all">All Subjects</option>
+        </select>
+      </div>
 
-  </main>  <footer>
+      <div class="carousel-container">
+        <div class="book-carousel" id="book-carousel">
+          </div>
+      </div>
+    </section>
+
+  </main>
+    <footer>
     <div class="footer-content">
-      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" 
-           alt="College Logo" 
+      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+           alt="College Logo"
            style="width: 60px; border-radius: 8px;">
       <p style="opacity: 0.9;">&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
     </div>
   </footer>
-    
- <script>
-// ✅ CONFIGURATION: Set your Google Apps Script API URL
-const API_URL = 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec';
-let allBooks = [];
 
-// ✅ Load books from Google Sheets API
-async function loadBooks() {
-  try {
-    console.log("📡 Fetching books from:", API_URL);
+<script>
+    // ✅ CONFIGURATION: Set your Google Apps Script API URL
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec';
+    let allBooks = [];
 
-    const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
-    if (!response.ok) throw new Error("Failed to fetch books");
+    // ✅ Load books from Google Sheets API
+    async function loadBooks() {
+      try {
+        console.log("📡 Fetching books from:", API_URL);
 
-    const data = await response.json();
-    if (!Array.isArray(data)) throw new Error("Invalid data format");
+        const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
+        if (!response.ok) throw new Error("Failed to fetch books");
 
-    allBooks = data;
-    renderBooks(allBooks);
-    updateFilters();
-  } catch (error) {
-    console.error("❌ Load Error:", error);
-    alert("Failed to load books. Please check your internet or API status.");
-  }
+        const data = await response.json();
+        if (!Array.isArray(data)) throw new Error("Invalid data format");
+
+        allBooks = data;
+        renderBooks(allBooks);
+        updateFilters();
+      } catch (error) {
+        console.error("❌ Load Error:", error);
+        alert("Failed to load books. Please check your internet or API status.");
+      }
+    }
+
+    // ✅ Render books to the UI
+    function renderBooks(books) {
+      const bookCarousel = document.getElementById('book-carousel');
+      bookCarousel.innerHTML = books.length
+        ? books.map(book => createBookHTML(book)).join('')
+        : "<p>No books available.</p>";
+    }
+
+    // ✅ Create book HTML template
+    function createBookHTML(book) {
+      return `
+        <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
+          <img src="${book.image}" class="book-image" alt="${book.title}">
+          <h3 class="book-title">${book.title}</h3>
+          <div class="book-meta">
+            <span>${book.year} Year</span>
+            <span>${book.subject}</span>
+          </div>
+          <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
+        </div>
+      `;
+    }
+
+    // ✅ Form submission handler
+    async function submitBook(e) {
+      e.preventDefault();
+
+      const newBook = {
+        title: document.getElementById("book-title").value.trim(),
+        year: document.getElementById("book-year").value.trim(),
+        subject: document.getElementById("book-subject").value.trim(),
+        image: document.getElementById("book-image-url").value.trim(),
+        pdf: document.getElementById("book-pdf-url").value.trim()
+      };
+
+      if (Object.values(newBook).some(value => !value)) {
+        alert("Please fill all fields before submitting.");
+        return;
+      }
+
+      try {
+        console.log("📤 Uploading book:", newBook);
+
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify(newBook),
+          mode: "no-cors", // 🚨 Important: Force bypass CORS
+          cache: "no-cache"
+        });
+
+        console.log("🔍 Full Response:", response);
+
+        // ❌ If response is empty (due to "no-cors"), assume success
+        alert("✅ Book added successfully!");
+        document.getElementById("book-form").reset();
+        await loadBooks();
+      } catch (error) {
+        console.error("❌ Upload failed:", error);
+        alert("Upload failed: " + error.message);
+      }
+    }
+
+    // ✅ Update filters dynamically
+    function updateFilters() {
+      updateSubjectFilter();
+      filterBooks();
+    }
+
+    // ✅ Update subject filter based on selected year
+    function updateSubjectFilter() {
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter');
+      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+
+      if (yearFilter === 'all') return;
+
+      const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
+      subjects.forEach(subject => {
+        subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
+      });
+    }
+
+    // ✅ Filter books based on search, year, and subject
+    function filterBooks() {
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      const yearFilter = document.getElementById('year-filter').value;
+      const subjectFilter = document.getElementById('subject-filter').value;
+
+      const filteredBooks = allBooks.filter(book => {
+        const matchesYear = yearFilter === 'all' || book.year === yearFilter;
+        const matchesSubject = subjectFilter === 'all' || book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
+        const matchesSearch = book.title.toLowerCase().includes(searchTerm) || book.subject.toLowerCase().includes(searchTerm);
+        return matchesYear && matchesSubject && matchesSearch;
+      });
+
+      renderBooks(filteredBooks);
+    }
+
+// ✅ Password Protection and Modal Logic
+const correctPassword = "211C-2986";
+const passwordModal = document.getElementById('password-modal');
+const passwordForm = document.getElementById('password-form');
+const passwordInput = document.getElementById('password-input');
+const errorMessage = document.getElementById('error-message');
+const adminPanel = document.querySelector('.admin-panel');
+const showAdminButton = document.getElementById('show-admin-button');
+
+function showAdminPanel() {
+    adminPanel.style.display = 'block';
+    closePasswordModal(); // Use the new close function
 }
 
-// ✅ Render books to the UI
-function renderBooks(books) {
-  const bookCarousel = document.getElementById('book-carousel');
-  bookCarousel.innerHTML = books.length
-    ? books.map(book => createBookHTML(book)).join('')
-    : "<p>No books available.</p>";
+// Function to show the modal with animation
+function showPasswordModal() {
+    passwordModal.classList.add('show'); // Use the class for animation
+    passwordInput.focus();
 }
 
-// ✅ Create book HTML template
-function createBookHTML(book) {
-  return `
-    <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
-      <img src="${book.image}" class="book-image" alt="${book.title}">
-      <h3 class="book-title">${book.title}</h3>
-      <div class="book-meta">
-        <span>${book.year} Year</span>
-        <span>${book.subject}</span>
-      </div>
-      <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
-    </div>
-  `;
+// Function to close the modal
+function closePasswordModal() {
+    passwordModal.classList.remove('show'); // Hide with animation
+    // Add a slight delay to allow the animation to complete before hiding.
+    setTimeout(() => {
+      passwordModal.style.display = 'none';
+    }, 300); // Match the transition duration in CSS
 }
 
-// ✅ Form submission handler
-async function submitBook(e) {
-  e.preventDefault();
-
-  const newBook = {
-    title: document.getElementById("book-title").value.trim(),
-    year: document.getElementById("book-year").value.trim(),
-    subject: document.getElementById("book-subject").value.trim(),
-    image: document.getElementById("book-image-url").value.trim(),
-    pdf: document.getElementById("book-pdf-url").value.trim()
-  };
-
-  if (Object.values(newBook).some(value => !value)) {
-    alert("Please fill all fields before submitting.");
-    return;
-  }
-
-  try {
-    console.log("📤 Uploading book:", newBook);
-
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify(newBook),
-      mode: "no-cors", // 🚨 Important: Force bypass CORS
-      cache: "no-cache"
-    });
-
-    console.log("🔍 Full Response:", response);
-
-    // ❌ If response is empty (due to "no-cors"), assume success
-    alert("✅ Book added successfully!");
-    document.getElementById("book-form").reset();
-    await loadBooks();
-  } catch (error) {
-    console.error("❌ Upload failed:", error);
-    alert("Upload failed: " + error.message);
-  }
+function checkPassword(event) {
+    event.preventDefault();
+    if (passwordInput.value === correctPassword) {
+        showAdminPanel();
+        document.getElementById('book-form').addEventListener('submit', submitBook);
+    } else {
+        errorMessage.textContent = "Incorrect password. Please try again.";
+        errorMessage.style.display = 'block';
+        passwordInput.value = '';
+    }
 }
 
-// ✅ Attach event listener AFTER defining submitBook
-document.getElementById('book-form').addEventListener('submit', submitBook);
+// Event listener for clicking outside the modal content
+passwordModal.addEventListener('click', function(event) {
+    if (event.target === passwordModal) { // Check if the click is on the modal background
+        closePasswordModal();
+    }
+});
 
-// ✅ Update filters dynamically
-function updateFilters() {
-  updateSubjectFilter();
-  filterBooks();
-}
+// Event Listeners
+showAdminButton.addEventListener('click', showPasswordModal);
+passwordForm.addEventListener('submit', checkPassword);
 
-// ✅ Update subject filter based on selected year
-function updateSubjectFilter() {
-  const yearFilter = document.getElementById('year-filter').value;
-  const subjectFilter = document.getElementById('subject-filter');
-  subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
 
-  if (yearFilter === 'all') return;
-
-  const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
-  subjects.forEach(subject => {
-    subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
-  });
-}
-
-// ✅ Filter books based on search, year, and subject
-function filterBooks() {
-  const searchTerm = document.getElementById('search').value.toLowerCase();
-  const yearFilter = document.getElementById('year-filter').value;
-  const subjectFilter = document.getElementById('subject-filter').value;
-
-  const filteredBooks = allBooks.filter(book => {
-    const matchesYear = yearFilter === 'all' || book.year === yearFilter;
-    const matchesSubject = subjectFilter === 'all' || book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm) || book.subject.toLowerCase().includes(searchTerm);
-    return matchesYear && matchesSubject && matchesSearch;
-  });
-
-  renderBooks(filteredBooks);
-}
-
-// ✅ Attach event listeners for filters
-document.getElementById('year-filter').addEventListener('change', updateFilters);
-document.getElementById('subject-filter').addEventListener('change', filterBooks);
-document.getElementById('search').addEventListener('input', filterBooks);
-
-// ✅ Initial load
-document.addEventListener('DOMContentLoaded', loadBooks);
-  </script>
+// Initial load
+document.addEventListener('DOMContentLoaded', () => {
+    loadBooks();
+    document.getElementById('year-filter').addEventListener('change', updateFilters);
+    document.getElementById('subject-filter').addEventListener('change', filterBooks);
+    document.getElementById('search').addEventListener('input', filterBooks);
+});
+</script>
 </body>
 </html>
+
