@@ -127,4 +127,3 @@ headerObserver.observe(heroSection); // Observe the hero section
 
 // Initialize
 window.addEventListener('DOMContentLoaded', loadFacebookPosts);
-
