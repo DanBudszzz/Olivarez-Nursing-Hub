@@ -1,333 +1,482 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="referrer" content="no-referrer-when-downgrade">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
-  <title>Nursing Digital Library | Olivarez College</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #388E3C;
-      --primary-dark: #2B6E2F;
-      --primary-light: #C8E6C9;
-      --secondary: #2C3E50;
-      --light: #F8F9FA;
-      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      --transition: all 0.3s ease; /* Smooth transitions */
-    }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--light);
-      color: var(--secondary);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <title>Nursing Digital Library | Olivarez College</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            /* Original Color Palette (Preserved) */
+            --primary: #388E3C;
+            --primary-dark: #2B6E2F;
+            --primary-light: #C8E6C9;
+            --secondary: #2C3E50;
+            --light: #F8F9FA;
+            /*  Removed the gradient, no longer needed with solid header  */
 
-    /* Header */
-    header {
-      background: var(--gradient);
-      color: white;
-      padding: 0.75rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: var(--transition); /* Add transition */
-    }
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      transition: var(--transition);
-    }
-      .header-content:hover{
-           transform: scale(1.02);
-      }
-    .logo-group {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-        transition: var(--transition)
-    }
-      .logo-group:hover{
-        transform: scale(1.01);
-      }
-    .logo {
-      width: 45px;
-      height: 45px;
-      border-radius: 8px;
-      transition: var(--transition);
-    }
+            /* Google Play Inspired Colors */
+            --play-green: #4CAF50; /* Close to your primary, adjusted for Play feel */
+            --play-green-dark: #388E3C;  /*  Your original primary */
+            --play-green-light: #C8E6C9; /* Your original primary-light */
+            --play-gray-light: #F5F5F5;    /* Very Light Gray (Background) */
+            --play-gray-medium: #EEEEEE;  /*  Lighter Gray (Cards) */
+            --play-gray-dark: #757575;     /* Dark Gray (Text Secondary)*/
+            --play-text-primary: #212121; /*  Very Dark Gray (Text Primary)*/
+            --play-divider: #BDBDBD;
+            --play-shadow-color: rgba(0, 0, 0, 0.2); /*  Slightly stronger shadow */
+             /* Material You Inspired Palette (Keeping, but less used) */
+            --md-sys-color-primary: #388E3C;
+            --md-sys-color-primary-container: #C8E6C9;
+            --md-sys-color-on-primary: #fff;
+            --md-sys-color-secondary: #2C3E50;
+            --md-sys-color-on-secondary: #fff;
+            --md-sys-color-secondary-container: #d1d8e0;
+            --md-sys-color-on-secondary-container: #2C3E50;
+            --md-sys-color-tertiary: #006971;
+            --md-sys-color-on-tertiary: #fff;
+            --md-sys-color-surface: #fff;
+            --md-sys-color-on-surface: #1b1b1f;
+            --md-sys-color-surface-variant: #e7e0ec;
+            --md-sys-color-on-surface-variant: #49454f;
+            --md-sys-color-outline: #79747e;
 
-    .back-home {
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: var(--transition);
-    }
-    .back-home:hover {
-      opacity: 0.8; /* Subtle hover effect */
-    }
-    h1 {
-      font-size: 1.35rem;
-      font-weight: 600;
-      transition: var(--transition);
-    }
 
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 2rem 1rem;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-    }
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Material Design easing, slightly faster */
+        }
 
-    /* Admin Panel */
-    .admin-panel {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      margin-bottom: 2rem;
-      display: none;  /* Initially hidden */
-      transition: var(--transition); /* Add transition */
-    }
-    .admin-panel h2 {
-      margin-bottom: 1rem;
-      color: var(--secondary);
-      transition: var(--transition);
-    }
-    #book-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    #book-form input, #book-form button {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid var(--primary);
-      transition: var(--transition);
-    }
-    #book-form button {
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-       transition: var(--transition);
-    }
-    #book-form button:hover {
-      background: var(--primary-dark);
-      transform: scale(1.05);
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Show Admin Button */
-    #show-admin-button {
-      background-color: var(--primary);
-      color: white;
-      padding: 10px 15px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      transition: var(--transition); /* Add transition */
-    }
-    #show-admin-button:hover {
-      background-color: var(--primary-dark);
-      transform: scale(1.05); /* Slight scale on hover */
-    }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--play-gray-light); /* Use Play Store background */
+            color: var(--play-text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
 
-    /* Library Container */
-    .library-container {
-      background: white;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: var(--transition);
-    }
-    .library-container:hover{
-          transform: scale(1.01);
-    }
-    /* Filters Section */
-    .filters {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1rem;
-      margin: 2rem 0;
-       transition: var(--transition);
-    }
-     .filters:hover{
-          transform: scale(1.01);
-    }
-    .search-box {
-      position: relative;
-        transition: var(--transition)
-    }
-    .search-box:hover{
- transform: scale(1.02);
-    }
+        /* Header */
+        header {
+            background: var(--md-sys-color-primary); /*  Use primary color for background */
+            color: var(--md-sys-color-on-primary); /* Use on-primary color for text */
+            padding: 0.6rem 0;  /*Slightly smaller padding*/
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px var(--play-shadow-color);
+            transition: var(--transition);
+        }
 
-    .search-input {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      font-size: 1rem;
-      padding-left: 2.5rem;
-      background: white;
-      transition: box-shadow 0.2s ease, transform 0.2s ease; /* Include transform */
-    }
-    .search-input:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px var(--primary-light);
-      transform: scale(1.02); /* Slightly enlarge on focus */
-    }
-    .search-icon {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--primary);
-      transition: var(--transition);
-    }
-    select {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      background: white;
-      font-size: 1rem;
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23388E3C'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 1em;
-      transition: var(--transition);
-    }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
 
-    select:focus{
-         transform: scale(1.02);
-    }
-    /* Book Carousel */
-    .carousel-container {
-      position: relative;
-      margin: 0 -1rem;
-      padding: 0.5rem 0;
-      transition: var(--transition)
-    }
-    .book-carousel {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      padding: 0 1rem;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-        transition: var(--transition)
-    }
-    .book-carousel::-webkit-scrollbar {
-      display: none;
-    }
-    .book-item {
-      scroll-snap-align: start;
-      flex: 0 0 280px;
-      background: white;
-      border-radius: 12px;
-      padding: 1.25rem;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease; /* Add transition */
-      border: 1px solid rgba(56,142,60,0.1);
-      transition: var(--transition);
-    }
-    .book-item:hover {
-      transform: translateY(-5px); /* More pronounced hover */
-       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
-    }
-    .book-image {
-      width: 100%;
-      height: 180px;
-      border-radius: 8px;
-      object-fit: cover;
-      margin-bottom: 1rem;
-      background: var(--primary-light);
-       transition: var(--transition)
-    }
-    .book-image:hover{
-        transform: scale(1.02);
-    }
-    .book-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 0.5rem;
-      transition: var(--transition);
-    }
 
-    .book-meta {
-      color: var(--primary);
-      font-size: 0.875rem;
-      display: flex;
-      gap: 0.75rem;
-      opacity: 0.9;
-        transition: var(--transition);
-    }
-    .view-pdf {
-      display: block;
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background-color: var(--primary);
-      color: white;
-      text-align: center;
-      border-radius: 5px;
-      text-decoration: none;
-      transition: var(--transition);
-    }
-    .view-pdf:hover {
-      background-color: var(--primary-dark);
-      transform: scale(1.03); /*Consistent scaling*/
-    }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem; /* Slightly smaller gap */
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+        }
 
-    /* Footer */
-    footer {
-      background: var(--gradient);
-      color: white;
-      padding: 1.5rem;
-      margin-top: auto;
-      transition: var(--transition);
-    }
-    .footer-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      transition: var(--transition);
-    }
+        .logo {
+            width: 36px; /* Smaller logo */
+            height: 36px;
+            border-radius: 50%; /* Circle */
+            transition: var(--transition);
+            animation: rotateLogo 5s linear infinite; /* Logo Rotation */
 
-    /* Password Modal */
+        }
+        @keyframes rotateLogo {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .logo-group:hover{
+            transform: scale(1.01);
+        }
+
+        .back-home {
+             color: var(--md-sys-color-on-primary); /*  Use on-primary color */
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem; /* Smaller gap */
+            margin-right: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .back-home i {
+            font-size: 1.2rem;
+            color: var(--md-sys-color-on-primary); /*  Use on-primary color */
+            transition: var(--transition);
+             animation: bounceArrow 1.5s infinite;
+        }
+         /* Keyframe animation for back-home */
+        @keyframes bounceArrow {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(0); }
+            40% { transform: translateX(-5px); } /* Move left */
+            60% { transform: translateX(3px); }  /* Move right */
+        }
+
+        h1 {
+            font-size: 1.25rem; /* Slightly smaller title */
+            font-weight: 500;
+            color: var(--md-sys-color-on-primary); /* Use on-primary color */
+            transition: var(--transition);
+             animation: fadeInDown 1s; /* Title Fade In */
+        }
+          /* Keyframe animation for fadeInDown (for the h1) */
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 1rem; /* Reduced padding */
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+              animation: fadeIn 1s; /* Overall content fade-in */
+        }
+        /* Keyframe animation for general fadeIn */
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+          /* Admin Panel */
+        .admin-panel {
+            background: var(--md-sys-color-surface);
+            border-radius: 16px; /* More rounded corners */
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* More pronounced shadow */
+            margin-bottom: 2rem;
+            display: none;
+            transition: var(--transition); /* Add transition */
+             animation: slideInUp 0.5s; /* Slide in from bottom */
+        }
+         /* Keyframes for slideInUp (Admin Panel) */
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .admin-panel h2 {
+            margin-bottom: 1rem;
+           color: var(--md-sys-color-on-surface);
+            font-weight: 500; /* Roboto 500 weight */
+            transition: var(--transition);
+        }
+
+        #book-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem; /* Increased gap */
+        }
+
+        #book-form input,
+        #book-form button {
+            padding: 0.7rem 1rem; /* Larger padding */
+            font-size: 0.95rem;
+            border-radius: 24px; /* Pill shape */
+            border: 1px solid var(--md-sys-color-outline);
+            transition: var(--transition);
+             background-color: var(--md-sys-color-surface); /* Consistent background */
+            color: var(--md-sys-color-on-surface); /* Consistent text color */
+        }
+        #book-form input:focus {
+             outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.2);
+        }
+
+        #book-form button {
+             background: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        #book-form button:hover {
+             background: #388e3c; /* Darker shade on hover */
+             transform: translateY(-2px); /* Slight lift */
+        }
+
+         /* Show Admin Button */
+        #show-admin-button {
+          background-color: var(--md-sys-color-primary);
+          color: var(--md-sys-color-on-primary);
+          padding: 10px 16px; /* Larger padding */
+          border: none;
+          border-radius: 24px; /* Pill-shaped */
+          cursor: pointer;
+          font-size: 1rem;
+          margin-bottom: 1.5rem; /* Increased margin */
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          transition: var(--transition); /* Add transition */
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+           animation: pulse 2s infinite; /*  Pulse animation */
+        }
+
+        /* Keyframes for pulse animation */
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+
+        #show-admin-button:hover {
+            background-color: #388e3c; /* Darker shade on hover */
+           transform: translateY(-2px); /* Slight lift on hover */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* Increased shadow */
+        }
+
+        /* Library Container */
+        .library-container {
+           background: var(--md-sys-color-surface);
+            border-radius: 12px; /*  Rounded corners */
+            padding: 1rem;  /*Reduced padding */
+            box-shadow: 0 2px 4px var(--play-shadow-color); /* Play Store-like shadow */
+            transition: var(--transition);
+            animation: fadeIn 1s;
+        }
+          .library-container:hover{ transform: scale(1.01); }
+
+        /* Filters Section */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;  /*Reduced gap */
+            margin: 1rem 0; /* Reduced margin */
+            align-items: center;
+              transition: var(--transition);
+               animation: slideInLeft 0.7s; /* Slide in from left */
+        }
+         /* Keyframes for slideInLeft */
+        @keyframes slideInLeft {
+          from { transform: translateX(-50px); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .filters:hover{
+            transform: scale(1.005);
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 300px;  /*Slightly smaller max-width */
+            transition: var(--transition);
+        }
+        .search-box:hover{ transform: scale(1.01); }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 0.8rem;  /*Reduced padding */
+            padding-left: 2.3rem; /*  Space for icon */
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 24px;  /*Pill shape */
+            font-size: 0.9rem; /*  Slightly smaller font */
+            background: var(--md-sys-color-surface);
+             color: var(--md-sys-color-on-surface);
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+           outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 3px rgba(56, 142, 60, 0.2); /* Focus ring with accent color */
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;  /*Adjusted position */
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 1.1rem; /*  Slightly smaller icon */
+            transition: var(--transition);
+        }
+
+
+        .filter-select {
+            padding: 0.6rem 0.8rem; /* Reduced padding */
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 24px; /* Pill shape */
+            background: var(--md-sys-color-surface);
+            color: var(--md-sys-color-on-surface);
+            font-size: 0.85rem; /* Smaller font */
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3E%3Cpath d='M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.6rem center;
+            background-size: 1em;
+            margin-right: 0.4rem; /* Reduced margin */
+            transition: var(--transition);
+            cursor: pointer;
+        }
+          .filter-select:focus {
+           outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.2); /* Focus ring */
+        }
+
+         /* Book Carousel */
+      .carousel-container {
+            position: relative;
+            overflow: hidden; /* Hide overflowing content */
+
+        }
+
+        .book-carousel {
+            display: flex;
+            gap: 1rem; /*  gap */
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 0 1rem;
+            padding-bottom: 0.8rem; /*  Space for custom scrollbar */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            transition: var(--transition); /* Add transition */
+
+        }
+        .book-carousel::-webkit-scrollbar {
+                display: none; /* Hide scrollbar for Chrome, Safari, Opera */
+            }
+
+        .book-item {
+            scroll-snap-align: start;
+            flex: 0 0 auto;
+            width: 150px;  /*Slightly smaller */
+            background: var(--md-sys-color-surface);
+            border-radius: 8px; /*  Rounded corners */
+            box-shadow: 0 2px 4px var(--play-shadow-color); /*  Play Store shadow */
+            transition: var(--transition);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            animation: scaleIn 0.6s; /* Scale in animation */
+        }
+         /* Keyframes for scaleIn (Book items) */
+        @keyframes scaleIn {
+          from { transform: scale(0.8); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+
+        .book-item:hover {
+            transform: translateY(-4px) scale(1.02); /*  Lift and scale */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Increased shadow */
+        }
+
+        .book-image {
+            width: 100%;
+            height: 180px; /*  height */
+            border-radius: 8px 8px 0 0; /* Round top corners */
+            object-fit: cover;
+             background: var(--md-sys-color-primary-container);
+            margin-bottom: 0;
+            transition: var(--transition);
+        }
+
+        .book-title {
+            font-size: 0.9rem;  /*Slightly smaller font */
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            padding: 0.4rem 0.7rem 0; /*  Padding */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .book-meta {
+            color: var(--md-sys-color-on-surface-variant);
+            font-size: 0.75rem;
+            padding: 0 0.7rem;
+            display: flex;
+            gap: 0.5rem;
+             transition: var(--transition);
+        }
+
+        .view-pdf {
+            display: block;
+            width: 100%;
+            padding: 0.4rem 0;
+            background-color: var(--md-sys-color-primary); /* Use primary color */
+            color: var(--md-sys-color-on-primary);
+            text-align: center;
+            border-radius: 0 0 8px 8px; /* Round bottom corners */
+            text-decoration: none;
+            font-size: 0.85rem; /* Slightly smaller font */
+            margin-top: auto;
+            transition: var(--transition);
+        }
+
+        .view-pdf:hover {
+            background-color: #388e3c; /* Darker shade */
+        }
+
+        /* Footer */
+        footer {
+            background: var(--md-sys-color-primary); /* Changed to primary green */
+            color: var(--md-sys-color-on-primary); /* Changed to white for contrast */
+            padding: 1rem;
+            margin-top: auto;
+            text-align: center;
+            box-shadow: 0 -2px 5px var(--play-shadow-color);
+            transition: var(--transition);
+        }
+
+      footer:hover{ transform: scale(1.01); }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+           /* Password Modal */
     #password-modal {
       display: none;
       position: fixed;
@@ -335,7 +484,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+       background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
       z-index: 1001;
       justify-content: center;
       align-items: center;
@@ -349,343 +498,448 @@
     }
 
     #password-form {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 300px;
-      width: 90%;
-      transition: var(--transition);
-      transform: scale(0.95); /* Start slightly smaller */
-      opacity: 0;
+       background: var(--md-sys-color-surface);
+        padding: 2rem;
+        border-radius: 12px; /* More rounded corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 350px; /* Slightly larger */
+        width: 90%;
+        transition: var(--transition);
+        transform: scale(0.95); /* Start slightly smaller */
+        opacity: 0;
+         animation: zoomIn 0.4s; /* Zoom in animation */
     }
-    #password-modal.show #password-form {
+      /* Keyframes for zoomIn (Password Modal) */
+        @keyframes zoomIn {
+          from { transform: scale(0.8); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+     #password-modal.show #password-form {
         opacity: 1;
         transform: scale(1);
-      }
+    }
 
     #password-input {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 4px;
-      border: 1px solid var(--primary);
+      padding: 0.8rem 1rem; /* Larger padding */
+        font-size: 1rem;
+        border-radius: 24px; /* Pill shape */
+        border: 1px solid var(--md-sys-color-outline);
       transition: var(--transition);
+       background: var(--md-sys-color-surface);
+      color: var(--md-sys-color-on-surface);
+    }
+    #password-input:focus{
+          outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.2); /* Focus ring */
     }
 
     #password-submit {
-      padding: 0.75rem;
-      font-size: 1rem;
-      border-radius: 4px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
+       padding: 0.8rem 1rem; /* Larger padding */
+        font-size: 1rem;
+        border-radius: 24px; /* Pill shape */
+       background: var(--md-sys-color-primary);
+        color: var(--md-sys-color-on-primary);
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
     }
     #password-submit:hover {
-      background-color: var(--primary-dark);
-       transform: scale(1.05);
+       background: #388e3c; /* Darker shade on hover */
+         transform: translateY(-2px); /* Slight lift */
     }
 
     .error-message {
-      color: red;
+       color: #b00020; /* Material Design error color */
       text-align: center;
       margin-top: 0.5rem;
       transition: var(--transition);
+       animation: shake 0.5s; /* Add a shake effect */
     }
+    /* Keyframe animation for shake (error message) */
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        /* Loading Indicator */
+        .loading-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px; /* Adjusted height */
+        }
 
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-      .header-content { gap: 0.5rem; padding: 0 0.5rem; }
-      h1 { font-size: 1.2rem; }
-      .logo { width: 40px; height: 40px; }
-      main { padding: 1.5rem 0.5rem; }
-      .library-container { padding: 1rem; border-radius: 12px; }
-      .filters { grid-template-columns: 1fr; gap: 0.75rem; margin: 1.5rem 0; }
-      .search-input, select { padding: 0.75rem 1rem; font-size: 0.9375rem; }
-      .book-item { flex: 0 0 75%; }
-      #show-admin-button { font-size: 0.9rem; padding: 8px 12px; }
-    }
-    @media (max-width: 480px) {
-      h1 { font-size: 1.1rem; }
-      .book-item { flex: 0 0 85%; padding: 1rem; }
-      .book-image { height: 160px; }
-      .book-title { font-size: 1rem; }
-      .book-meta { font-size: 0.8125rem; }
-    }
-  </style>
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1); /* Lighter border */
+            border-top: 4px solid var(--md-sys-color-primary); /* Use primary color */
+            border-radius: 50%;
+            width: 32px; /* Slightly smaller spinner */
+            height: 32px;
+            animation: spin 0.8s linear infinite;
+            transition: var(--transition);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                gap: 0.4rem; /* Smaller gap */
+                padding: 0 0.5rem;
+            }
+            h1 {
+                font-size: 1.1rem; /* Smaller title */
+            }
+             .back-home i {
+                font-size: 1rem; /* Adjust icon size */
+            }
+            .logo {
+                width: 32px; /* Smaller logo */
+                height: 32px;
+            }
+            main {
+                padding: 0.8rem 0.5rem; /* Reduced padding */
+            }
+            .filters {
+                margin: 0.8rem 0;
+            }
+            .search-input,
+            .filter-select {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.6rem; /* Smaller padding */
+            }
+            .search-icon{
+            left: 0.6rem;
+            }
+            .book-item {
+                width: 120px; /* Smaller book items */
+            }
+            .book-image {
+                height: 150px;
+            }
+            .book-title, .view-pdf {
+                font-size: 0.8rem;
+            }
+             .book-meta{
+                font-size: 0.7rem;
+             }
+             #show-admin-button {
+                font-size: 0.8rem; /* Smaller font */
+                padding: 6px 10px;
+            }
+            #book-form input, #book-form button{
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content{
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            h1 {
+                font-size: 1rem; /* Even smaller title */
+            }
+              .back-home{
+                margin-bottom: 0.5rem;
+            }
+            .filters {
+                flex-direction: column; /* Stack filters */
+            }
+            .search-box {
+                max-width: none; /* Full width */
+            }
+            .book-item {
+                width: 45%; /* Two items per row */
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="logo-group">
-        <a href="index.html" class="back-home">
-          <i class="fas fa-chevron-left"></i>
-          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-               alt="College Logo"
-               class="logo">
-        </a>
-        <h1>Nursing Resource Hub</h1>
-      </div>
-    </div>
-  </header>
+    <header>
+        <div class="header-content">
+            <div class="logo-group">
+                <a href="index.html" class="back-home">
+                    <i class="fas fa-chevron-left"></i>
+                    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo">
+                </a>
+                <h1>Nursing Resource Hub</h1>
+            </div>
+        </div>
+    </header>
+
     <main>
-    <div id="password-modal">
-      <form id="password-form">
-        <label for="password-input">Enter Password:</label>
-        <input type="password" id="password-input" required>
-        <button type="submit" id="password-submit">Unlock</button>
-        <<p id="error-message" class="error-message" style="display: none;"></p>
-      </form>
-    </div>
-
-    <button id="show-admin-button">Upload New Book</button>
-
-    <section class="admin-panel">
-      <h2>Upload New Book</h2>
-      <form id="book-form">
-        <input type="text" id="book-title" placeholder="Book Title" required>
-        <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
-        <input type="text" id="book-subject" placeholder="Subject" required>
-        <input type="url" id="book-image-url" placeholder="Image URL" required>
-        <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
-        <button type="">Add Book</button>
-      </form>
-    </section>
-
-    <section class="library-container">
-      <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
-        <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
-        Digital Library
-      </h2>
-      <div class="filters">
-        <div class="search-box">
-          <input type="text"
-                 id="search"
-                 class="search-input"
-                 placeholder="Search resources..."
-                 aria-label="Search resources">
-          <i class="fas fa-search search-icon"></i>
+        <div id="password-modal">
+            <form id="password-form">
+                <label for="password-input">Enter Password:</label>
+                <input type="password" id="password-input" required>
+                <button type="submit" id="password-submit">Unlock</button>
+                <p id="error-message" class="error-message" style="display: none;"></p>
+            </form>
         </div>
-        <select id="year-filter" aria-label="Filter by year">
-          <option value="all">All Year Levels</option>
-          <option value="1st">1st Year</option>
-          <option value="2nd">2nd Year</option>
-          <option value="3rd">3rd Year</option>
-          <option value="4th">4th Year</option>
-        </select>
-        <select id="subject-filter" aria-label="Filter by subject">
-          <option value="all">All Subjects</option>
-        </select>
-      </div>
 
-      <div class="carousel-container">
-        <div class="book-carousel" id="book-carousel">
-          </div>
-      </div>
-    </section>
+        <button id="show-admin-button">Upload New Book</button>
 
-  </main>
+        <section class="admin-panel">
+            <h2>Upload New Book</h2>
+            <form id="book-form">
+                <input type="text" id="book-title" placeholder="Book Title" required>
+                <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
+                <input type="text" id="book-subject" placeholder="Subject" required>
+                <input type="url" id="book-image-url" placeholder="Image URL" required>
+                <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
+                <button type="submit">Add Book</button>
+            </form>
+        </section>
+
+        <section class="library-container">
+            <h2 style="margin-bottom: 1rem; font-weight: 500;">
+                <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>
+                Digital Library
+            </h2>
+            <div class="filters">
+                <div class="search-box">
+                    <input type="text" id="search" class="search-input" placeholder="Search resources..." aria-label="Search resources">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <select id="year-filter" class="filter-select" aria-label="Filter by year">
+                    <option value="all">All Year Levels</option>
+                    <option value="1st">1st Year</option>
+                    <option value="2nd">2nd Year</option>
+                    <option value="3rd">3rd Year</option>
+                    <option value="4th">4th Year</option>
+                </select>
+                <select id="subject-filter" class="filter-select" aria-label="Filter by subject">
+                    <option value="all">All Subjects</option>
+                </select>
+            </div>
+
+            <div class="carousel-container">
+              <div class = "loading-indicator">
+                <div class = "spinner"></div>
+              </div>
+                <div class="book-carousel" id="book-carousel">
+                    </div>
+
+            </div>
+        </section>
+    </main>
+
     <footer>
-    <div class="footer-content">
-      <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-           alt="College Logo"
-           style="width: 60px; border-radius: 8px;">
-      <p style="opacity: 0.9;">&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
-    </div>
-  </footer>
-
-<script>
-    // ✅ CONFIGURATION: Set your Google Apps Script API URL
-    const API_URL = 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec';
-    let allBooks = [];
-
-    // ✅ Load books from Google Sheets API
-    async function loadBooks() {
-      try {
-        console.log("📡 Fetching books from:", API_URL);
-
-        const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
-        if (!response.ok) throw new Error("Failed to fetch books");
-
-        const data = await response.json();
-        if (!Array.isArray(data)) throw new Error("Invalid data format");
-
-        allBooks = data;
-        renderBooks(allBooks);
-        updateFilters();
-      } catch (error) {
-        console.error("❌ Load Error:", error);
-        alert("Failed to load books. Please check your internet or API status.");
-      }
-    }
-
-    // ✅ Render books to the UI
-    function renderBooks(books) {
-      const bookCarousel = document.getElementById('book-carousel');
-      bookCarousel.innerHTML = books.length
-        ? books.map(book => createBookHTML(book)).join('')
-        : "<p>No books available.</p>";
-    }
-
-    // ✅ Create book HTML template
-    function createBookHTML(book) {
-      return `
-        <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
-          <img src="${book.image}" class="book-image" alt="${book.title}">
-          <h3 class="book-title">${book.title}</h3>
-          <div class="book-meta">
-            <span>${book.year} Year</span>
-            <span>${book.subject}</span>
-          </div>
-          <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
+        <div class="footer-content">
+            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class = "footer-logo">
+            <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
         </div>
-      `;
+    </footer>
+
+    <script>
+        // ✅ CONFIGURATION: Set your Google Apps Script API URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec';
+        let allBooks = [];
+            // ✅ Load books from Google Sheets API
+        async function loadBooks() {
+          const bookCarousel = document.getElementById('book-carousel');
+          const loadingIndicator = document.querySelector('.loading-indicator');
+
+
+          try {
+            // Show loading indicator
+            loadingIndicator.style.display = 'flex';
+            bookCarousel.innerHTML = ''; // Clear previous books
+
+            console.log("📡 Fetching books from:", API_URL);
+
+            const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
+            if (!response.ok) throw new Error("Failed to fetch books");
+
+            const data = await response.json();
+            if (!Array.isArray(data)) throw new Error("Invalid data format");
+
+            allBooks = data;
+            renderBooks(allBooks);
+            updateFilters();
+          } catch (error) {
+            console.error("❌ Load Error:", error);
+            alert("Failed to load books. Please check your internet or API status.");
+             bookCarousel.innerHTML = "<p>Error loading books.</p>"; // Error message in UI.
+          } finally {
+                // Hide loading indicator
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // ✅ Render books to the UI
+        function renderBooks(books) {
+          const bookCarousel = document.getElementById('book-carousel');
+          bookCarousel.innerHTML = books.length
+            ? books.map(book => createBookHTML(book)).join('')
+            : "<p>No books available.</p>";
+        }
+
+        // ✅ Create book HTML template
+        function createBookHTML(book) {
+          return `
+            <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
+              <img src="${book.image}" class="book-image" alt="${book.title}">
+              <h3 class="book-title">${book.title}</h3>
+              <div class="book-meta">
+                <span>${book.year} Year</span>
+                <span>${book.subject}</span>
+              </div>
+              <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
+            </div>
+          `;
+        }
+
+        // ✅ Form submission handler
+        async function submitBook(e) {
+          e.preventDefault();
+
+          const newBook = {
+            title: document.getElementById("book-title").value.trim(),
+            year: document.getElementById("book-year").value.trim(),
+            subject: document.getElementById("book-subject").value.trim(),
+            image: document.getElementById("book-image-url").value.trim(),
+            pdf: document.getElementById("book-pdf-url").value.trim()
+          };
+
+          if (Object.values(newBook).some(value => !value)) {
+            alert("Please fill all fields before submitting.");
+            return;
+          }
+
+          try {
+            console.log("📤 Uploading book:", newBook);
+
+            const response = await fetch(API_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+              },
+              body: JSON.stringify(newBook),
+              mode: "no-cors", // 🚨 Important: Force bypass CORS
+              cache: "no-cache"
+            });
+
+            console.log("🔍 Full Response:", response);
+
+            // ❌ If response is empty (due to "no-cors"), assume success
+            alert("✅ Book added successfully!");
+            document.getElementById("book-form").reset();
+            await loadBooks();
+          } catch (error) {
+            console.error("❌ Upload failed:", error);
+            alert("Upload failed: " + error.message);
+          }
+        }
+
+        // ✅ Update filters dynamically
+        function updateFilters() {
+          updateSubjectFilter();
+          filterBooks();
+        }
+
+        // ✅ Update subject filter based on selected year
+        function updateSubjectFilter() {
+          const yearFilter = document.getElementById('year-filter').value;
+          const subjectFilter = document.getElementById('subject-filter');
+          subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+
+          if (yearFilter === 'all') return;
+
+          const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
+          subjects.forEach(subject => {
+            subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
+          });
+        }
+
+        // ✅ Filter books based on search, year, and subject
+        function filterBooks() {
+          const searchTerm = document.getElementById('search').value.toLowerCase();
+          const yearFilter = document.getElementById('year-filter').value;
+          const subjectFilter = document.getElementById('subject-filter').value;
+
+          const filteredBooks = allBooks.filter(book => {
+            const matchesYear = yearFilter === 'all' || book.year === yearFilter;
+            const matchesSubject = subjectFilter === 'all' || book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
+            const matchesSearch = book.title.toLowerCase().includes(searchTerm) || book.subject.toLowerCase().includes(searchTerm);
+            return matchesYear && matchesSubject && matchesSearch;
+          });
+
+          renderBooks(filteredBooks);
+        }
+
+    // ✅ Password Protection and Modal Logic
+    const correctPassword = "211C-2986";
+    const passwordModal = document.getElementById('password-modal');
+    const passwordForm = document.getElementById('password-form');
+    const passwordInput = document.getElementById('password-input');
+    const errorMessage = document.getElementById('error-message');
+    const adminPanel = document.querySelector('.admin-panel');
+    const showAdminButton = document.getElementById('show-admin-button');
+
+    function showAdminPanel() {
+        adminPanel.style.display = 'block';
+        closePasswordModal(); // Use the new close function
     }
 
-    // ✅ Form submission handler
-    async function submitBook(e) {
-      e.preventDefault();
-
-      const newBook = {
-        title: document.getElementById("book-title").value.trim(),
-        year: document.getElementById("book-year").value.trim(),
-        subject: document.getElementById("book-subject").value.trim(),
-        image: document.getElementById("book-image-url").value.trim(),
-        pdf: document.getElementById("book-pdf-url").value.trim()
-      };
-
-      if (Object.values(newBook).some(value => !value)) {
-        alert("Please fill all fields before submitting.");
-        return;
-      }
-
-      try {
-        console.log("📤 Uploading book:", newBook);
-
-        const response = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify(newBook),
-          mode: "no-cors", // 🚨 Important: Force bypass CORS
-          cache: "no-cache"
-        });
-
-        console.log("🔍 Full Response:", response);
-
-        // ❌ If response is empty (due to "no-cors"), assume success
-        alert("✅ Book added successfully!");
-        document.getElementById("book-form").reset();
-        await loadBooks();
-      } catch (error) {
-        console.error("❌ Upload failed:", error);
-        alert("Upload failed: " + error.message);
-      }
+    // Function to show the modal with animation
+    function showPasswordModal() {
+        passwordModal.classList.add('show'); // Use the class for animation
+        passwordInput.focus();
     }
 
-    // ✅ Update filters dynamically
-    function updateFilters() {
-      updateSubjectFilter();
-      filterBooks();
+    // Function to close the modal
+    function closePasswordModal() {
+        passwordModal.classList.remove('show'); // Hide with animation
+        // Add a slight delay to allow the animation to complete before hiding.
+        setTimeout(() => {
+          passwordModal.style.display = 'none';
+        }, 300); // Match the transition duration in CSS
     }
 
-    // ✅ Update subject filter based on selected year
-    function updateSubjectFilter() {
-      const yearFilter = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter');
-      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
-
-      if (yearFilter === 'all') return;
-
-      const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
-      subjects.forEach(subject => {
-        subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
-      });
+    function checkPassword(event) {
+        event.preventDefault();
+        if (passwordInput.value === correctPassword) {
+            showAdminPanel();
+            document.getElementById('book-form').addEventListener('submit', submitBook);
+        } else {
+            errorMessage.textContent = "Incorrect password. Please try again.";
+            errorMessage.style.display = 'block';
+            passwordInput.value = '';
+        }
     }
 
-    // ✅ Filter books based on search, year, and subject
-    function filterBooks() {
-      const searchTerm = document.getElementById('search').value.toLowerCase();
-      const yearFilter = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter').value;
+    // Event listener for clicking outside the modal content
+    passwordModal.addEventListener('click', function(event) {
+        if (event.target === passwordModal) { // Check if the click is on the modal background
+            closePasswordModal();
+        }
+    });
 
-      const filteredBooks = allBooks.filter(book => {
-        const matchesYear = yearFilter === 'all' || book.year === yearFilter;
-        const matchesSubject = subjectFilter === 'all' || book.subject.toLowerCase().replace(/ /g, '-') === subjectFilter;
-        const matchesSearch = book.title.toLowerCase().includes(searchTerm) || book.subject.toLowerCase().includes(searchTerm);
-        return matchesYear && matchesSubject && matchesSearch;
-      });
-
-      renderBooks(filteredBooks);
-    }
-
-// ✅ Password Protection and Modal Logic
-const correctPassword = "211C-2986";
-const passwordModal = document.getElementById('password-modal');
-const passwordForm = document.getElementById('password-form');
-const passwordInput = document.getElementById('password-input');
-const errorMessage = document.getElementById('error-message');
-const adminPanel = document.querySelector('.admin-panel');
-const showAdminButton = document.getElementById('show-admin-button');
-
-function showAdminPanel() {
-    adminPanel.style.display = 'block';
-    closePasswordModal(); // Use the new close function
-}
-
-// Function to show the modal with animation
-function showPasswordModal() {
-    passwordModal.classList.add('show'); // Use the class for animation
-    passwordInput.focus();
-}
-
-// Function to close the modal
-function closePasswordModal() {
-    passwordModal.classList.remove('show'); // Hide with animation
-    // Add a slight delay to allow the animation to complete before hiding.
-    setTimeout(() => {
-      passwordModal.style.display = 'none';
-    }, 300); // Match the transition duration in CSS
-}
-
-function checkPassword(event) {
-    event.preventDefault();
-    if (passwordInput.value === correctPassword) {
-        showAdminPanel();
-        document.getElementById('book-form').addEventListener('submit', submitBook);
-    } else {
-        errorMessage.textContent = "Incorrect password. Please try again.";
-        errorMessage.style.display = 'block';
-        passwordInput.value = '';
-    }
-}
-
-// Event listener for clicking outside the modal content
-passwordModal.addEventListener('click', function(event) {
-    if (event.target === passwordModal) { // Check if the click is on the modal background
-        closePasswordModal();
-    }
-});
-
-// Event Listeners
-showAdminButton.addEventListener('click', showPasswordModal);
-passwordForm.addEventListener('submit', checkPassword);
+    // Event Listeners
+    showAdminButton.addEventListener('click', showPasswordModal);
+    passwordForm.addEventListener('submit', checkPassword);
 
 
-// Initial load
-document.addEventListener('DOMContentLoaded', () => {
-    loadBooks();
-    document.getElementById('year-filter').addEventListener('change', updateFilters);
-    document.getElementById('subject-filter').addEventListener('change', filterBooks);
-    document.getElementById('search').addEventListener('input', filterBooks);
-});
-</script>
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadBooks();
+        document.getElementById('year-filter').addEventListener('change', updateFilters);
+        document.getElementById('subject-filter').addEventListener('change', filterBooks);
+        document.getElementById('search').addEventListener('input', filterBooks);
+    });
+    </script>
 </body>
 </html>
+
 
