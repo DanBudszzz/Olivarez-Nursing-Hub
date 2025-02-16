@@ -65,10 +65,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: white;
-    /* White background */
-    color: var(--text-color);
-    /* Use --text-color for header text */
+    background-color: var(--primary-color); /* Restored green background */
+    color: white;  /* White text for contrast */
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -97,8 +95,7 @@ header.hidden {
     /* Use Poppins */
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--primary-color);
-    /* Use --primary-color */
+    color: white; /* White text for site title */
     animation: slideInTitle 0.8s ease-out forwards;
     opacity: 0;
     transform: translateX(-20px);
@@ -147,8 +144,7 @@ nav ul {
 nav a {
     display: flex;
     align-items: center;
-    color: var(--text-color);
-    /* Use --text-color */
+    color: white; /* White text color */
     text-decoration: none;
     font-weight: 500;
     padding: 0.5rem 1rem;
@@ -159,9 +155,8 @@ nav a {
 
 nav a:hover,
 nav a:focus {
-    color: var(--primary-color);
-    background-color: rgba(76, 175, 80, 0.1);
-    /* Very light teal background */
+    color: var(--primary-color-dark);
+    background-color: var(--accent-color);
     transform: translateY(-2px);
     /* Lift slightly */
     outline: none;
@@ -184,19 +179,18 @@ nav a:focus i {
 
 
 .menu-toggle {
-    display: none;
+    display: none; /* Hidden by default, shown on mobile */
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     transition: transform 0.3s ease;
-
 }
 
 .hamburger {
     width: 25px;
     height: 3px;
-    background-color: var(--primary-color);
+    background-color: white; /* White hamburger icon */
     display: block;
     margin: 5px auto;
     transition: all 0.3s ease-in-out;
@@ -352,7 +346,8 @@ nav a:focus i {
 
 @keyframes slideInCard {
     to {
-        opacity: 1; transform: translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -606,7 +601,12 @@ footer p {
 
     .site-title {
         font-size: 1.2rem;
-        /* Smaller title on mobile */
+        /* Smaller title on mobile - Adjust as needed */
+        margin-left: 0; /* Reset margin */
+
+    }
+    .logo-container{
+        gap: 0.5rem; /* Adjust the gap */
     }
 
     .logo {
@@ -614,18 +614,21 @@ footer p {
         /* Smaller logo on mobile */
     }
 
-     /* Corrected Navigation for Mobile */
+    /* Corrected Navigation for Mobile */
     nav {
-        order: 3; /* Place nav after the menu toggle (important for layout) */
-        width: 100%; /* Nav takes full width */
+        order: 3;
+        /* Place nav after the menu toggle */
+        width: 100%;
+        /* Nav takes full width */
     }
+
     nav ul {
         position: fixed;
-        /* Fixed positioning for the menu */
+        /* Fixed positioning */
         top: 60px;
         /* Position below the header */
         right: -100%;
-        /* Initially hidden off-screen */
+        /* Initially hidden */
         flex-direction: column;
         /* Stack links vertically */
         background-color: white;
@@ -635,7 +638,7 @@ footer p {
         max-width: 300px;
         /* Limit maximum width*/
         height: calc(100vh - 60px);
-        /* Fill the viewport height, minus header */
+        /* Fill viewport */
         padding: 2rem;
         transition: right var(--transition-timing);
         /* Smooth slide-in */
@@ -643,10 +646,11 @@ footer p {
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
         /* Shadow */
         overflow-y: auto;
-        /* Allow scrolling if content overflows */
+        /* Allow scrolling */
 
     }
-      .nav-links {
+
+    .nav-links {
         padding-top: 1rem;
     }
 
@@ -659,10 +663,15 @@ footer p {
         margin-bottom: 1rem;
         /* Spacing between links */
     }
-      nav a{
-        padding: 0.8rem 1rem;
-         color: var(--text-color); /* Ensure text is visible */
 
+    nav a {
+        padding: 0.8rem 1rem;
+        color: var(--text-color);
+        /* Ensure text is visible */
+
+    }
+      nav a i {
+        margin-right: 1rem; /* Adjust space between icon and text */
     }
 
     nav ul li:last-child {
@@ -672,18 +681,20 @@ footer p {
 
     .menu-toggle {
         display: block;
-        /* Show the menu toggle */
-        order: 2; /* Position menu toggle before logo */
-    }
-      .hamburger {
-        background-color: var(--primary-color); /* Visible hamburger */
-    }
+        /* Show menu toggle */
+        order: 2;
+        /* Menu toggle *before* logo */
+        margin-left: auto; /* Push to the right */
 
+    }
+     .hamburger {
+        background-color: white; /* White hamburger */
+    }
 
     /* Hero Section */
     .hero {
         padding: 4rem 1rem;
-        /* Less padding on mobile */
+        /* Less padding */
     }
 
     .hero-title {
@@ -714,12 +725,10 @@ footer p {
 
     .fb-post img {
         height: auto;
-        /* Images adjust height automatically */
     }
 
     footer {
         border-radius: 0;
-        /* Remove rounded corners */
     }
 
     .footer-content {
@@ -735,14 +744,21 @@ footer p {
 
     .section-title {
         font-size: 1.6rem;
-        /* Smaller section titles on very small screens */
+    }
+      .site-title {
+        font-size: 1rem; /* Even smaller on very small screens */
+
     }
 
     nav ul {
         width: 100%;
-        /* Use full width for nav on very small screens */
         max-width: none;
-        /* Remove max-width */
     }
-}
+     .menu-toggle {
+        padding: 0.3rem; /* Smaller padding */
+    }
+    .hamburger{
+        margin: 4px auto; /* Adjust as needed */
+    }
 
+}
