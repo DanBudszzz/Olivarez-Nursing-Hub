@@ -121,9 +121,3 @@ const headerObserver = new IntersectionObserver((entries) => {
 }, {
     rootMargin: '-1px 0px 0px 0px', // Trigger just before the hero section leaves the viewport
     threshold: 0 // Trigger as soon as any part of the target leaves
-});
-headerObserver.observe(heroSection); // Observe the hero section
-
-
-// Initialize
-window.addEventListener('DOMContentLoaded', loadFacebookPosts);
