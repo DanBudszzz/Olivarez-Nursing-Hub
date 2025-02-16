@@ -33,6 +33,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     animation: fadeInBody 0.8s ease-out forwards;
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 @keyframes fadeInBody {
@@ -92,14 +93,15 @@ header.hidden {
 
 .site-title {
     font-family: 'Poppins', sans-serif;
-    /* Use Poppins */
     font-size: 1.5rem;
     font-weight: 600;
-    color: white; /* White text for site title */
+    color: white;
     animation: slideInTitle 0.8s ease-out forwards;
     opacity: 0;
     transform: translateX(-20px);
-    white-space: nowrap; /* Prevent text wrapping */
+    /* white-space: nowrap;  Removed to allow wrapping */
+    flex: 1;       /* Allow the title to grow and shrink */
+    min-width: 0; /*  Important for flex item to shrink */
 }
 
 @keyframes slideInTitle {
@@ -111,27 +113,20 @@ header.hidden {
 
 .logo {
     height: 60px;
-    /* Slightly larger logo */
     width: auto;
     aspect-ratio: 1;
     border-radius: 50%;
-    /* Circular logo */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Elastic transition */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    /* Subtle shadow */
 }
 
 .logo:hover {
     transform: scale(1.15);
-    /* Enlarge on hover, no rotation */
-
 }
 
 /* Navigation Styles */
 nav {
     width: auto;
-    /* Reset width to auto */
 }
 
 nav ul {
@@ -141,58 +136,49 @@ nav ul {
     margin: 0;
 }
 
-/* Style for navigation links */
 nav a {
     display: flex;
     align-items: center;
-    color: white; /* White text color */
+    color: white;
     text-decoration: none;
     font-weight: 500;
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius);
     transition: background-color var(--transition-timing), color var(--transition-timing), transform 0.2s ease;
+    /* aspect-ratio: 1; Removed */
 }
-
 
 nav a:hover,
 nav a:focus {
     color: var(--primary-color-dark);
     background-color: var(--accent-color);
     transform: translateY(-2px);
-    /* Lift slightly */
     outline: none;
-
 }
 
-/* Style the icon within the nav link */
 nav a i {
     margin-right: 0.5rem;
-    /* Space between icon and text */
     transition: transform 0.3s ease;
-    /* Animate icon separately */
 }
 
 nav a:hover i,
 nav a:focus i {
     transform: scale(1.2);
-    /* Enlarge the icon on hover */
 }
 
-
 .menu-toggle {
-    display: none; /* Hidden by default, shown on mobile */
+    display: none;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     transition: transform 0.3s ease;
-
 }
 
 .hamburger {
     width: 25px;
     height: 3px;
-    background-color: white; /* White hamburger icon */
+    background-color: white;
     display: block;
     margin: 5px auto;
     transition: all 0.3s ease-in-out;
@@ -222,9 +208,7 @@ nav a:focus i {
     color: white;
     text-align: center;
     padding: 6rem 1rem;
-    /* More padding */
     overflow: hidden;
-    /* Hide any overflow */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -232,7 +216,7 @@ nav a:focus i {
 
 .hero-content {
     position: relative;
-    z-index: 2; /* Ensure content is above overlay */
+    z-index: 2;
 }
 
 .hero-overlay {
@@ -243,25 +227,21 @@ nav a:focus i {
     height: 100%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
         url('cover.jpg');
-    /* Replace with a high-quality image */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    /* Parallax effect */
-   filter: blur(2px); /* Add blur here */
+   filter: blur(2px);
     z-index: 1;
 
 }
 
 .hero-title {
     font-family: 'Poppins', sans-serif;
-    /* Use Poppins */
     font-size: 3.5rem;
-    /* Larger title */
     margin-bottom: 1rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.5s forwards;
-    opacity: 1; /* Ensure visible after animation */
+    opacity: 1;
 
 }
 
@@ -270,11 +250,9 @@ nav a:focus i {
     margin-bottom: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.8s forwards;
-    /* Slightly delayed animation */
-    opacity: 1; /* Ensure visible after animation */
+    opacity: 1;
 }
 
-/* Ensure hero text is visible */
 .hero-title, .hero-subtitle {
     position: relative;
     z-index: 3;
@@ -290,13 +268,12 @@ nav a:focus i {
     font-weight: 600;
     border-radius: 50px;
     margin-top: 1rem;
-    /* Transition without delay for snappier feel */
     transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 2px solid transparent;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-    animation: popIn 0.6s ease-out forwards; /* Removed delay */
+    animation: popIn 0.6s ease-out forwards;
     opacity: 1;
-    z-index: 3; /* Ensure it's above the overlay */
+    z-index: 3;
     position: relative;
 
 }
@@ -324,7 +301,6 @@ nav a:focus i {
 .container {
     max-width: var(--max-width);
     margin: 3rem auto;
-    /* More margin */
     padding: 0 2rem;
 }
 
@@ -335,7 +311,6 @@ nav a:focus i {
     margin-bottom: 2.5rem;
     box-shadow: var(--card-shadow);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow var(--transition-timing);
-    /* Elastic and shadow transition */
     animation: slideInCard 1s ease-out forwards;
     opacity: 0;
     transform: translateY(50px);
@@ -362,16 +337,13 @@ nav a:focus i {
 
 .card:hover {
     transform: translateY(-10px) scale(1.03);
-    /* More pronounced hover effect */
     box-shadow: var(--card-hover-shadow);
 }
 
 .section-title {
     color: var(--primary-color);
     font-family: 'Poppins', sans-serif;
-    /* Use Poppins */
     font-size: 2rem;
-    /* Larger title */
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -379,7 +351,6 @@ nav a:focus i {
     position: relative;
 }
 
-/* Add an underline effect to section titles */
 .section-title::after {
     content: '';
     position: absolute;
@@ -403,19 +374,16 @@ nav a:focus i {
 
 .card-btn {
     margin-top: auto;
-    /* Push button to the bottom */
     align-self: flex-start;
-    /* Align button to the left */
-    /* Use the same styles as .cta-btn, but adjust animation */
     display: inline-block;
     background-color: var(--secondary-color);
     color: white;
-    padding: 0.8rem 1.8rem; /* Slightly smaller padding */
+    padding: 0.8rem 1.8rem;
     text-decoration: none;
-    font-size: 1rem; /* Slightly smaller font */
+    font-size: 1rem;
     font-weight: 600;
     border-radius: 50px;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* No delay */
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 2px solid transparent;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
 }
@@ -441,7 +409,6 @@ nav a:focus i {
 
 #facebook-feed-container::-webkit-scrollbar {
     height: 8px;
-    /* Slightly thicker scrollbar */
 }
 
 #facebook-feed-container::-webkit-scrollbar-thumb {
@@ -468,16 +435,13 @@ nav a:focus i {
 
 .fb-post {
     flex: 0 0 320px;
-    /* Slightly wider posts */
     background: white;
     border-radius: var(--border-radius);
     padding: 1.5rem;
     scroll-snap-align: start;
     box-shadow: var(--card-shadow);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-    /* Elastic transition */
     display: flex;
-    /* Use flexbox for layout */
     flex-direction: column;
     overflow: hidden;
     position: relative;
@@ -491,28 +455,21 @@ nav a:focus i {
     left: 0;
     width: 100%;
     height: 5px;
-    /* Top border */
     background-color: var(--accent-color);
-    /* Accent color border */
-
 }
 
 .fb-post:hover {
     transform: scale(1.04);
-    /* Slightly larger scale */
     box-shadow: var(--card-hover-shadow);
 }
 
 .fb-post img {
     width: 100%;
     height: 220px;
-    /* Slightly taller images */
     object-fit: cover;
     border-radius: var(--border-radius);
-    /* Rounded corners */
     margin-bottom: 1rem;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Elastic scaling */
 }
 
 .fb-post:hover img {
@@ -547,14 +504,11 @@ nav a:focus i {
 .loading-spinner {
     display: none;
     width: 50px;
-    /* Larger spinner */
     height: 50px;
     border: 5px solid var(--bg-color);
-    /* Use background color */
     border-top: 5px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1.2s linear infinite;
-    /* Slightly slower spin */
     margin: 2rem auto;
 }
 
@@ -570,16 +524,13 @@ nav a:focus i {
 
 .error-message {
     color: #D8000C;
-    /* Red color for errors */
     background-color: #FFD2D2;
     border: 1px solid #D8000C;
     text-align: center;
     padding: 1rem;
     border-radius: var(--border-radius);
     display: none;
-    /* Hidden by default */
     font-weight: 500;
-    /* Make the error message stand out */
 }
 
 /* Footer Styles */
@@ -622,35 +573,41 @@ footer {
 
 
 /* Mobile Responsive */
-/* Corrected Mobile Header Layout */
 @media (max-width: 768px) {
     header {
         padding: 0 1rem;
-        height: 60px; /* Keep consistent height */
+        height: 60px;
+        /* Use flexbox for header layout */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    .logo-container {
-        gap: 0.5rem; /* Adjust gap */
+     .logo-container {
+        gap: 0.5rem;
     }
+
     .logo {
-        height: 50px; /* Smaller logo */
+        height: 50px;
     }
+
     .site-title {
-        font-size: 1rem; /* Smaller font size */
+        font-size: 1rem;
         margin-left: 0;
-        max-width: calc(100% - 120px); /* Limit width to prevent overlap */
+        /* Allow title to grow and shrink */
+        flex: 1;
+        min-width: 0; /*  Important for flex item shrinking */
     }
 
     nav {
         order: 3;
         width: 100%;
     }
-
-     /* Mobile Menu - Position to the LEFT */
+    /* Mobile Menu - Position to the LEFT */
     nav ul {
         position: fixed;
         top: 60px;
-        left: -100%; /* Hide off-screen to the LEFT */
-        right: auto;   /* Reset right positioning */
+        left: -100%;  /* Hide off-screen to the LEFT */
+        right: auto;  /* Reset right positioning */
         flex-direction: column;
         background-color: white;
         width: 70%;
@@ -659,17 +616,17 @@ footer {
         padding: 2rem;
         transition: left var(--transition-timing); /* Animate the 'left' property */
         z-index: 1010;
-        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow on the RIGHT */
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);  /* Shadow on the RIGHT */
         overflow-y: auto;
     }
-     nav ul.active {
-        left: 0; /* Slide in from the LEFT */
-        right: auto; /* Reset right */
-    }
-
 
     .nav-links {
         padding-top: 1rem;
+    }
+
+      nav ul.active {
+        left: 0;  /* Slide in from the LEFT */
+        right: auto; /* Reset Right*/
     }
 
     nav ul li {
@@ -689,15 +646,11 @@ footer {
     nav ul li:last-child {
         margin-bottom: 0;
     }
-    /* Show menu toggle and position correctly */
-   .menu-toggle {
+   /* Show and position menu toggle */
+    .menu-toggle {
         display: block;
-        order: 1;       /* Menu toggle comes *first* */
-        margin-right: 0; /* Reset margin */
-        margin-left: 0;  /* Reset margin */
-
+        margin-left: auto; /* Push to the right */
     }
-
 
     .hamburger {
         background-color: white;
@@ -735,6 +688,10 @@ footer {
     .fb-post img {
         height: auto;
     }
+      .card-btn {
+        width: 100%; /* Full-width buttons */
+        padding: 0.7rem 1rem; /* Adjust padding */
+    }
 
     footer {
         border-radius: 0;
@@ -745,23 +702,23 @@ footer {
     }
 }
 
-/* Further refinements for very small screens */
 @media (max-width: 480px) {
     .cta-btn {
-        padding: 0.8rem 1.6rem; /* Slightly less padding */
+        padding: 0.8rem 1.6rem;
         font-size: 1rem;
     }
 
     .section-title {
-        font-size: 1.5rem; /* Slightly smaller */
+        font-size: 1.5rem;
     }
       .site-title {
-        font-size: 0.9rem; /* Even smaller on very small screens */
-
+        font-size: 0.9rem; /* Even smaller */
     }
+
+
     nav ul {
         width: 100%;
-        max-width: none; /* Full width */
+        max-width: none;
     }
 
     .menu-toggle {
@@ -771,9 +728,6 @@ footer {
     .hamburger {
         margin: 4px auto;
     }
-    .card-btn{
-        padding: 0.6rem 1.2rem;
-        font-size: 0.9rem;
-    }
 
 }
+
