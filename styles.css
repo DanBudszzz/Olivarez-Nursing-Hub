@@ -33,7 +33,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     animation: fadeInBody 0.8s ease-out forwards;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    /* overflow-x: hidden; Removed to avoid hiding legitimate content */
 }
 
 @keyframes fadeInBody {
@@ -76,7 +76,7 @@ header {
     height: var(--header-height);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Key for header layout */
     transition: transform var(--transition-timing), box-shadow var(--transition-timing);
 }
 
@@ -99,9 +99,8 @@ header.hidden {
     animation: slideInTitle 0.8s ease-out forwards;
     opacity: 0;
     transform: translateX(-20px);
-    /* white-space: nowrap;  Removed to allow wrapping */
-    flex: 1;       /* Allow the title to grow and shrink */
-    min-width: 0; /*  Important for flex item to shrink */
+    flex: 1;      /* Allow title to grow/shrink */
+    min-width: 0; /*  Essential for flex item shrinking */
 }
 
 @keyframes slideInTitle {
@@ -126,7 +125,8 @@ header.hidden {
 
 /* Navigation Styles */
 nav {
-    width: auto;
+    width: auto; /* Reset width to auto */
+
 }
 
 nav ul {
@@ -145,7 +145,6 @@ nav a {
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius);
     transition: background-color var(--transition-timing), color var(--transition-timing), transform 0.2s ease;
-    /* aspect-ratio: 1; Removed */
 }
 
 nav a:hover,
@@ -166,6 +165,7 @@ nav a:focus i {
     transform: scale(1.2);
 }
 
+/*  Hidden by default, shown on mobile */
 .menu-toggle {
     display: none;
     background: none;
@@ -175,6 +175,7 @@ nav a:focus i {
     transition: transform 0.3s ease;
 }
 
+/* White hamburger icon */
 .hamburger {
     width: 25px;
     height: 3px;
@@ -580,43 +581,43 @@ footer {
         /* Use flexbox for header layout */
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: space-between; /* Correctly distribute space */
     }
-     .logo-container {
+    .logo-container{
         gap: 0.5rem;
     }
 
+    /*  Smaller logo */
     .logo {
         height: 50px;
     }
-
+	/* Smaller font size and allow wrapping */
     .site-title {
         font-size: 1rem;
         margin-left: 0;
-        /* Allow title to grow and shrink */
-        flex: 1;
-        min-width: 0; /*  Important for flex item shrinking */
+        flex: 1;          /* Allow title to grow/shrink */
+        min-width: 0;     /*  Essential for flex shrinking */
     }
 
     nav {
         order: 3;
         width: 100%;
     }
-    /* Mobile Menu - Position to the LEFT */
+/* Mobile Menu - Position to the RIGHT */
     nav ul {
         position: fixed;
         top: 60px;
-        left: -100%;  /* Hide off-screen to the LEFT */
-        right: auto;  /* Reset right positioning */
+        right: -100%; /* Hide off-screen to the RIGHT */
+        left: auto;    /* Reset left positioning */
         flex-direction: column;
         background-color: white;
         width: 70%;
         max-width: 300px;
         height: calc(100vh - 60px);
         padding: 2rem;
-        transition: left var(--transition-timing); /* Animate the 'left' property */
+        transition: right var(--transition-timing); /* Animate 'right' */
         z-index: 1010;
-        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);  /* Shadow on the RIGHT */
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow on the LEFT */
         overflow-y: auto;
     }
 
@@ -624,9 +625,9 @@ footer {
         padding-top: 1rem;
     }
 
-      nav ul.active {
-        left: 0;  /* Slide in from the LEFT */
-        right: auto; /* Reset Right*/
+    nav ul.active {
+		right: 0; /* Slide in from the RIGHT */
+		left: auto; /* Reset left*/
     }
 
     nav ul li {
@@ -646,10 +647,11 @@ footer {
     nav ul li:last-child {
         margin-bottom: 0;
     }
-   /* Show and position menu toggle */
+
+    /* Show, position menu toggle */
     .menu-toggle {
         display: block;
-        margin-left: auto; /* Push to the right */
+        margin-left: auto; /*Push to right*/
     }
 
     .hamburger {
@@ -712,9 +714,8 @@ footer {
         font-size: 1.5rem;
     }
       .site-title {
-        font-size: 0.9rem; /* Even smaller */
+        font-size: 0.8rem; /* Even smaller */
     }
-
 
     nav ul {
         width: 100%;
