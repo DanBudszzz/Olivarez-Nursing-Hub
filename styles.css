@@ -1,20 +1,16 @@
 /* CSS Variables */
 :root {
-    --primary-color: #00796B; /* Teal */
-    --primary-color-light: #4DB6AC;
-    --primary-color-dark: #004D40;
-    --secondary-color: #FFC107; /* Amber */
-    --secondary-color-light: #FFD54F;
-    --accent-color: #03A9F4; /* Light Blue */
-    --text-color: #212121; /* Dark Gray */
-    --text-color-light: #757575;
-    --bg-color: #FAFAFA; /* Very Light Gray */
-    --header-height: 80px; /* Increased height */
-    --transition-timing: 0.3s ease;
-    --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    --max-width: 1200px;
-    --border-radius: 12px; /* Rounded corners */
+  --primary-color: #4CAF50;
+  --secondary-color: #388E3C;
+  --accent-color: #81C784;
+  --text-color: #2C3E50;
+  --bg-color: #F4F4F4;
+  --header-height: 80px; /* Increased height */
+  --transition-timing: 0.3s ease;
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --max-width: 1200px;
+  --border-radius: 12px; /* Rounded corners */
 }
 
 /* Reset and Base Styles */
@@ -29,7 +25,7 @@ html {
 }
 
 body {
-    font-family: 'Nunito Sans', sans-serif; /* Changed body font */
+    font-family: 'Nunito Sans', sans-serif;
     line-height: 1.6;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -61,8 +57,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: white; /* Changed to white */
-    color: var(--primary-color); /* Changed text color */
+    background-color: white;
+    color: var(--primary-color);
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -83,17 +79,17 @@ header.hidden {
 .logo-container {
     display: flex;
     align-items: center;
-    gap: 1rem; /* Space between logo and title */
+    gap: 1rem;
 }
 
 .site-title {
-    font-family: 'Poppins', sans-serif; /* Use Poppins for site title */
+    font-family: 'Poppins', sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--primary-color);
-    animation: slideInTitle 0.8s ease-out forwards; /* Animate site title */
-    opacity: 0; /* Start invisible */
-    transform: translateX(-20px); /* Start slightly offscreen */
+    animation: slideInTitle 0.8s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-20px);
 }
 
 @keyframes slideInTitle {
@@ -114,6 +110,9 @@ header.hidden {
 }
 
 /* Navigation Styles */
+nav {
+  width: auto; /* Reset width to auto */
+}
 nav ul {
     list-style: none;
     display: flex;
@@ -127,7 +126,7 @@ nav a {
   color: var(--text-color-light);
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem 1rem; /* More padding */
+  padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
   transition: background-color var(--transition-timing), color var(--transition-timing), transform 0.2s ease;
 }
@@ -135,7 +134,7 @@ nav a {
 nav a:hover,
 nav a:focus {
   color: var(--primary-color);
-  background-color: rgba(0, 121, 107, 0.1); /* Very light teal background */
+  background-color: rgba(76, 175, 80, 0.1); /* Very light teal background */
   transform: translateY(-2px); /* Lift slightly */
   outline: none;
 
@@ -234,15 +233,15 @@ nav a:hover i, nav a:focus i {
 
 .cta-btn {
   display: inline-block;
-  background-color: var(--secondary-color); /* Use Amber */
-  color: var(--text-color);
-  padding: 1rem 2.5rem; /* More padding */
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 1rem 2.5rem;
   text-decoration: none;
   font-size: 1.2rem;
-  font-weight: 600; /* Bolder */
-  border-radius: 50px; /* Pill shape */
+  font-weight: 600;
+  border-radius: 50px;
   margin-top: 1rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Elastic transition */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 2px solid transparent;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
     animation: popIn 0.8s ease-out 1s forwards; /* "Pop in" animation */
@@ -251,7 +250,7 @@ nav a:hover i, nav a:focus i {
 }
 
 .cta-btn:hover {
-    background-color: var(--secondary-color-light);
+    background-color: var(--accent-color);
     transform: scale(1.05); /* Enlarge on hover */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     color: var(--text-color-dark);
@@ -459,7 +458,7 @@ nav a:hover i, nav a:focus i {
 
 /* Footer Styles */
 footer {
-    background-color: var(--primary-color-dark);
+    background-color: var(--secondary-color);
     color: white;
     text-align: center;
     padding: 2rem;
@@ -488,90 +487,109 @@ footer p{
     animation: fadeInUp 1.5s ease forwards;
     opacity: 0;
 }
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     header {
         padding: 0 1rem;
         height: 60px; /* Reduce header height on mobile */
-
     }
-     .site-title {
+
+    .site-title {
         font-size: 1.2rem; /* Smaller title on mobile */
     }
+
     .logo {
         height: 50px; /* Smaller logo on mobile */
     }
-    nav {
-      order: 3; /* Place nav after the menu toggle */
-      width: 100%; /* Full width */
-  }
-    nav ul {
-        position: fixed;
-        top: 60px; /* Adjusted top position */
-        right: -100%;
-        flex-direction: column;
-        background-color: white; /* Solid background */
-        width: 70%; /* Wider menu */
-        height: calc(100vh - 60px); /* Adjusted height */
-        padding: 2rem;
-        transition: right var(--transition-timing);
-        z-index: 1010;
-        box-shadow: -5px 0 15px rgba(0,0,0,0.2); /* Shadow on the left */
-        overflow-y: auto; /* Allow scrolling within the menu */
 
+    /* Corrected Navigation for Mobile */
+    nav {
+        order: 3; /* Place nav after the menu toggle (important for layout) */
+        width: 100%; /* Nav takes full width */
     }
-    .nav-links{
+
+    nav ul {
+        position: fixed; /* Fixed positioning for the menu */
+        top: 60px; /* Position below the header */
+        right: -100%; /* Initially hidden off-screen */
+        flex-direction: column; /* Stack links vertically */
+        background-color: white; /* Solid background */
+        width: 70%; /* Menu width */
+        max-width: 300px; /* Limit maximum width*/
+        height: calc(100vh - 60px); /* Fill the viewport height, minus header */
+        padding: 2rem;
+        transition: right var(--transition-timing); /* Smooth slide-in */
+        z-index: 1010;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow */
+        overflow-y: auto; /* Allow scrolling if content overflows */
+    }
+
+    .nav-links {
         padding-top: 1rem;
     }
+
     nav ul.active {
-        right: 0;
+        right: 0; /* Slide in the menu */
     }
+
     nav ul li {
-    margin-bottom: 1rem; /* More spacing */
-}
+        margin-bottom: 1rem; /* Spacing between links */
+    }
+    nav a{
+        padding: 0.8rem 1rem;
+    }
 
     nav ul li:last-child {
-        margin-bottom: 0;
+        margin-bottom: 0; /* Remove margin from last item */
     }
 
     .menu-toggle {
-        display: block;
-        order: 2;
+        display: block; /* Show the menu toggle */
+        order: 2; /* Position menu toggle before logo */
     }
+
+    /* Hero Section */
     .hero {
-    padding: 4rem 1rem; /* Less padding on mobile */
-}
+        padding: 4rem 1rem; /* Less padding on mobile */
+    }
+
     .hero-title {
-    font-size: 2.5rem; /* Smaller title on mobile */
-}
-    .hero-subtitle{
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
         font-size: 1.2rem;
     }
-.container {
-    padding: 0 1rem;
-    margin: 2rem auto;
-  }
+
+    .container {
+        padding: 0 1rem;
+        margin: 2rem auto;
+    }
+
+    /* Facebook Feed */
     #facebook-feed-container {
         flex-direction: column;
         align-items: center;
-        overflow-x: hidden; /* Prevent horizontal scrolling */
+        overflow-x: hidden;
     }
 
     .fb-post {
-        width: 95%; /* Full width posts */
+        width: 95%;
         margin-bottom: 1.5rem;
-        flex: 0 0 auto; /* Reset flex-shrink and flex-basis */
-
-    }
-      .fb-post img {
-        height: auto; /* Let images adjust their height */
+        flex: 0 0 auto;
     }
 
-     footer {
-        border-radius: 0; /* No rounded corners on mobile */
+    .fb-post img {
+        height: auto; /* Images adjust height automatically */
     }
-     .footer-content {
-        flex-direction: column; /* Stack logo and text vertically */
+
+    footer {
+        border-radius: 0; /* Remove rounded corners */
+    }
+
+    .footer-content {
+        flex-direction: column;
     }
 }
 @media (max-width: 480px){
@@ -581,5 +599,9 @@ footer p{
     }
      .section-title {
         font-size: 1.6rem; /* Smaller section titles on very small screens */
+    }
+    nav ul {
+      width: 100%; /* Use full width for nav on very small screens */
+      max-width: none; /* Remove max-width */
     }
 }
