@@ -28,6 +28,7 @@ html {
 
 body {
     font-family: 'Nunito Sans', sans-serif;
+    /* Use Nunito Sans */
     line-height: 1.6;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -64,8 +65,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--primary-color); /* Restored green background */
+    color: white;  /* White text for contrast */
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -91,12 +92,14 @@ header.hidden {
 
 .site-title {
     font-family: 'Poppins', sans-serif;
+    /* Use Poppins */
     font-size: 1.5rem;
     font-weight: 600;
-    color: white;
+    color: white; /* White text for site title */
     animation: slideInTitle 0.8s ease-out forwards;
     opacity: 0;
     transform: translateX(-20px);
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 @keyframes slideInTitle {
@@ -108,20 +111,27 @@ header.hidden {
 
 .logo {
     height: 60px;
+    /* Slightly larger logo */
     width: auto;
     aspect-ratio: 1;
     border-radius: 50%;
+    /* Circular logo */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Elastic transition */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
 }
 
 .logo:hover {
     transform: scale(1.15);
+    /* Enlarge on hover, no rotation */
+
 }
 
 /* Navigation Styles */
 nav {
     width: auto;
+    /* Reset width to auto */
 }
 
 nav ul {
@@ -131,10 +141,11 @@ nav ul {
     margin: 0;
 }
 
+/* Style for navigation links */
 nav a {
     display: flex;
     align-items: center;
-    color: white;
+    color: white; /* White text color */
     text-decoration: none;
     font-weight: 500;
     padding: 0.5rem 1rem;
@@ -142,37 +153,46 @@ nav a {
     transition: background-color var(--transition-timing), color var(--transition-timing), transform 0.2s ease;
 }
 
+
 nav a:hover,
 nav a:focus {
     color: var(--primary-color-dark);
     background-color: var(--accent-color);
     transform: translateY(-2px);
+    /* Lift slightly */
     outline: none;
+
 }
 
+/* Style the icon within the nav link */
 nav a i {
     margin-right: 0.5rem;
+    /* Space between icon and text */
     transition: transform 0.3s ease;
+    /* Animate icon separately */
 }
 
 nav a:hover i,
 nav a:focus i {
     transform: scale(1.2);
+    /* Enlarge the icon on hover */
 }
 
+
 .menu-toggle {
-    display: none;
+    display: none; /* Hidden by default, shown on mobile */
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     transition: transform 0.3s ease;
+
 }
 
 .hamburger {
     width: 25px;
     height: 3px;
-    background-color: white;
+    background-color: white; /* White hamburger icon */
     display: block;
     margin: 5px auto;
     transition: all 0.3s ease-in-out;
@@ -202,7 +222,9 @@ nav a:focus i {
     color: white;
     text-align: center;
     padding: 6rem 1rem;
+    /* More padding */
     overflow: hidden;
+    /* Hide any overflow */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,7 +232,7 @@ nav a:focus i {
 
 .hero-content {
     position: relative;
-    z-index: 2;
+    z-index: 2; /* Ensure content is above overlay */
 }
 
 .hero-overlay {
@@ -221,21 +243,25 @@ nav a:focus i {
     height: 100%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
         url('cover.jpg');
+    /* Replace with a high-quality image */
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-   filter: blur(2px);
+    /* Parallax effect */
+   filter: blur(2px); /* Add blur here */
     z-index: 1;
 
 }
 
 .hero-title {
     font-family: 'Poppins', sans-serif;
+    /* Use Poppins */
     font-size: 3.5rem;
+    /* Larger title */
     margin-bottom: 1rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.5s forwards;
-    opacity: 1;
+    opacity: 1; /* Ensure visible after animation */
 
 }
 
@@ -244,9 +270,11 @@ nav a:focus i {
     margin-bottom: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.8s forwards;
-    opacity: 1;
+    /* Slightly delayed animation */
+    opacity: 1; /* Ensure visible after animation */
 }
 
+/* Ensure hero text is visible */
 .hero-title, .hero-subtitle {
     position: relative;
     z-index: 3;
@@ -268,7 +296,7 @@ nav a:focus i {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
     animation: popIn 0.6s ease-out forwards; /* Removed delay */
     opacity: 1;
-    z-index: 3;
+    z-index: 3; /* Ensure it's above the overlay */
     position: relative;
 
 }
@@ -296,6 +324,7 @@ nav a:focus i {
 .container {
     max-width: var(--max-width);
     margin: 3rem auto;
+    /* More margin */
     padding: 0 2rem;
 }
 
@@ -306,6 +335,7 @@ nav a:focus i {
     margin-bottom: 2.5rem;
     box-shadow: var(--card-shadow);
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow var(--transition-timing);
+    /* Elastic and shadow transition */
     animation: slideInCard 1s ease-out forwards;
     opacity: 0;
     transform: translateY(50px);
@@ -332,13 +362,16 @@ nav a:focus i {
 
 .card:hover {
     transform: translateY(-10px) scale(1.03);
+    /* More pronounced hover effect */
     box-shadow: var(--card-hover-shadow);
 }
 
 .section-title {
     color: var(--primary-color);
     font-family: 'Poppins', sans-serif;
+    /* Use Poppins */
     font-size: 2rem;
+    /* Larger title */
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -346,6 +379,7 @@ nav a:focus i {
     position: relative;
 }
 
+/* Add an underline effect to section titles */
 .section-title::after {
     content: '';
     position: absolute;
@@ -369,7 +403,9 @@ nav a:focus i {
 
 .card-btn {
     margin-top: auto;
+    /* Push button to the bottom */
     align-self: flex-start;
+    /* Align button to the left */
     /* Use the same styles as .cta-btn, but adjust animation */
     display: inline-block;
     background-color: var(--secondary-color);
@@ -405,6 +441,7 @@ nav a:focus i {
 
 #facebook-feed-container::-webkit-scrollbar {
     height: 8px;
+    /* Slightly thicker scrollbar */
 }
 
 #facebook-feed-container::-webkit-scrollbar-thumb {
@@ -431,13 +468,16 @@ nav a:focus i {
 
 .fb-post {
     flex: 0 0 320px;
+    /* Slightly wider posts */
     background: white;
     border-radius: var(--border-radius);
     padding: 1.5rem;
     scroll-snap-align: start;
     box-shadow: var(--card-shadow);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    /* Elastic transition */
     display: flex;
+    /* Use flexbox for layout */
     flex-direction: column;
     overflow: hidden;
     position: relative;
@@ -451,21 +491,28 @@ nav a:focus i {
     left: 0;
     width: 100%;
     height: 5px;
+    /* Top border */
     background-color: var(--accent-color);
+    /* Accent color border */
+
 }
 
 .fb-post:hover {
     transform: scale(1.04);
+    /* Slightly larger scale */
     box-shadow: var(--card-hover-shadow);
 }
 
 .fb-post img {
     width: 100%;
     height: 220px;
+    /* Slightly taller images */
     object-fit: cover;
     border-radius: var(--border-radius);
+    /* Rounded corners */
     margin-bottom: 1rem;
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Elastic scaling */
 }
 
 .fb-post:hover img {
@@ -500,11 +547,14 @@ nav a:focus i {
 .loading-spinner {
     display: none;
     width: 50px;
+    /* Larger spinner */
     height: 50px;
     border: 5px solid var(--bg-color);
+    /* Use background color */
     border-top: 5px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1.2s linear infinite;
+    /* Slightly slower spin */
     margin: 2rem auto;
 }
 
@@ -520,13 +570,16 @@ nav a:focus i {
 
 .error-message {
     color: #D8000C;
+    /* Red color for errors */
     background-color: #FFD2D2;
     border: 1px solid #D8000C;
     text-align: center;
     padding: 1rem;
     border-radius: var(--border-radius);
     display: none;
+    /* Hidden by default */
     font-weight: 500;
+    /* Make the error message stand out */
 }
 
 /* Footer Styles */
@@ -563,30 +616,28 @@ footer {
 .footer-text p {
     color: white;
     animation: fadeInUp 1.5s ease forwards;
-    opacity: 1;  /* Ensure visible */
+    opacity: 1;
     margin: 0.5rem 0;
 }
 
 
 /* Mobile Responsive */
+/* Corrected Mobile Header Layout */
 @media (max-width: 768px) {
     header {
         padding: 0 1rem;
-        height: 60px;
+        height: 60px; /* Keep consistent height */
     }
-
-    .site-title {
-        font-size: 1.2rem;
-        margin-left: 0;
-
-    }
-
     .logo-container {
-        gap: 0.5rem;
+        gap: 0.5rem; /* Adjust gap */
     }
-
     .logo {
-        height: 50px;
+        height: 50px; /* Smaller logo */
+    }
+    .site-title {
+        font-size: 1rem; /* Smaller font size */
+        margin-left: 0;
+        max-width: calc(100% - 120px); /* Limit width to prevent overlap */
     }
 
     nav {
@@ -594,29 +645,31 @@ footer {
         width: 100%;
     }
 
+     /* Mobile Menu - Position to the LEFT */
     nav ul {
         position: fixed;
         top: 60px;
-        right: -100%;
+        left: -100%; /* Hide off-screen to the LEFT */
+        right: auto;   /* Reset right positioning */
         flex-direction: column;
         background-color: white;
         width: 70%;
         max-width: 300px;
         height: calc(100vh - 60px);
         padding: 2rem;
-        transition: right var(--transition-timing);
+        transition: left var(--transition-timing); /* Animate the 'left' property */
         z-index: 1010;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow on the RIGHT */
         overflow-y: auto;
-
     }
+     nav ul.active {
+        left: 0; /* Slide in from the LEFT */
+        right: auto; /* Reset right */
+    }
+
 
     .nav-links {
         padding-top: 1rem;
-    }
-
-    nav ul.active {
-        right: 0;
     }
 
     nav ul li {
@@ -636,13 +689,15 @@ footer {
     nav ul li:last-child {
         margin-bottom: 0;
     }
-
-    .menu-toggle {
+    /* Show menu toggle and position correctly */
+   .menu-toggle {
         display: block;
-        order: 2;
-        margin-left: auto;
+        order: 1;       /* Menu toggle comes *first* */
+        margin-right: 0; /* Reset margin */
+        margin-left: 0;  /* Reset margin */
 
     }
+
 
     .hamburger {
         background-color: white;
@@ -690,24 +745,23 @@ footer {
     }
 }
 
+/* Further refinements for very small screens */
 @media (max-width: 480px) {
     .cta-btn {
-        padding: 0.8rem 1.8rem;
+        padding: 0.8rem 1.6rem; /* Slightly less padding */
         font-size: 1rem;
     }
 
     .section-title {
-        font-size: 1.6rem;
+        font-size: 1.5rem; /* Slightly smaller */
     }
-
-    .site-title {
-        font-size: 1rem;
+      .site-title {
+        font-size: 0.9rem; /* Even smaller on very small screens */
 
     }
-
     nav ul {
         width: 100%;
-        max-width: none;
+        max-width: none; /* Full width */
     }
 
     .menu-toggle {
@@ -717,5 +771,9 @@ footer {
     .hamburger {
         margin: 4px auto;
     }
-}
+    .card-btn{
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
 
+}
