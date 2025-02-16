@@ -65,8 +65,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: var(--primary-color);
-    color: white;
+    background-color: var(--primary-color); /* Restored green background */
+    color: white;  /* White text for contrast */
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -125,11 +125,18 @@ header.hidden {
     transform: scale(1.15);
 }
 
-
+/* Navigation Styles */
 /* Desktop Navigation (Hidden on Mobile) */
 .desktop-nav {
-    width: auto; /* Let content determine width */
+  display: block; /* Initially visible */
 }
+
+@media (max-width: 768px) { /* Hide on mobile */
+  .desktop-nav {
+    display: none;
+  }
+}
+
 
 .desktop-nav ul {
     list-style: none;
@@ -167,7 +174,6 @@ header.hidden {
     transform: scale(1.2);
 }
 
-
 /* Mobile Navigation (Hidden on Desktop, initially off-screen) */
 .mobile-nav {
     position: fixed; /* Fixed position */
@@ -182,7 +188,16 @@ header.hidden {
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2); /* Shadow on the left */
     overflow-y: auto;  /* Scrollable if content overflows */
      transition: right var(--transition-timing); /* Smooth transition */
+    display: none; /* Initially hidden*/
 
+}
+
+
+/* Show mobile nav and hide desktop nav on smaller screens */
+@media (max-width: 768px) {
+    .mobile-nav {
+      display: block; /* Show on mobile */
+    }
 }
 
 .mobile-nav.active {
@@ -228,6 +243,13 @@ header.hidden {
     transition: transform 0.3s ease;
     margin-left: auto; /* Push to the right */
     z-index: 1011; /* Ensure it's above the mobile nav */
+}
+
+/* Hide menu toggle on larger screens */
+@media (min-width: 769px) {
+    .menu-toggle {
+        display: none;
+    }
 }
 
 .hamburger {
@@ -301,7 +323,7 @@ header.hidden {
 }
 
 .hero-subtitle {
-    font-size:1.5rem;
+    font-size: 1.5rem;
     margin-bottom: 2rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.8s forwards;
@@ -629,11 +651,10 @@ footer {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-     /* Header */
     header {
         padding: 0 1rem;
         height: 60px;
-        justify-content: space-between; /* Essential for layout */
+        justify-content: space-between; /* Ensure proper spacing */
     }
      .logo-container {
         gap: 0.5rem;
@@ -711,10 +732,9 @@ footer {
     .fb-post img {
         height: auto;
     }
-
-    .card-btn {
-        width: 100%;
-        padding: 0.7rem 1rem;
+      .card-btn {
+        width: 100%; /* Full-width buttons */
+        padding: 0.7rem 1rem; /* Adjust padding */
     }
 
     footer {
@@ -740,25 +760,26 @@ footer {
     .site-title {
         font-size: 0.7rem; /* Even smaller */
     }
-     .menu-toggle {
-        padding: 0.3rem;  /* Smaller padding */
+
+    .menu-toggle {
+        padding: 0.3rem;
     }
 
     .hamburger {
-        margin: 4px auto; /* Adjust as needed */
+        margin: 4px auto;
     }
 }
+
 /* Small Screens (e.g., Tablets) */
 @media (min-width: 769px) and (max-width: 1024px) {
-  .site-title {
-    font-size: 1.2rem; /* Adjust as needed */
-  }
-  .logo {
-    height: 55px;
-  }
-  .menu-toggle{
-    margin-right: 0.5rem;
-  }
-    /* Adjust other elements as needed for tablet sizes */
+.site-title {
+ font-size: 1.2rem;
+}
+.logo{
+ height: 55px;
+}
+.menu-toggle{
+ margin-right: .5rem;
+}
 }
 
