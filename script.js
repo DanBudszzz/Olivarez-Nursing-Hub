@@ -13,7 +13,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            const headerOffset = document.querySelector('header').offsetHeight; // Get header height
+            const headerOffset = document.querySelector('header').offsetHeight;
             const elementPosition = target.offsetTop;
             const offsetPosition = elementPosition - headerOffset;
 
@@ -22,8 +22,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 behavior: 'smooth'
             });
 
-
-            // Close the mobile menu if it's open
+            // Close mobile menu
             if (navMenu.classList.contains('active')) {
                 navMenu.classList.remove('active');
                 menuToggle.setAttribute('aria-expanded', false);
@@ -32,16 +31,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Facebook Feed Loader
+// Facebook Feed Loader (same as before - no changes needed here)
 async function loadFacebookPosts() {
     const container = document.getElementById('facebook-feed-container');
     const spinner = document.querySelector('.loading-spinner');
     const errorElement = document.getElementById('feed-error');
 
     try {
-        container.innerHTML = ''; // Clear previous content
-        errorElement.style.display = 'none'; // Hide error message
-        spinner.style.display = 'block'; // Show spinner
+        container.innerHTML = '';
+        errorElement.style.display = 'none';
+        spinner.style.display = 'block';
 
         const response = await fetch('https://rss.app/feeds/YcJYp5AdNjDK7Vmq.xml');
         if (!response.ok) {
@@ -53,36 +52,30 @@ async function loadFacebookPosts() {
         const xmlDoc = parser.parseFromString(xml, "text/xml");
         const items = xmlDoc.querySelectorAll('item');
 
-
         if (items.length === 0) {
           errorElement.textContent = 'No updates found.';
           errorElement.style.display = 'block';
-          return; // Exit if no items
+          return;
         }
-
 
         items.forEach((item, index) => {
             const title = item.querySelector('title').textContent;
             const link = item.querySelector('link').textContent;
             const date = new Date(item.querySelector('pubDate').textContent).toLocaleDateString();
-            // Use querySelectorAll to find all possible media content tags
             const mediaContents = item.querySelectorAll('media\\:content, content');
             let image = null;
 
-            // Find the first image with a valid URL
             for (const media of mediaContents) {
                 const url = media.getAttribute('url');
                 if (url && (url.endsWith('.jpg') || url.endsWith('.png') || url.endsWith('.jpeg') || url.endsWith('.gif'))) {
                     image = url;
-                    break; // Stop searching after the first valid image
+                    break;
                 }
             }
 
-
             const article = document.createElement('article');
             article.classList.add('fb-post');
-              article.style.animationDelay = `${index * 0.1}s`; // Staggered animation
-
+            article.style.animationDelay = `${index * 0.1}s`;
 
             let contentHTML = '';
 
@@ -90,40 +83,40 @@ async function loadFacebookPosts() {
                 const imgElement = document.createElement('img');
                 imgElement.src = image;
                 imgElement.alt = title;
-                imgElement.loading = "lazy"; // Lazy loading
-                contentHTML += imgElement.outerHTML; // Add image to content
+                imgElement.loading = "lazy";
+                contentHTML += imgElement.outerHTML;
             }
 
-            contentHTML += `<h3><a href="${link}" target="_blank" rel="noopener">${title}</a></h3>`; // Title
-            contentHTML += `<time datetime="${date}">Posted: ${date}</time>`; // Date
+            contentHTML += `<h3><a href="${link}" target="_blank" rel="noopener">${title}</a></h3>`;
+            contentHTML += `<time datetime="${date}">Posted: ${date}</time>`;
             article.innerHTML = contentHTML;
             container.appendChild(article);
         });
 
     } catch (error) {
         errorElement.textContent = 'Failed to load updates. Please try again later.';
-        errorElement.style.display = 'block'; // Show error
+        errorElement.style.display = 'block';
         console.error('Feed Error:', error);
     } finally {
-        spinner.style.display = 'none'; // Hide spinner
+        spinner.style.display = 'none';
     }
 }
 
-// Intersection Observer for Header
+// Intersection Observer for Header (same as before - no changes needed here)
 const header = document.querySelector('header');
-const heroSection = document.querySelector('.hero'); // Observe the hero section
+const heroSection = document.querySelector('.hero');
 
 const headerObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        // Hide header when scrolling down *past* the hero section, show when scrolling up or within hero
         header.classList.toggle('hidden', !entry.isIntersecting && window.scrollY > heroSection.offsetHeight);
     });
 }, {
-    rootMargin: '-1px 0px 0px 0px', // Trigger just before the hero section leaves the viewport
-    threshold: 0 // Trigger as soon as any part of the target leaves
+    rootMargin: '-1px 0px 0px 0px',
+    threshold: 0
 });
-headerObserver.observe(heroSection); // Observe the hero section
-
+headerObserver.observe(heroSection);
 
 // Initialize
 window.addEventListener('DOMContentLoaded', loadFacebookPosts);
+
+
