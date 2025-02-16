@@ -75,7 +75,7 @@ async function loadFacebookPosts() {
 
             const article = document.createElement('article');
             article.classList.add('fb-post');
-            article.style.animationDelay =`${index * 0.1}s`;
+            article.style.animationDelay = `${index * 0.1}s`;
 
             let contentHTML = '';
 
@@ -118,4 +118,3 @@ headerObserver.observe(heroSection);
 
 // Initialize
 window.addEventListener('DOMContentLoaded', loadFacebookPosts);
-
