@@ -28,12 +28,10 @@ html {
 
 body {
     font-family: 'Nunito Sans', sans-serif;
-    /* Use Nunito Sans */
     line-height: 1.6;
     background-color: var(--bg-color);
     color: var(--text-color);
     animation: fadeInBody 0.8s ease-out forwards;
-    /* overflow-x: hidden; Removed to avoid hiding legitimate content */
 }
 
 @keyframes fadeInBody {
@@ -66,8 +64,8 @@ body {
 
 /* Header Styles */
 header {
-    background-color: var(--primary-color); /* Restored green background */
-    color: white;  /* White text for contrast */
+    background-color: var(--primary-color);
+    color: white;
     padding: 0 2rem;
     position: sticky;
     top: 0;
@@ -76,7 +74,7 @@ header {
     height: var(--header-height);
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Key for header layout */
+    justify-content: space-between; /* Keep this for overall layout */
     transition: transform var(--transition-timing), box-shadow var(--transition-timing);
 }
 
@@ -85,10 +83,13 @@ header.hidden {
     box-shadow: none;
 }
 
+/* Logo and Title Container */
 .logo-container {
     display: flex;
     align-items: center;
     gap: 1rem;
+    /* Ensure this container doesn't shrink on mobile */
+    flex-shrink: 0;
 }
 
 .site-title {
@@ -99,9 +100,10 @@ header.hidden {
     animation: slideInTitle 0.8s ease-out forwards;
     opacity: 0;
     transform: translateX(-20px);
-    flex: 1;      /* Allow title to grow/shrink */
+    flex: 1;       /* Allow title to grow/shrink */
     min-width: 0; /*  Essential for flex item shrinking */
 }
+
 
 @keyframes slideInTitle {
     to {
@@ -125,13 +127,12 @@ header.hidden {
 
 /* Navigation Styles */
 nav {
-    width: auto; /* Reset width to auto */
-
+    width: auto; /* Reset width */
 }
 
 nav ul {
     list-style: none;
-    display: flex;
+    display: flex; /* Default flex layout for larger screens */
     gap: 2rem;
     margin: 0;
 }
@@ -165,17 +166,17 @@ nav a:focus i {
     transform: scale(1.2);
 }
 
-/*  Hidden by default, shown on mobile */
+/* Menu Toggle (Hamburger) - Always visible */
 .menu-toggle {
-    display: none;
+    display: block; /* Always visible */
     background: none;
     border: none;
     cursor: pointer;
     padding: 0.5rem;
     transition: transform 0.3s ease;
+    margin-left: auto; /* Push to the right, even on larger screens */
 }
 
-/* White hamburger icon */
 .hamburger {
     width: 25px;
     height: 3px;
@@ -184,7 +185,6 @@ nav a:focus i {
     margin: 5px auto;
     transition: all 0.3s ease-in-out;
 }
-
 /* Hamburger animation */
 .menu-toggle[aria-expanded="true"] .hamburger:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
@@ -198,14 +198,13 @@ nav a:focus i {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-.menu-toggle:hover,
-.menu-toggle:focus {
+.menu-toggle:hover, .menu-toggle:focus {
     transform: scale(1.1);
 }
 
 /* Hero Section */
 .hero {
-    position: relative;
+     position: relative;
     color: white;
     text-align: center;
     padding: 6rem 1rem;
@@ -221,7 +220,7 @@ nav a:focus i {
 }
 
 .hero-overlay {
-    position: absolute;
+     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -233,17 +232,15 @@ nav a:focus i {
     background-attachment: fixed;
    filter: blur(2px);
     z-index: 1;
-
 }
 
-.hero-title {
+.hero-title{
     font-family: 'Poppins', sans-serif;
     font-size: 3.5rem;
     margin-bottom: 1rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     animation: fadeInUp 1s ease-out 0.5s forwards;
     opacity: 1;
-
 }
 
 .hero-subtitle {
@@ -306,7 +303,7 @@ nav a:focus i {
 }
 
 .card {
-    background: white;
+     background: white;
     border-radius: var(--border-radius);
     padding: 2.5rem;
     margin-bottom: 2.5rem;
@@ -342,7 +339,7 @@ nav a:focus i {
 }
 
 .section-title {
-    color: var(--primary-color);
+     color: var(--primary-color);
     font-family: 'Poppins', sans-serif;
     font-size: 2rem;
     margin-bottom: 1.5rem;
@@ -576,34 +573,32 @@ footer {
 /* Mobile Responsive */
 @media (max-width: 768px) {
     header {
-        padding: 0 1rem;
+        padding: 0 1rem; /* Reduced padding */
         height: 60px;
-        /* Use flexbox for header layout */
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* Correctly distribute space */
-    }
-    .logo-container{
-        gap: 0.5rem;
+        justify-content: space-between; /* Ensure proper spacing */
     }
 
-    /*  Smaller logo */
+    .logo-container {
+        gap: 0.5rem; /* Reduced gap */
+    }
+
     .logo {
         height: 50px;
     }
-	/* Smaller font size and allow wrapping */
+
     .site-title {
-        font-size: 1rem;
+        font-size: 1rem;   /* Further reduced font size */
         margin-left: 0;
         flex: 1;          /* Allow title to grow/shrink */
-        min-width: 0;     /*  Essential for flex shrinking */
+        min-width: 0;     /* Essential for flex shrinking */
     }
 
+    /* Mobile Menu - Position to the RIGHT */
     nav {
-        order: 3;
+        order: 3; /* Ensure nav comes after logo and toggle */
         width: 100%;
     }
-/* Mobile Menu - Position to the RIGHT */
+
     nav ul {
         position: fixed;
         top: 60px;
@@ -624,10 +619,9 @@ footer {
     .nav-links {
         padding-top: 1rem;
     }
-
-    nav ul.active {
-		right: 0; /* Slide in from the RIGHT */
-		left: auto; /* Reset left*/
+     nav ul.active {
+        right: 0;  /* Slide in from the RIGHT */
+        left: auto; /* Reset left */
     }
 
     nav ul li {
@@ -637,7 +631,6 @@ footer {
     nav a {
         padding: 0.8rem 1rem;
         color: var(--text-color);
-
     }
 
     nav a i {
@@ -648,16 +641,17 @@ footer {
         margin-bottom: 0;
     }
 
-    /* Show, position menu toggle */
+    /*  Show, position menu toggle */
     .menu-toggle {
         display: block;
-        margin-left: auto; /*Push to right*/
+        margin-left: auto; /* Push to the RIGHT */
     }
 
     .hamburger {
         background-color: white;
     }
 
+    /* Hero Section */
     .hero {
         padding: 4rem 1rem;
     }
@@ -669,12 +663,13 @@ footer {
     .hero-subtitle {
         font-size: 1.2rem;
     }
-
+    /* Main Content & Cards */
     .container {
         padding: 0 1rem;
         margin: 2rem auto;
     }
 
+    /* Facebook Feed */
     #facebook-feed-container {
         flex-direction: column;
         align-items: center;
@@ -690,9 +685,10 @@ footer {
     .fb-post img {
         height: auto;
     }
-      .card-btn {
-        width: 100%; /* Full-width buttons */
-        padding: 0.7rem 1rem; /* Adjust padding */
+
+    .card-btn {
+        width: 100%;
+        padding: 0.7rem 1rem;
     }
 
     footer {
@@ -704,6 +700,7 @@ footer {
     }
 }
 
+/* Very Small Screens */
 @media (max-width: 480px) {
     .cta-btn {
         padding: 0.8rem 1.6rem;
@@ -713,22 +710,22 @@ footer {
     .section-title {
         font-size: 1.5rem;
     }
-      .site-title {
-        font-size: 0.8rem; /* Even smaller */
+
+    .site-title {
+        font-size: 0.75rem; /* Even smaller on very small screens */
     }
 
     nav ul {
         width: 100%;
-        max-width: none;
+        max-width: none; /* Full width */
     }
 
     .menu-toggle {
-        padding: 0.3rem;
+        padding: 0.3rem; /* Smaller padding */
     }
 
     .hamburger {
         margin: 4px auto;
     }
-
 }
 
