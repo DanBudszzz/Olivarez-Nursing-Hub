@@ -185,6 +185,7 @@ nav a:focus i {
     cursor: pointer;
     padding: 0.5rem;
     transition: transform 0.3s ease;
+
 }
 
 .hamburger {
@@ -246,6 +247,7 @@ nav a:focus i {
     background-position: center;
     background-attachment: fixed;
     /* Parallax effect */
+   filter: blur(2px); /* Add blur here */
     z-index: 1;
 
 }
@@ -586,10 +588,13 @@ footer {
     transform: scale(1.1);
 }
 
-footer p {
+.footer-text p { /* Target paragraphs within footer-text */
+    color: white; /* Explicitly set footer text to white */
     animation: fadeInUp 1.5s ease forwards;
     opacity: 0;
+    margin: 0.5rem 0; /* Add some vertical spacing between paragraphs */
 }
+
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
@@ -602,11 +607,14 @@ footer p {
     .site-title {
         font-size: 1.2rem;
         /* Smaller title on mobile - Adjust as needed */
-        margin-left: 0; /* Reset margin */
+        margin-left: 0;
+        /* Reset margin */
 
     }
-    .logo-container{
-        gap: 0.5rem; /* Adjust the gap */
+
+    .logo-container {
+        gap: 0.5rem;
+        /* Adjust the gap */
     }
 
     .logo {
@@ -670,8 +678,10 @@ footer p {
         /* Ensure text is visible */
 
     }
-      nav a i {
-        margin-right: 1rem; /* Adjust space between icon and text */
+
+    nav a i {
+        margin-right: 1rem;
+        /* Adjust space between icon and text */
     }
 
     nav ul li:last-child {
@@ -684,11 +694,14 @@ footer p {
         /* Show menu toggle */
         order: 2;
         /* Menu toggle *before* logo */
-        margin-left: auto; /* Push to the right */
+        margin-left: auto;
+        /* Push to the right */
 
     }
-     .hamburger {
-        background-color: white; /* White hamburger */
+
+    .hamburger {
+        background-color: white;
+        /* White hamburger */
     }
 
     /* Hero Section */
@@ -744,9 +757,12 @@ footer p {
 
     .section-title {
         font-size: 1.6rem;
+        /* Smaller section titles on very small screens */
     }
-      .site-title {
-        font-size: 1rem; /* Even smaller on very small screens */
+
+    .site-title {
+        font-size: 1rem;
+        /* Even smaller on very small screens */
 
     }
 
@@ -754,11 +770,15 @@ footer p {
         width: 100%;
         max-width: none;
     }
-     .menu-toggle {
-        padding: 0.3rem; /* Smaller padding */
+
+    .menu-toggle {
+        padding: 0.3rem;
+        /* Smaller padding */
     }
-    .hamburger{
-        margin: 4px auto; /* Adjust as needed */
+
+    .hamburger {
+        margin: 4px auto;
+        /* Adjust as needed */
     }
 
 }
