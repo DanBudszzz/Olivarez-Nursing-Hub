@@ -1,6 +1,6 @@
 // Mobile Menu Toggle
 const menuToggle = document.querySelector('.menu-toggle');
-const navMenu = document.querySelector('nav ul');
+const navMenu = document.querySelector('.mobile-nav'); // Target mobile-nav
 
 menuToggle.addEventListener('click', () => {
     const isExpanded = navMenu.classList.toggle('active');
@@ -75,7 +75,7 @@ async function loadFacebookPosts() {
 
             const article = document.createElement('article');
             article.classList.add('fb-post');
-            article.style.animationDelay = `${index * 0.1}s`;
+            article.style.animationDelay =`${index * 0.1}s`;
 
             let contentHTML = '';
 
@@ -118,3 +118,4 @@ headerObserver.observe(heroSection);
 
 // Initialize
 window.addEventListener('DOMContentLoaded', loadFacebookPosts);
+
