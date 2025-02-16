@@ -1,317 +1,550 @@
-<!<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nursing Practice Questions</title>
+    <title>Nursing Practice Questions - Animated</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://script.google.com/macros/s/AKfycbz8P7BweGSSoYQmeQ7CodCobnqSvGT8lYBN9yi1Fm3z18fI_GRe7IljTlcRxiF1paExdw/exec" defer></script>
-</head>
-<body>
     <style>
-        /* ... (Your existing CSS) ... */
+        /* --- CSS --- */
         :root {
+             /* Colors */
             --primary: #388E3C;
             --primary-dark: #2B6E2F;
             --primary-light: #C8E6C9;
             --secondary: #2C3E50;
             --light: #F8F9FA;
             --gray: #6c757d;
-            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            --white: #fff;
+            --danger: #e74c3c;
+            --danger-light: rgba(231, 76, 60, 0.2);
             --success: #28a745;
-            --danger: #dc3545;
+            --success-light: rgba(40, 167, 69, 0.2);
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+
+            /* Fonts */
+            --font-family: 'Poppins', sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            /* Animation */
+            --transition-speed: 0.3s;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Poppins', sans-serif; background: var(--light); color: var(--secondary);
-            line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
-        }
-        header {
-            background: var(--gradient); color: white; padding: 0.75rem 0; position: sticky;
-            top: 0; z-index: 1000; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-             transition: background-color 0.3s ease;
-        }
-
-         header:hover {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+            font-family: var(--font-family);
+            background: var(--light);
             color: var(--secondary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
-        .header-content {
-            max-width: 1200px; margin: 0 auto; padding: 0 1rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo-group { display: flex; align-items: center; gap: 0.75rem; }
-        .logo { width: 45px; height: 45px; border-radius: 8px; }
-        .back-home { color: inherit;  text-decoration: none;
-            display: flex; align-items: center; gap: 0.5rem; transition: transform 0.3s ease;
-        }
-        .back-home:hover { transform: translateX(-5px);  }
-        h1 { font-size: 1.35rem; font-weight: 600; }
 
-        main { flex: 1; padding: 2rem 1rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+        body::before { display: none; }
+
+        a { text-decoration: none; color: inherit; }
+
+        header {
+            background: var(--gradient);
+            color: var(--white);
+            padding: var(--space-sm) 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            /* Remove background-color and box-shadow, use border instead */
+            transition: transform var(--transition-speed) ease;
+            animation: pulse 2s infinite;
+            /* Removed background-color */
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .logo:hover{
+            transform: scale(1.1);
+        }
+
+        .back-home {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            color: var(--white);
+            transition: color var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+
+        .back-home:hover {
+            color: var(--primary-light);
+            transform: translateX(-3px);
+        }
+
+        .back-home i {
+            font-size: 1.2rem;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--white);
+        }
+
+        main {
+            flex: 1;
+            padding: var(--space-lg) var(--space-sm);
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .main-container {
-            background: white; border-radius: 16px; padding: 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);  margin-bottom: 2rem;
+             background: white;
+            border-radius: 25px;
+            padding: var(--space-lg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            margin-bottom: var(--space-lg);
+            width: 100%;
+            max-width: 900px;
             position: relative;
             overflow: hidden;
         }
 
-        /* REMOVED ANIMATED BORDER
-        .main-container::before {
-            ...
-        }
-        @keyframes rotateBorder {
-           ...
-        }
-        */
-
-
         .main-container h2 {
-            margin-bottom: 1.5rem;
+            margin-bottom: var(--space-md);
             color: var(--secondary);
             display: flex;
             align-items: center;
-            /* Modified pulse animation */
+            gap: var(--space-sm);
+            font-weight: var(--font-weight-semibold);
             animation: subtlePulse 3s infinite alternate;
         }
-
         @keyframes subtlePulse {
             0% { transform: scale(1); }
-            100% { transform: scale(1.02); } /* Reduced scale */
+            100% { transform: scale(1.02); }
         }
 
         .main-container h2 i {
             color: var(--primary);
-            margin-right: 0.75rem;
-            font-size: 1.5rem;
-            transition: transform 0.3s ease; /* Icon animation */
+            font-size: 1.75rem;
+            transition: transform var(--transition-speed) ease;
+        }
+        .main-container:hover h2 i{
+             transform: scale(1.2);
         }
 
-        .main-container:hover h2 i {
-            /* Removed rotation on hover.  Keep if you like it, but it contributes to visual busyness */
-            /* transform: rotate(360deg); */
-            transform: scale(1.2); /* Scale up the icon on hover */
-        }
-
-
-          /* Year Level Grid */
-        .year-grid {
+        /* Card Styles */
+        .year-grid, .subject-grid, .topic-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 0.8s ease forwards;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .year-grid {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
 
-        .year-card {
-            background-color: var(--primary-light); border: 2px solid var(--primary); border-radius: 12px;
-            padding: 1.2rem; text-align: center; cursor: pointer;
+        .subject-grid{
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+        }
+        .topic-grid{
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+
+        }
+
+        .year-card, .subject-card, .topic-card {
+             background-color: var(--white);
+            border: none;
+            border-radius: 15px;
+            padding: var(--space-lg);
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-medium);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
             transition: all 0.4s ease;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .year-card:hover {
-            background-color: var(--primary); color: white; transform: scale(1.1);
+        .year-card:hover, .subject-card:hover, .topic-card:hover {
+            background-color: var(--primary);
+            color: white;
+             transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .year-card.selected { background-color: var(--primary-dark); color: white; border-color: var(--primary-dark); }
-
-        /* Subject Grid */
-        .subject-grid {
-            display: none; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem; margin-bottom: 2rem;
-        }
-        .subject-card {
-            background-color: var(--primary-light); border: 2px solid var(--primary);
-            border-radius: 12px; padding: 1.2rem; text-align: center; cursor: pointer;
-            transition: all 0.4s ease; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transform: translateY(20px);
-             animation: fadeInUp 0.6s ease forwards;
-
+            z-index: 10;
         }
 
-        /* Staggered animation for subject cards */
-        .subject-grid.show > .subject-card {
-          animation: fadeInUp 0.6s ease forwards;
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Apply staggered delay -  Important! */
-        .subject-grid.show .subject-card:nth-child(1) { animation-delay: 0.1s; }
-        .subject-grid.show .subject-card:nth-child(2) { animation-delay: 0.2s; }
-        .subject-grid.show .subject-card:nth-child(3) { animation-delay: 0.3s; }
-        .subject-grid.show .subject-card:nth-child(4) { animation-delay: 0.4s; }
-        .subject-grid.show .subject-card:nth-child(5) { animation-delay: 0.5s;}
-        /* Add more as needed */
-
-
-
-        .subject-card:hover { background-color: var(--primary); color: white; transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);}
-        .subject-card.selected { background-color: var(--primary-dark); color: white; border-color: var(--primary-dark);}
-
-        /* Topic Grid */
-        .topic-grid {
-            display: none; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1rem; margin-bottom: 2rem;
-        }
-        .topic-card {
-            background-color: var(--light); border: 2px solid var(--gray);
-            border-radius: 10px; padding: 1rem; text-align: center; cursor: pointer;
-             transition: all 0.4s ease;
-             opacity: 0;
-             transform: scale(0.95);
-             animation: scaleIn 0.5s ease forwards;
-        }
-
-        .topic-card:hover {
-            background-color: var(--primary-light); border-color: var(--primary); transform: translateY(-5px);
-        }
-        .topic-card.selected {
-             background-color: var(--primary-light); border: 2px solid var(--primary);
-              animation: popIn 0.3s ease forwards;
-        }
-         @keyframes popIn {
-              0% { transform: scale(0.8); }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        /* Staggered delay for topic cards */
-        .topic-grid.show .topic-card:nth-child(1) { animation-delay: 0.1s; }
-        .topic-grid.show .topic-card:nth-child(2) { animation-delay: 0.2s; }
-        .topic-grid.show .topic-card:nth-child(3) { animation-delay: 0.3s; }
-        .topic-grid.show .topic-card:nth-child(4) { animation-delay: 0.4s;}
-
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        .year-card.selected, .subject-card.selected, .topic-card.selected {
+            background-color: var(--primary-dark);
+            color: white;
+            border-color: var(--primary-dark);
         }
 
         /* Questions Container */
         .questions-container {
-            display: none; margin-top: 1rem;
+            display: none;
+            margin-top: var(--space-md);
         }
 
         .question {
-            margin-bottom: 1.5rem; padding: 1.5rem; border: 1px solid var(--gray);
-            border-radius: 8px; background-color: var(--light);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            opacity: 0;
+            margin-bottom: var(--space-lg);
+            padding: var(--space-lg);
+            border: 1px solid var(--gray);
+            border-radius: 15px;
+            background-color: var(--white);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+             opacity: 0;
             transform: translateY(20px);
             animation: questionFadeIn 0.5s ease forwards;
-
         }
-          /* Staggered animation for questions */
-          .questions-container.show .question:nth-child(1) { animation-delay: 0.1s; }
-          .questions-container.show .question:nth-child(2) { animation-delay: 0.3s; }
-          .questions-container.show .question:nth-child(3) { animation-delay: 0.5s; }
-          .questions-container.show .question:nth-child(4) { animation-delay: 0.7s; }
-
-            @keyframes questionFadeIn {
+        @keyframes questionFadeIn {
                 from { opacity: 0; transform: translateY(20px); }
                 to { opacity: 1; transform: translateY(0); }
             }
 
+        .question:hover{
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
 
         .question-text {
-            font-weight: 600; margin-bottom: 1rem; color: var(--secondary);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-md);
+            color: var(--secondary);
+             font-size: 1.1rem;
         }
 
         .choices-container {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 0.75rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-md);
         }
 
-        .choice-label {
-            display: flex; align-items: center; padding: 1rem;
-            border: 2px solid var(--gray); border-radius: 10px;
-            cursor: pointer; transition: all 0.3s ease;
+       .choice-label {
+            display: flex;
+            align-items: center;
+            padding: var(--space-md);
+            border: 2px solid var(--gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            background-color: var(--white);
+            position: relative;
+            overflow: hidden;
         }
 
+        /* Ripple Effect */
+        .choice-label::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background-color: rgba(56, 142, 60, 0.3);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .choice-label:hover::before {
+            width: 200%;
+            height: 200%;
+            opacity: 1;
+        }
         .choice-label:hover, .choice-label input:checked + .choice-text {
-            border-color: var(--primary); background-color: var(--primary-light);
+            border-color: var(--primary);
+            background-color: var(--primary-light);
         }
 
         .choice-label input {
-             margin-right: 1rem;
+            margin-right: var(--space-md);
             cursor: pointer;
             accent-color: var(--primary);
+              z-index: 1;
+            position: relative;
             transform: scale(1.2);
-              /* Click effect */
             transition: transform 0.2s ease;
         }
         .choice-label input:checked{
-              transform: scale(1.3); /* Slightly larger when checked */
+              transform: scale(1.3);
         }
 
-        .choice-text {
-            color: var(--secondary); transition: color 0.3s ease;
-             font-size: 1rem;
+         .choice-text {
+            color: var(--secondary);
+            transition: color var(--transition-speed) ease;
+            font-size: 1rem;
+            font-weight: var(--font-weight-medium);
+            z-index: 1;
+            position: relative;
         }
 
-         /* Feedback Styles */
+        /* Feedback Styles */
         .feedback {
-            margin-top: 0.5rem;
-            padding: 0.5rem;
+            margin-top: var(--space-xs);
+            padding: var(--space-xs);
             border-radius: 6px;
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
+        }
+        .correct {
+            background-color: var(--success-light);
+            border: 2px solid var(--success);
+            color: var(--success);
+            font-weight: var(--font-weight-semibold);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+            animation: pulseCorrect 1.5s infinite;
         }
 
-        .correct {
-            background-color: rgba(40, 167, 69, 0.2); /* Light green */
-            border: 1px solid var(--success);
-            color: var(--success);
+        @keyframes pulseCorrect {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 4px 8px rgba(40, 167, 69, 0.5);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+            }
         }
 
         .incorrect {
-            background-color: rgba(220, 53, 69, 0.2); /* Light red */
-            border: 1px solid var(--danger);
+            background-color: var(--danger-light);
+            border: 2px solid var(--danger);
             color: var(--danger);
+            font-weight: var(--font-weight-semibold);
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+            animation: shake 0.5s;
         }
+
+        @keyframes shake {
+          0%, 100% {transform: translateX(0);}
+          10%, 30%, 50%, 70%, 90% {transform: translateX(-10px);}
+          20%, 40%, 60%, 80% {transform: translateX(10px);}
+        }
+
         .rationale {
-             margin-top: 0.5rem;
+            margin-top: var(--space-md);
             font-style: italic;
             color: var(--gray);
-            display: none; /* Hidden by default*/
+            display: none;
+            animation: fadeIn 0.5s ease;
+             padding: var(--space-sm);
+            border-left: 4px solid var(--primary);
+            background-color: var(--primary-light);
+            border-radius: 4px;
         }
-        .rationale.show{
+
+        .rationale.show {
             display: block;
-             animation: fadeIn 0.5s ease; /* Add a fade-in animation */
         }
 
         /* Image Styles */
         .question-image {
-            max-width: 100%; /* Ensure image doesn't overflow */
-            height: auto;    /* Maintain aspect ratio */
-            margin-bottom: 1rem; /* Space between image and question */
-            display: block; /* Important for consistent spacing */
-            border: 1px solid var(--gray); /* Optional: Add a border */
+            max-width: 100%;
+            height: auto;
+            margin-bottom: var(--space-md);
+            display: block;
+            border: 1px solid var(--gray);
             border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .question-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         footer {
-            background: var(--gradient); color: white; padding: 1.5rem; margin-top: auto; text-align: center;
+            background: var(--primary);
+            color: white;
+            padding: var(--space-md);
+            margin-top: auto;
+            text-align: center;
+            transition: background-color 0.3s ease;
         }
-        footer p { opacity: 0.9; }
+        footer:hover {
+            background-color: var(--primary-dark);
+        }
+
+        footer p {
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+         footer:hover p {
+            opacity: 1;
+        }
+
         .footer-content {
-            max-width: 1200px; margin: 0 auto; display: flex;
-            flex-direction: column; align-items: center; gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-sm);
         }
-        .footer-logo { width: 60px; border-radius: 8px; }
+
+        .footer-logo {
+            width: 60px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+
+        }
+        .footer-logo:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pop {
+            0% { transform: scale(1);            
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+         @keyframes scaleIn
+        {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes popIn {
+              0% { transform: scale(0.8); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+
+        /* Staggered Animations */
+        /* Generic class for staged animation*/
+        .staggered-fade-in > * {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Apply to specific grids */
+        .year-grid.show,
+        .subject-grid.show,
+        .topic-grid.show,
+        .questions-container.show
+         {
+            display: grid; /* Ensures children are displayed, essential for staggered effect */
+        }
+
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .choices-container{
+                grid-template-columns: 1fr;
+            }
+             .year-card, .subject-card, .topic-card{
+                padding: var(--space-md);
+            }
+        }
+
+        /* Loading Spinner Styles */
+        .loader-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 100;
+            border-radius: inherit;
+            transition: opacity 0.4s ease;
+        }
+        .loader-container.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            border: 8px solid var(--light);
+            border-top: 8px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        input[type="radio"]:focus + .choice-text {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+        .choice-label input:checked + .choice-text {
+            animation: pop 0.3s ease;
+        }
+
+        /* Initially hide grids */
+        .subject-grid, .topic-grid, .questions-container {
+            display: none; /* Start hidden */
+        }
+
 
     </style>
 </head>
@@ -330,18 +563,14 @@
 
     <main>
         <section class="main-container">
+             <div class="loader-container">
+                <div class="loader"></div>
+            </div>
             <h2><i class="fas fa-graduation-cap"></i> Select Year Level</h2>
-            <div class="year-grid" id="year-grid">
-                </div>
-
-            <div class="subject-grid" id="subject-grid">
-                </div>
-
-            <div class="topic-grid" id="topic-grid">
-               </div>
-
-            <div class="questions-container" id="questions-container">
-               </div>
+            <div class="year-grid" id="year-grid"></div>
+            <div class="subject-grid staggered-fade-in" id="subject-grid"></div>
+            <div class="topic-grid staggered-fade-in" id="topic-grid"></div>
+            <div class="questions-container staggered-fade-in" id="questions-container"></div>
         </section>
     </main>
 
@@ -353,42 +582,45 @@
     </footer>
 
     <script>
+        // --- JavaScript ---
         const yearGrid = document.getElementById('year-grid');
         const subjectGrid = document.getElementById('subject-grid');
         const topicGrid = document.getElementById('topic-grid');
         const questionsContainer = document.getElementById('questions-container');
+        const loaderContainer = document.querySelector('.loader-container');
 
         let selectedYear = null;
         let selectedSubject = null;
         let selectedTopic = null;
 
-       // --- No longer needed ---
-       // const sampleData = { ... };
-
-        // --- Functions ---
-
-        // Fetch data from Google Sheet using Apps Script
+        // Fetch data
         function fetchData() {
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbz8P7BweGSSoYQmeQ7CodCobnqSvGT8lYBN9yi1Fm3z18fI_GRe7IljTlcRxiF1paExdw/exec"; // Replace with your actual deployment URL
+            showLoader();
+            const GAS_URL = "https://script.google.com/macros/s/AKfycbz8P7BweGSSoYQmeQ7CodCobnqSvGT8lYBN9yi1Fm3z18fI_GRe7IljTlcRxiF1paExdw/exec";
 
-    fetch(GAS_URL)
-        .then(response => response.json())  // Convert response to JSON
-        .then(data => displayYearLevels(data))  // Pass data to display function
-        .catch(error => handleError(error));  // Handle errors
-}
+            fetch(GAS_URL)
+                .then(response => response.json())
+                .then(data => {
+                    displayYearLevels(data);
+                    hideLoader();
+
+                })
+                .catch(error => {
+                    handleError(error);
+                    hideLoader();
+                });
+        }
 
         function handleError(error) {
-            // Handle errors, e.g., display an error message to the user.
             console.error(error);
             questionsContainer.innerHTML = `<p>Error loading data: ${error.message}</p>`;
             questionsContainer.style.display = 'block';
         }
 
         function displayYearLevels(questionsData) {
-             // Store fetched data in a variable accessible to other functions
-            window.questionsData = questionsData; // Use window to make it global
+            window.questionsData = questionsData;
 
-            yearGrid.innerHTML = ''; // Clear previous content
+            yearGrid.innerHTML = '';
             const yearLevels = Object.keys(questionsData);
 
             yearLevels.forEach(year => {
@@ -399,25 +631,17 @@
                 yearCard.addEventListener('click', () => selectYear(year, yearCard));
                 yearGrid.appendChild(yearCard);
             });
-                subjectGrid.style.display = 'none';
-                topicGrid.style.display = 'none';
-                questionsContainer.style.display = 'none';
-                yearGrid.style.opacity = 1; // Ensure it's visible
+            hideAllSections();
+            yearGrid.style.display = 'grid'; // Only display year grid initially
         }
 
-       function selectYear(year, element) {
-            //Deselect
+        function selectYear(year, element) {
             document.querySelectorAll('.year-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected'); //Highlight
+            element.classList.add('selected');
             selectedYear = year;
-            selectedSubject = null; //Reset
+            selectedSubject = null;
             selectedTopic = null;
             displaySubjects(year);
-
-            topicGrid.innerHTML = ''; // Clear topics
-            topicGrid.style.display = 'none';
-            questionsContainer.innerHTML = '';
-            questionsContainer.style.display = 'none';
         }
 
         function displaySubjects(year) {
@@ -426,89 +650,79 @@
 
             if (subjects.length === 0) {
                 subjectGrid.innerHTML = '<p>No subjects available for this year level.</p>';
-                 subjectGrid.style.display = 'none';
+                 showSection(subjectGrid); // Show even if empty
                 return;
             }
 
-            subjects.forEach(subject => {
+            subjects.forEach((subject, index) => { // Add index for staggered delay
                 const subjectCard = document.createElement('div');
                 subjectCard.classList.add('subject-card');
                 subjectCard.textContent = subject.charAt(0).toUpperCase() + subject.slice(1);
                 subjectCard.dataset.subject = subject;
+                subjectCard.style.animationDelay = `${index * 0.1}s`; // Staggered delay
                 subjectCard.addEventListener('click', () => selectSubject(subject, subjectCard));
                 subjectGrid.appendChild(subjectCard);
             });
-
-            subjectGrid.style.display = 'grid';
-            subjectGrid.classList.add('show');
-            topicGrid.innerHTML = '';
-            topicGrid.style.display = 'none';
-            questionsContainer.innerHTML = '';
-            questionsContainer.style.display = 'none';
+              hideAllSections();
+             showSection(subjectGrid);
         }
-
-         function selectSubject(subject, element) {
+        function selectSubject(subject, element) {
             document.querySelectorAll('.subject-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
             selectedSubject = subject;
-            selectedTopic = null; // Reset topic
+            selectedTopic = null;
             displayTopics(selectedYear, subject);
-
-            questionsContainer.innerHTML = ''; //Clear previous
-            questionsContainer.style.display = 'none';
         }
 
         function displayTopics(year, subject) {
-            topicGrid.innerHTML = ''; // Clear previous topics
+            topicGrid.innerHTML = '';
             const topics = window.questionsData[year] && window.questionsData[year][subject] ? Object.keys(window.questionsData[year][subject]) : [];
 
             if (topics.length === 0) {
                 topicGrid.innerHTML = '<p>No topics available for this subject.</p>';
-                topicGrid.style.display = 'none';
+                showSection(topicGrid);
                 return;
             }
-            topicGrid.style.display = 'grid';
-            topicGrid.classList.add('show');
 
-            topics.forEach(topic => {
+            topics.forEach((topic, index) => { // Add index for animation delay
                 const topicCard = document.createElement('div');
                 topicCard.classList.add('topic-card');
                 topicCard.textContent = topic;
                 topicCard.dataset.topic = topic;
+                topicCard.style.animationDelay = `${index * 0.1}s`; // Apply staggered delay
                 topicCard.addEventListener('click', () => selectTopic(topic, topicCard));
                 topicGrid.appendChild(topicCard);
             });
-            questionsContainer.innerHTML = '';  // Clear any previous questions
-            questionsContainer.style.display = 'none';
+
+            hideAllSections();
+            showSection(topicGrid);
+
         }
 
         function selectTopic(topic, element) {
-          document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('selected'));
-          element.classList.add('selected');
-          selectedTopic = topic;
-          displayQuestions(selectedYear, selectedSubject, selectedTopic); //Pass all
+            document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedTopic = topic;
+            displayQuestions(selectedYear, selectedSubject, selectedTopic);
         }
-
         function displayQuestions(year, subject, topic) {
-            questionsContainer.innerHTML = ''; // Clear previous content
+            questionsContainer.innerHTML = '';
             const questions = window.questionsData[year] && window.questionsData[year][subject] && window.questionsData[year][subject][topic]
                 ? window.questionsData[year][subject][topic]
                 : [];
 
             if (questions.length === 0) {
                 questionsContainer.innerHTML = '<p>No questions available for this topic.</p>';
-                questionsContainer.style.display = 'none';
+                showSection(questionsContainer);
                 return;
             }
 
-            questionsContainer.style.display = 'block';
-            questionsContainer.classList.add('show');
 
             questions.forEach((question, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.classList.add('question');
+                questionDiv.style.animationDelay = `${index * 0.15}s`; // Staggered delay
 
-                // Add image display (if URL is present)
                 let imageHtml = '';
                 if (question.imageUrl) {
                     imageHtml = `<img src="${question.imageUrl}" alt="Question Image" class="question-image">`;
@@ -538,6 +752,8 @@
                     choice.addEventListener('change', () => checkAnswer(question, choice, questionDiv));
                 });
             });
+             hideAllSections();
+             showSection(questionsContainer);
         }
 
         function checkAnswer(question, selectedChoice, questionDiv) {
@@ -546,7 +762,6 @@
             const feedbackDiv = questionDiv.querySelector('.feedback');
             const rationalePara = questionDiv.querySelector('.rationale');
 
-            //Disable all radio buttons in this question after
             const allChoices = questionDiv.querySelectorAll('input[type="radio"]');
             allChoices.forEach(choice => {
                 choice.disabled = true;
@@ -559,25 +774,60 @@
             rationalePara.textContent = question.rationale;
             rationalePara.classList.add('show');
 
-             // Visual feedback on selected choice
-            const selectedLabel = selectedChoice.closest('.choice-label'); // Find parent
+                        const selectedLabel = selectedChoice.closest('.choice-label');
             if (isCorrect) {
-                selectedLabel.classList.add('correct'); // Add correct class
+                selectedLabel.classList.add('correct');
 
             } else {
-                selectedLabel.classList.add('incorrect'); // Add incorrect class
-                // Highlight correct answer
+                selectedLabel.classList.add('incorrect');
                 const correctChoice = questionDiv.querySelector(`input[value="${question.correctAnswer}"]`);
                 if(correctChoice){
-                     correctChoice.closest('.choice-label').classList.add('correct');
+                        correctChoice.closest('.choice-label').classList.add('correct');
                 }
             }
         }
 
-        // --- Initial Setup ---
+        function hideAllSections() {
+            // Remove the 'show' class *before* hiding, and remove inline styles.
+            // This is crucial for resetting animation states.
+            [subjectGrid, topicGrid, questionsContainer].forEach(grid => {
+                grid.classList.remove('show');
+                grid.style.display = 'none';
+                Array.from(grid.children).forEach(child => {
+                    child.style.animationDelay = ''; // Reset animation delay
+                    child.style.opacity = '';
+                    child.style.transform = '';
+                });
+            });
+        }
+
+        function showSection(section) {
+            section.style.display = 'grid'; // Or 'block' for questionsContainer, as appropriate
+            section.classList.add('show');    // Trigger animation by adding the class *after* setting display
+           // Set a small timeout to ensure the display change is rendered before adding 'show'
+            setTimeout(() => {
+              section.classList.add('show');
+             }, 0);
+
+        }
+
+        function showLoader() {
+            loaderContainer.style.display = 'flex';
+             loaderContainer.classList.remove('fade-out');
+        }
+
+        function hideLoader() {
+             loaderContainer.classList.add('fade-out');
+             // Ensure the loader is actually hidden after the fade-out transition
+            setTimeout(() => {
+                if (loaderContainer.classList.contains('fade-out')) {
+                    loaderContainer.style.display = 'none';
+                }
+            }, 400); // 400ms matches the CSS transition duration
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-          //  displayYearLevels(); // Don't call this directly anymore
-          fetchData(); // Call fetchData to load data from the sheet
+            fetchData();
         });
     </script>
 </body>
