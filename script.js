@@ -31,7 +31,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Facebook Feed Loader (same as before - no changes needed here)
+// Facebook Feed Loader (no changes needed)
 async function loadFacebookPosts() {
     const container = document.getElementById('facebook-feed-container');
     const spinner = document.querySelector('.loading-spinner');
@@ -102,7 +102,7 @@ async function loadFacebookPosts() {
     }
 }
 
-// Intersection Observer for Header (same as before - no changes needed here)
+// Intersection Observer for Header (no changes needed)
 const header = document.querySelector('header');
 const heroSection = document.querySelector('.hero');
 
@@ -118,5 +118,3 @@ headerObserver.observe(heroSection);
 
 // Initialize
 window.addEventListener('DOMContentLoaded', loadFacebookPosts);
-
-
