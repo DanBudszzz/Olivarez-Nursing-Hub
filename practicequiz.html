@@ -421,6 +421,7 @@
             margin-top: auto;
             text-align: center;
             transition: background-color 0.3s ease;
+             position: relative; /* Make footer a positioning context */
         }
 
         footer:hover {
@@ -653,6 +654,83 @@
         .subject-grid, .topic-grid, .questions-container {
             display: none;
         }
+        /*Score Display */
+        .score-display {
+            margin-top: var(--space-lg);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: var(--font-weight-semibold);
+            color: var(--primary-dark);
+            padding: var(--space-sm);
+            border: 2px solid var(--primary-light);
+            border-radius: 10px;
+            background-color: var(--primary-light);
+            display: none; /* Hidden initially */
+        }
+
+        .score-display.show {
+             display: block; /* Displayed after answering */
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.3s ease;
+            z-index: 100; /* Ensure it's above other elements */
+        }
+
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px); /* Slight lift on hover */
+
+        }
+        .back-to-top.show{
+              opacity: 0.9;
+
+        }
+
+        .back-to-top i {
+            font-size: 1.5rem; /* Adjust icon size as needed */
+        }
+
+
+        /* Reset Button */
+        .reset-button {
+            display: block; /* Make it a block-level element */
+            margin: var(--space-md) auto 0; /* Center horizontally, space above */
+            padding: var(--space-sm) var(--space-md);
+            background-color: var(--secondary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+             display: none;
+        }
+
+          .reset-button:hover {
+                background-color: var(--secondary-dark);
+            }
+          .reset-button.show{
+             display: block;
+          }
+
     </style>
 </head>
 <body>
@@ -678,7 +756,10 @@
             <div class="subject-grid staggered-fade-in" id="subject-grid"></div>
             <div class="topic-grid staggered-fade-in" id="topic-grid"></div>
             <div class="questions-container staggered-fade-in" id="questions-container"></div>
+              <div class="score-display" id="score-display"></div>
+              <button class = "reset-button" id="reset-button">Reset</button>
         </section>
+
     </main>
 
     <footer>
@@ -687,6 +768,9 @@
             <p>© 2025 Olivarez College Tagaytay - Nursing Department</p>
         </div>
     </footer>
+    <button class="back-to-top" id="back-to-top" title="Back to Top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script>
         // --- JavaScript --- (No changes in JavaScript)
@@ -695,10 +779,15 @@
         const topicGrid = document.getElementById('topic-grid');
         const questionsContainer = document.getElementById('questions-container');
         const loaderContainer = document.querySelector('.loader-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const backToTopButton = document.getElementById('back-to-top');
+        const resetButton = document.getElementById('reset-button');
 
         let selectedYear = null;
         let selectedSubject = null;
         let selectedTopic = null;
+        let score = 0;
+        let totalQuestions = 0;
 
         function fetchData() {
             showLoader();
@@ -748,6 +837,7 @@
             selectedSubject = null;
             selectedTopic = null;
             displaySubjects(year);
+              scoreDisplay.classList.remove('show');
         }
 
        function displaySubjects(year) {
@@ -779,6 +869,8 @@
             selectedSubject = subject;
             selectedTopic = null;
             displayTopics(selectedYear, subject);
+            scoreDisplay.classList.remove('show');
+
         }
 
         function displayTopics(year, subject) {
@@ -803,63 +895,75 @@
 
             hideAllSections();
             showSection(topicGrid);
+             scoreDisplay.classList.remove('show');
+
         }
 
         function selectTopic(topic, element) {
             document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('selected'));
             element.classList.add('selected');
             selectedTopic = topic;
+            score = 0; //reset score to 0
+            totalQuestions = 0; //reset the total question
             displayQuestions(selectedYear, selectedSubject, selectedTopic);
+
         }
 
-        function displayQuestions(year, subject, topic) {
-            questionsContainer.innerHTML = '';
-            const questions = window.questionsData[year] && window.questionsData[year][subject] && window.questionsData[year][subject][topic]
-                ? window.questionsData[year][subject][topic]
-                : [];
+function displayQuestions(year, subject, topic) {
+    questionsContainer.innerHTML = '';
+    const questions = window.questionsData[year] && window.questionsData[year][subject] && window.questionsData[year][subject][topic]
+        ? window.questionsData[year][subject][topic]
+        : [];
 
-            if (questions.length === 0) {
-                questionsContainer.innerHTML = '<p>No questions available for this topic.</p>';
-                showSection(questionsContainer);
-                return;
-            }
+    if (questions.length === 0) {
+        questionsContainer.innerHTML = '<p>No questions available for this topic.</p>';
+        showSection(questionsContainer);
+         scoreDisplay.classList.remove('show');
+        return;
+    }
+   totalQuestions = questions.length;
 
-            questions.forEach((question, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.classList.add('question');
-                questionDiv.style.animationDelay = `${index * 0.15}s`;
+    questions.forEach((question, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        questionDiv.style.animationDelay = `${index * 0.15}s`;
 
-                let imageHtml = '';
-                if (question.imageUrl) {
-                    imageHtml = `<img src="${question.imageUrl}" alt="Question Image" class="question-image">`;
-                }
+        let imageHtml = '';
+        if (question.imageUrl) {
+            imageHtml = `<img src="${question.imageUrl}" alt="Question Image" class="question-image">`;
+        }
 
-                questionDiv.innerHTML = `
-                    ${imageHtml}
-                    <p class="question-text">${index + 1}. ${question.questionText}</p>
-                    <div class="choices-container">
-                        ${question.choices.map((choice, choiceIndex) => {
-                            const choiceId = `question-${index}-choice-${choiceIndex}`;
-                            return `
-                                <label class="choice-label" for="${choiceId}">
-                                    <input type="radio" id="${choiceId}" name="question-${index}" value="${String.fromCharCode(65 + choiceIndex)}">
-                                    <span class="choice-text">${choice}</span>
-                                </label>
-                            `;
-                        }).join('')}
-                    </div>
-                    <div class="feedback"></div>
-                    <p class="rationale"></p>
-                `;
-                questionsContainer.appendChild(questionDiv);
+        // *** CRITICAL CHANGE HERE: Replace \n with <br> ***
+        let formattedQuestionText = question.questionText.replace(/\n/g, '<br>');
 
-                const choices = questionDiv.querySelectorAll('input[type="radio"]');
-                choices.forEach(choice => {
-                    choice.addEventListener('change', () => checkAnswer(question, choice, questionDiv));
-                });
-            });
-            hideAllSections();
-            showSection(questionsContainer);
+        questionDiv.innerHTML = `
+            ${imageHtml}
+            <p class="question-text">${index + 1}. ${formattedQuestionText}</p> 
+            <div class="choices-container">
+                ${question.choices.map((choice, choiceIndex) => {
+                    const choiceId = `question-${index}-choice-${choiceIndex}`;
+                    return `
+                        <label class="choice-label" for="${choiceId}">
+                            <input type="radio" id="${choiceId}" name="question-${index}" value="${String.fromCharCode(65 + choiceIndex)}">
+                            <span class="choice-text">${choice}</span>
+                        </label>
+                    `;
+                }).join('')}
+            </div>
+            <div class="feedback"></div>
+            <p class="rationale"></p>
+        `;
+        questionsContainer.appendChild(questionDiv);
+
+        const choices = questionDiv.querySelectorAll('input[type="radio"]');
+        choices.forEach(choice => {
+            choice.addEventListener('change', () => checkAnswer(question, choice, questionDiv));
+        });
+    });
+    hideAllSections();
+    showSection(questionsContainer);
+    resetButton.classList.add('show'); // Show Reset button
+
         }
 
         function checkAnswer(question, selectedChoice, questionDiv) {
@@ -870,7 +974,7 @@
 
             const allChoices = questionDiv.querySelectorAll('input[type="radio"]');
             allChoices.forEach(choice => {
-                choice.disabled = true;
+                choice.disabled = true;  // Disable all choices after answering
             });
 
             feedbackDiv.textContent = isCorrect ? 'Correct!' : 'Incorrect!';
@@ -883,13 +987,28 @@
             const selectedLabel = selectedChoice.closest('.choice-label');
             if (isCorrect) {
                 selectedLabel.classList.add('correct');
+                score++; // Increment score for correct answers
             } else {
                 selectedLabel.classList.add('incorrect');
                 const correctChoice = questionDiv.querySelector(`input[value="${question.correctAnswer}"]`);
-                if (correctChoice) {correctChoice.closest('.choice-label').classList.add('correct');
+                if (correctChoice) {
+                    correctChoice.closest('.choice-label').classList.add('correct');
                 }
             }
+              // Check if all questions have been answered
+            const allQuestionsAnswered = questionsContainer.querySelectorAll('.question').length === questionsContainer.querySelectorAll('.feedback.correct, .feedback.incorrect').length;
+
+            if (allQuestionsAnswered) {
+                displayScore();
+            }
+
         }
+
+        function displayScore() {
+            scoreDisplay.textContent = `You scored ${score} out of ${totalQuestions}!`;
+            scoreDisplay.classList.add('show');
+        }
+
 
         function hideAllSections() {
             [subjectGrid, topicGrid, questionsContainer].forEach(grid => {
@@ -901,6 +1020,9 @@
                     child.style.transform = '';
                 });
             });
+            resetButton.classList.remove('show'); //hide the reset button
+             scoreDisplay.classList.remove('show');
+
         }
 
         function showSection(section) {
@@ -923,6 +1045,34 @@
                 }
             }, 400);
         }
+
+
+        // Back to Top Button Functionality
+        window.onscroll = function() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        };
+
+        backToTopButton.addEventListener('click', () => {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+        });
+
+        // Reset Button Functionality
+        resetButton.addEventListener('click', () => {
+             selectedTopic = null;
+             score = 0;
+             totalQuestions = 0;
+            hideAllSections();
+            displayTopics(selectedYear, selectedSubject);
+            scoreDisplay.classList.remove('show'); // Hide the score
+            resetButton.classList.remove('show'); // Hide the Reset button itself
+
+        });
+
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchData();
