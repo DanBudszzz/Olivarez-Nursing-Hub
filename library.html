@@ -258,7 +258,10 @@
       box-shadow: 0 3px 8px rgba(0,0,0,0.08);
       transition: transform 0.2s ease; /* Add transition */
       border: 1px solid rgba(56,142,60,0.1);
-      transition: var(--transition);
+
+      display: flex;          /* Enable Flexbox for book-item */
+      flex-direction: column; /* Stack content vertically */
+      justify-content: space-between; /* Distribute vertical space */
     }
     .book-item:hover {
       transform: translateY(-5px); /* More pronounced hover */
@@ -302,6 +305,7 @@
       border-radius: 5px;
       text-decoration: none;
       transition: var(--transition);
+       margin-top: auto; /* Push View PDF to the bottom */
     }
     .view-pdf:hover {
       background-color: var(--primary-dark);
@@ -416,6 +420,57 @@
       .book-title { font-size: 1rem; }
       .book-meta { font-size: 0.8125rem; }
     }
+
+    /* Button Alignment & Symmetry Improvements */
+
+    /* General Button Styling - to create a base for symmetry */
+    button,
+    #show-admin-button,
+    #book-form button,
+    #password-submit,
+    .view-pdf {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        transition: var(--transition);
+    }
+
+    /* Adjustments for specific buttons if needed */
+    #show-admin-button {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    #book-form button,
+    #password-submit { /* Inherits general button styling */ }
+
+    .view-pdf {
+        margin-top: auto; /* IMPORTANT: Push to bottom within flex container */
+        display: block;
+    }
+
+
+    /* Refinement - for vertical centering within flex containers */
+    .header-content, .filters, .book-meta {
+        align-items: center;
+    }
+
+    /* Fine-tuning vertical text centering in buttons if needed */
+    button, #show-admin-button, #book-form button, #password-submit, .view-pdf {
+         line-height: 1.15;
+    }
+
+
   </style>
 </head>
 <body>
@@ -452,7 +507,7 @@
         <input type="text" id="book-subject" placeholder="Subject" required>
         <input type="url" id="book-image-url" placeholder="Image URL" required>
         <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
-        <button type="">Add Book</button>
+        <button type="submit">Add Book</button>
       </form>
     </section>
 
