@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
     <meta name="description" content="Nursing Resource Hub - Digital library and learning resources for nursing students">
-    <title>Digital Library - Nursing Resource Hub</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Nursing Resource Hub - Digital library</title> <link rel="stylesheet" href="styles.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -31,7 +29,7 @@
                 <li><a href="#info" class="nav-link"><i class="fas fa-info-circle"></i><span class="link-text">Information</span></a></li>
                 <li><a href="#library" class="nav-link"><i class="fas fa-book"></i><span class="link-text">Library</span></a></li>
                 <li><a href="#practice-section" class="nav-link"><i class="fas fa-pencil-alt"></i><span class="link-text">Practice</span></a></li>
-                <li><a href="#videos" class="nav-link"><i class="fas fa-video"></i><span class="link-text">Videos</span></a></li>
+                <li><a href="#reviewers" class="nav-link"><i class="fas fa-file-alt"></i><span class="link-text">Reviewers</span></a></li>
             </ul>
         </nav>
     </header>
@@ -41,7 +39,7 @@
             <li><a href="#info" class="nav-link"><i class="fas fa-info-circle"></i><span class="link-text">Information</span></a></li>
             <li><a href="#library" class="nav-link"><i class="fas fa-book"></i><span class="link-text">Library</span></a></li>
             <li><a href="#practice-section" class="nav-link"><i class="fas fa-pencil-alt"></i><span class="link-text">Practice</span></a></li>
-            <li><a href="#videos" class="nav-link"><i class="fas fa-video"></i><span class="link-text">Videos</span></a></li>
+             <li><a href="#reviewers" class="nav-link"><i class="fas fa-file-alt"></i><span class="link-text">Reviewers</span></a></li>
         </ul>
     </nav>
 
@@ -74,11 +72,10 @@
             <button onclick="window.location.href='practicequiz.html'" class="cta-btn card-btn">Go to Practice Quizzes</button>
         </section>
 
-         <section id="videos" class="card" aria-labelledby="videos-heading">
-            <h2 id="videos-heading" class="section-title"><i class="fas fa-video"></i>Video Tutorials</h2>
-            <p class="card-description">Learn visually with our comprehensive video tutorials.</p>
-            <button onclick="window.location.href='videos.html'" class="cta-btn card-btn">Explore Videos</button> </section>
-    </main>
+         <section id="reviewers" class="card" aria-labelledby="reviewer-heading">
+            <h2 id="reviewer-heading" class="section-title"><i class="fas fa-file-alt"></i>Reviewers</h2> <p class="card-description">Learn with our comprehensive reviewers.</p>
+            <button onclick="window.location.href='transes.html'" class="cta-btn card-btn">View Reviewers</button> </section>
+         </main>
 
     <footer>
       <div class="footer-content">
@@ -89,12 +86,20 @@
              height="70"
              loading="lazy">
         <div class="footer-text">
-          <p>&copy; 2025 Olivarez College Nursing Department</p>
-          <p>Contact: nursing@olivarezcollege.edu.ph</p>
+          <p>&copy; <span id="current-year">2025</span> Olivarez College Nursing Department</p> <p>Contact: nursing@olivarezcollege.edu.ph</p>
         </div>
       </div>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        // Simple script to update footer year dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
 </body>
 </html>
