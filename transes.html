@@ -4,467 +4,402 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nursing Transes & Reviewers</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0m-4xv24pOPp8H49D52e0N6/AM82cTzD7x5hDIEhYKxPcmP6hU6p4D6U9rB8D2" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7FO8CEt6P4h6zM2WImPjwQXPsEMq3+s4LVnRTDkyS4Gv2+1yY2sc3By5YfG9Y+2D" crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/Gf1E3aNStScegeBfu4Yp3s6FGmoA6XtF9WvVNotm3Z2T5FDu" crossorigin="anonymous"></script>
 
     <style>
-        /* --- CSS --- */
         :root {
-            /* Colors */
             --primary: #388E3C;
             --primary-dark: #2B6E2F;
             --primary-light: #C8E6C9;
             --secondary: #2C3E50;
-            --secondary-dark: #1f2c38;
-            --light: #F8F9FA;
-            --gray: #6c757d;
+            --secondary-dark: #34495e;
+            --light: #f8f9fa;
             --white: #fff;
+            --info: #3498db;
+            --info-light: #eaf5fb;
             --danger: #e74c3c;
-            --danger-light: rgba(231, 76, 60, 0.2);
-            --success: #28a745;
-            --success-light: rgba(40, 167, 69, 0.2);
+            --danger-light: #fff0f0;
             --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-
-            /* Spacing */
-            --space-xs: 0.4rem;
-            --space-sm: 0.8rem;
-            --space-md: 1.2rem;
-            --space-lg: 1.6rem;
-            --space-xl: 2.4rem;
-
-            /* Fonts */
-            --font-family: 'Poppins', sans-serif;
-            --font-weight-normal: 400;
-            --font-weight-medium: 500;
-            --font-weight-semibold: 600;
-            --font-weight-bold: 700;
-
-             /* Animation */
-            --transition-speed: 0.3s;
-            --animation-duration: 0.3s; /* Duration for click feedback */
+            --space-sm: 0.8rem; --space-md: 1.2rem; --space-lg: 1.6rem; --space-xl: 2.4rem;
+            --font-family: 'Poppins', sans-serif; --font-serif: 'Lora', serif;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+            --border-radius: 16px;
         }
-
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: var(--font-family);
-            background: var(--light);
-            color: var(--secondary);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        a { text-decoration: none; color: inherit; }
-
-        header {
-            background: var(--gradient);
-            color: var(--white);
-            padding: var(--space-sm) 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            height: 70px;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-         .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 var(--space-sm);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        html { scroll-behavior: smooth; height: 100%; }
+        body { font-family: var(--font-family); background: var(--light); color: var(--secondary); line-height: 1.6; min-height: 100%; display: flex; flex-direction: column; }
+        header { background: var(--gradient); color: var(--white); padding: var(--space-sm) 0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); height: 70px; display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .header-content { max-width: 1300px; margin: 0 auto; padding: 0 var(--space-lg); display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .logo { width: 40px; height: 40px; border-radius: 50%; }
+        h1 { font-size: 1.5rem; font-weight: 600; margin: 0; text-align: center; flex-grow: 1; }
+        main { flex-grow: 1; padding: var(--space-xl) var(--space-lg); width: 100%; display: flex; flex-direction: column; align-items: center; }
+        
+        .page-container {
             width: 100%;
-         }
-
-        .logo-group { display: flex; align-items: center; gap: var(--space-sm); }
-        .logo { width: 40px; height: 40px; border-radius: 50%; transition: transform var(--transition-speed) ease; }
-        .logo:hover { transform: scale(1.1); }
-        .back-home { display: flex; align-items: center; gap: var(--space-xs); color: var(--white); transition: color var(--transition-speed) ease, transform var(--transition-speed) ease; }
-        .back-home:hover { color: var(--primary-light); transform: translateX(-3px); }
-        .back-home i { font-size: 1rem; }
-        h1 { font-size: 1.5rem; font-weight: var(--font-weight-semibold); color: var(--white); margin: 0; text-align: center; flex-grow: 1; }
-
-        main {
-            flex: 1;
-            padding: var(--space-lg) var(--space-sm);
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-         }
-
-        /* Container for selections */
-        .selection-container {
-            background: white; border-radius: 25px; padding: var(--space-lg); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); margin-bottom: var(--space-lg); width: 100%; max-width: 800px; position: relative; overflow: visible; display: none;
-         }
-         .selection-container h2 {
-             margin-bottom: var(--space-md); color: var(--secondary); display: flex; align-items: center; gap: var(--space-sm); font-weight: var(--font-weight-semibold); font-size: 1.4rem;
-         }
-         .selection-container h2 i { color: var(--primary); font-size: 1.5rem; }
-
-
-        /* Container for the document viewer */
-        .viewer-container {
-            background: var(--white); border-radius: 15px; padding: var(--space-lg); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); margin-bottom: var(--space-lg); width: 100%;
-            /* MODIFIED: Increased max-width */
             max-width: 1300px;
-            position: relative; display: none; flex-direction: column;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        .viewer-container h2 {
-            margin-bottom: var(--space-md); padding-bottom: var(--space-sm); border-bottom: 1px solid #eee; color: var(--primary-dark); display: flex; align-items: center; gap: var(--space-sm); font-weight: var(--font-weight-semibold); font-size: 1.5rem;
-        }
-         .viewer-container h2 i { color: var(--primary); font-size: 1.6rem; }
-
-        /* Wrapper for the iframe inside the viewer */
-        .iframe-wrapper {
-            width: 100%; height: 80vh; min-height: 600px; overflow: hidden; border-radius: 8px; margin-bottom: var(--space-lg);
-            /* MODIFIED: Changed background to white */
-            background-color: var(--white);
-        }
-        .iframe-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
-         /* Styling for error messages within iframe wrapper */
-        .iframe-wrapper .error-message { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: var(--space-lg); background-color: var(--white); /* Match wrapper */ border-radius: 8px; }
-         .iframe-wrapper .error-message.fetch-error { background-color: var(--danger-light); color: var(--danger); }
-         .iframe-wrapper .error-message p:first-child { font-weight: var(--font-weight-medium); }
-         .iframe-wrapper .error-message p:not(:first-child) { margin-top: var(--space-sm); }
-
-
-        /* Grid and Card Styles - Applied to all card types */
-        .year-grid, .semester-grid, .term-grid, .subject-grid, .topic-grid { display: grid; gap: var(--space-md); margin-bottom: var(--space-lg); display: none; }
-        .year-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-        .semester-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        .term-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        .subject-grid { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-        .topic-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-
-        .year-card, .semester-card, .term-card, .subject-card, .topic-card { /* Added .term-card */
-             background-color: var(--white); border: 1px solid #ddd; border-radius: 15px; padding: var(--space-md); text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: var(--font-weight-medium); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); position: relative; overflow: hidden; min-height: 80px;
-             transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Keep transitions simple */
-        }
-        .year-card:hover, .semester-card:hover, .term-card:hover, .subject-card:hover, .topic-card:hover { /* Added .term-card */
-            background-color: var(--primary-light); border-color: #ccc;
-        }
-        .year-card.selected, .semester-card.selected, .term-card.selected, .subject-card.selected, .topic-card.selected { /* Added .term-card */
-            background-color: var(--primary); color: white; border-color: var(--primary-dark);
+        .page-container.show {
+            display: flex;
         }
 
-        /* Animation for card click feedback */
-        .card-active-click { animation: cardClickFeedback var(--animation-duration) ease; }
-        @keyframes cardClickFeedback { 0%, 100% { transform: scale(1); } 50% { transform: scale(0.95); opacity: 0.9; } }
-
-        /* Show/Hide Logic - Simple display change */
-        .year-grid.show, .semester-grid.show, .term-grid.show, .subject-grid.show, .topic-grid.show { display: grid; }
-        .viewer-container.show { display: flex; }
-        .selection-container.show { display: block; }
-
-        /* Loader Styles */
-        #initial-loader-overlay { position: fixed; inset: 0; background-color: rgba(248, 249, 250, 0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; transition: opacity 0.5s ease; }
-        .loader-container { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; background-color: rgba(255, 255, 255, 0.8); z-index: 100; border-radius: 25px; transition: opacity 0.4s ease-in-out; opacity: 0; visibility: hidden; }
-        .loader-container.show { opacity: 1; visibility: visible; }
+        .selection-container h2, .viewer-container h2 { display: flex; align-items: center; gap: var(--space-sm); font-size: 1.8rem; font-weight: 600; padding-bottom: var(--space-md); border-bottom: 1px solid #eee; margin-bottom: var(--space-lg); }
+        .grid-container { display: grid; gap: var(--space-md); }
+        .grid-container.hidden { display: none; }
+        .year-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+        .semester-grid, .term-grid, .subject-grid, .topic-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        
+        .card { background-color: var(--white); border: 1px solid #ddd; border-radius: var(--border-radius); padding: var(--space-lg); text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 500; transition: all 0.3s ease; box-shadow: var(--card-shadow); }
+        .card:hover { background-color: var(--primary-light); border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .content-wrapper { width: 100%; overflow-y: auto; border-radius: var(--border-radius); margin-top: var(--space-lg); background-color: #fdfdfd; border: 1px solid #eee; padding: var(--space-xl) clamp(1rem, 5vw, 4rem); }
+        .content-body { font-family: var(--font-serif); line-height: 1.8; color: #333; max-width: 900px; margin: 0 auto; }
+        .content-body h1, .content-body h2, .content-body h3 { font-family: var(--font-family); color: var(--secondary-dark); margin: 2.5em 0 1.2em 0; font-weight: 600; }
+        .content-body h1 { font-size: 2.5rem; text-align: center; border: none; color: var(--primary-dark); }
+        .content-body h2 { font-size: 1.8rem; border-bottom: 3px solid var(--primary-light); padding-bottom: 0.4em;}
+        .content-body h3 { font-size: 1.5rem; border-left: 4px solid var(--primary); padding-left: 0.8em;}
+        .content-body p { margin-bottom: 1.2em; }
+        .content-body ul { list-style: none; padding-left: 0; margin-bottom: 1.2em; }
+        .content-body li { padding-left: 1.5em; position: relative; margin-bottom: 0.6em;}
+        .content-body li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: 0; }
+        
+        .info-box, .nclex-question-block { margin: var(--space-lg) 0; padding: var(--space-lg); border-radius: var(--border-radius); background-color: var(--white); border: 1px solid #eee; box-shadow: var(--card-shadow); font-family: var(--font-family); }
+        .info-box { border-left-width: 5px; border-left-style: solid; }
+        .info-box.info { border-color: var(--info); background-color: var(--info-light); }
+        .info-box.priority { border-color: var(--danger); background-color: var(--danger-light); }
+        .info-box.mnemonic { border-color: var(--primary); background-color: var(--primary-light); }
+        .nclex-question-block .question-stem { font-weight: 600; margin-bottom: var(--space-md); display: block; }
+        .nclex-question-block .choices p { margin-left: 1em; margin-bottom: 0.8em; }
+        .answer-box { margin-top: var(--space-md); padding: var(--space-sm) var(--space-md); background-color: var(--info-light); border: 1px solid var(--info); border-left: 4px solid var(--info); border-radius: 6px; }
+        .rationale-box { margin-top: var(--space-sm); padding: var(--space-sm) var(--space-md); background-color: #f0fff0; border: 1px solid var(--primary-light); border-left: 4px solid var(--primary); border-radius: 6px; }
+        .katex { font-size: 1.1em; }
+        
+        #initial-loader-overlay { position: fixed; inset: 0; background-color: rgba(248, 249, 250, 0.95); z-index: 2000; display: flex; justify-content: center; align-items: center; }
         .loader { border: 6px solid var(--primary-light); border-top: 6px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* Reset Button Styles */
-        .reset-button { display: none; margin: 0 auto; padding: var(--space-sm) var(--space-lg); background-color: var(--secondary); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; font-weight: var(--font-weight-medium); cursor: pointer; transition: background-color var(--transition-speed); }
-        .reset-button:hover { background-color: var(--secondary-dark); }
-
-        /* Footer Styles */
-        footer { background: var(--primary); color: white; padding: var(--space-sm) 0; margin-top: auto; text-align: center; font-size: 0.9rem;}
-        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); padding: var(--space-sm) var(--space-md); }
-        .footer-logo { width: 50px; border-radius: 8px; }
-
-        /* Media Queries */
-        /* Adjusted max-width for viewer container */
-         @media (min-width: 1400px) {
-             .viewer-container { max-width: 1300px; } /* Allow full width up to 1300px */
-         }
-         @media (max-width: 992px) {
-            .viewer-container { max-width: 95%; } /* Use percentage below 1300px breakpoint */
-        }
-        @media (max-width: 768px) { h1 { font-size: 1.2rem; } .selection-container { padding: var(--space-md); max-width: 95%; } .selection-container h2 { font-size: 1.2rem; } .viewer-container { padding: var(--space-md); } .viewer-container h2 { font-size: 1.3rem; } .year-grid, .semester-grid, .term-grid, .subject-grid, .topic-grid { grid-template-columns: 1fr; gap: var(--space-sm); } .year-card, .semester-card, .term-card, .subject-card, .topic-card { font-size: 0.9rem; padding: var(--space-sm); min-height: 70px;} .logo { width: 30px; height: 30px; } .iframe-wrapper { height: 75vh; min-height: 500px; } }
-        @media (max-width: 480px) { h1 { font-size: 1.1rem; } .selection-container { padding: var(--space-sm); } .viewer-container { padding: var(--space-sm); } .viewer-container h2 { font-size: 1.2rem; } .iframe-wrapper { height: 70vh; min-height: 450px; } }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .reset-button { display: none; align-self: center; margin-top: var(--space-lg); padding: var(--space-sm) var(--space-lg); background-color: var(--secondary); color: var(--white); border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
+        .reset-button.show { display: inline-block; }
+        footer { background: var(--gradient); color: white; padding: var(--space-sm) 0; margin-top: auto; text-align: center; font-size: 0.9rem;}
     </style>
 </head>
 <body>
-    <div id="initial-loader-overlay">
-        <div class="loader"></div>
-    </div>
-
+    <div id="initial-loader-overlay"><div class="loader"></div></div>
     <header>
         <div class="header-content">
-            <div class="logo-group">
-                <a href="index.html" class="back-home" aria-label="Back to Homepage">
-                    <i class="fas fa-chevron-left"></i>
-                    <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo">
-                </a>
-            </div>
+            <a href="#" id="home-link" aria-label="Back to Homepage"><img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo"></a>
             <h1>Nursing Transes & Reviewers</h1>
             <div style="width: 50px; flex-shrink: 0;"></div>
         </div>
     </header>
-
     <main>
-        <section class="selection-container" id="selection-container" >
-            <div class="loader-container" id="loader-container"> <div class="loader"></div> </div>
-            <h2 id="selection-title"><i class="fas fa-layer-group"></i> Select Year Level</h2>
-            <div class="year-grid" id="year-grid"></div>
-            <div class="semester-grid" id="semester-grid"></div>
-            <div class="term-grid" id="term-grid"></div>
-            <div class="subject-grid" id="subject-grid"></div>
-            <div class="topic-grid" id="topic-grid"></div>
-            <div id="selection-error" style="color: var(--danger); text-align: center; margin-top: var(--space-md); display: none; padding: var(--space-md); border: 1px solid var(--danger-light); border-radius: 8px;"></div>
-        </section>
-
-        <section class="viewer-container" id="viewer-container">
-            <h2 id="viewer-title"><i class="fas fa-book-open"></i> Viewing: ...</h2>
-             <div class="iframe-wrapper" id="iframe-wrapper"></div>
-             <button class="reset-button" id="reset-button">Go Back to Selections</button>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="footer-logo">
-            <p>&copy; <span id="current-year"></span> Olivarez College Tagaytay - Nursing Department</p>
+        <div class="page-container selection-container" id="selection-container">
+             <h2 id="selection-title"></h2>
+             <div class="grid-container year-grid" id="year-grid"></div>
+             <div class="grid-container semester-grid hidden" id="semester-grid"></div>
+             <div class="grid-container term-grid hidden" id="term-grid"></div>
+             <div class="grid-container subject-grid hidden" id="subject-grid"></div>
+             <div class="grid-container topic-grid hidden" id="topic-grid"></div>
+             <div id="selection-error" style="color: var(--danger); text-align: center; margin-top: var(--space-md); display: none; padding: var(--space-md); border: 1px solid var(--danger-light); border-radius: 8px;"></div>
         </div>
-    </footer>
+        <div class="page-container viewer-container" id="viewer-container">
+            <h2 id="viewer-title"></h2>
+            <div class="content-wrapper" id="content-wrapper"></div>
+            <button class="reset-button" id="reset-button">Go Back</button>
+        </div>
+    </main>
+    <footer><p>&copy; <span id="current-year"></span> Olivarez College Tagaytay - Nursing Department</p></footer>
 
     <script>
-        // --- transes-script.js ---
-        // (No changes to JavaScript needed for these CSS adjustments)
+    document.addEventListener('DOMContentLoaded', () => {
+        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwA2wAeG_otRW0_Zz6wnK4me91bUP3oRVfBZpRi9UJQeD5DQwIgBT1a44DZl5SP4ng7kA/exec';
 
-        // Get references to HTML elements
+        // --- DOM Elements ---
         const selectionContainer = document.getElementById('selection-container');
         const viewerContainer = document.getElementById('viewer-container');
-        const yearGrid = document.getElementById('year-grid');
-        const semesterGrid = document.getElementById('semester-grid');
-        const termGrid = document.getElementById('term-grid');
-        const subjectGrid = document.getElementById('subject-grid');
-        const topicGrid = document.getElementById('topic-grid');
-        const iframeWrapper = document.getElementById('iframe-wrapper');
-        const loaderContainer = document.getElementById('loader-container');
-        const initialLoaderOverlay = document.getElementById('initial-loader-overlay');
-        const selectionTitle = document.getElementById('selection-title');
-        const viewerTitle = document.getElementById('viewer-title');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const loaderOverlay = document.getElementById('initial-loader-overlay');
+        const selectionTitleEl = document.getElementById('selection-title');
+        const viewerTitleEl = document.getElementById('viewer-title');
         const resetButton = document.getElementById('reset-button');
-        const currentYearSpan = document.getElementById('current-year');
+        const homeLink = document.getElementById('home-link');
         const selectionError = document.getElementById('selection-error');
-
-        // --- Configuration ---
-        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyMC5ffbySdQnQsVp0RrhdePsnNiAD3wysrKEpKRaan3-ZptLEUUnoqMI4mbwYqJSiwoQ/exec'; // Replace if URL changed
-        const PLACEHOLDER_URL = 'YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
-        const CLICK_ANIMATION_DURATION = 300; // ms, should match CSS --animation-duration
-        // ---------------------
-
+        
+        const grids = {
+            year: document.getElementById('year-grid'),
+            semester: document.getElementById('semester-grid'),
+            term: document.getElementById('term-grid'),
+            subject: document.getElementById('subject-grid'),
+            topic: document.getElementById('topic-grid'),
+        };
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        
+        // --- State Management ---
         let transesData = {};
-        let selectedYear = null;
-        let selectedSemester = null;
-        let selectedTerm = null;
-        let selectedSubject = null;
-        let currentView = 'year';
+        let selectionState = { year: null, semester: null, term: null, subject: null, topic: null };
+        let stateHistory = [];
 
-        // --- Helper Functions ---
-        function scrollToTopMain() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function showSelectionLoader() { loaderContainer.classList.add('show'); }
-        function hideSelectionLoader(delay = 0) { setTimeout(() => { loaderContainer.classList.remove('show'); }, delay); }
-        function hideInitialLoader() { if(initialLoaderOverlay) { initialLoaderOverlay.style.opacity = '0'; setTimeout(() => { initialLoaderOverlay.style.display = 'none'; }, 500); }}
-
-        function hideAllUIViews() {
-            selectionContainer.style.display = 'none';
-            viewerContainer.style.display = 'none';
-            [yearGrid, semesterGrid, termGrid, subjectGrid, topicGrid].forEach(grid => grid.style.display = 'none');
-            selectionError.style.display = 'none';
-            resetButton.style.display = 'none';
-            selectionContainer.classList.remove('show');
-            viewerContainer.classList.remove('show');
-            [yearGrid, semesterGrid, termGrid, subjectGrid, topicGrid].forEach(grid => grid.classList.remove('show'));
-        }
-
-        function showSection(viewName) {
-            hideAllUIViews();
-            if (viewName === 'content') {
-                viewerContainer.style.display = 'flex';
-                viewerContainer.classList.add('show');
-                resetButton.style.display = 'block';
-                currentView = 'content';
-            } else {
-                selectionContainer.style.display = 'block';
+        // --- Page Switching Logic ---
+        function switchPage(targetPageId) {
+            window.scrollTo(0,0);
+            if (targetPageId === 'selection-container') {
+                viewerContainer.classList.remove('show');
                 selectionContainer.classList.add('show');
-                let gridToShow;
-                if (viewName === 'year') gridToShow = yearGrid;
-                else if (viewName === 'semester') gridToShow = semesterGrid;
-                else if (viewName === 'term') gridToShow = termGrid;
-                else if (viewName === 'subject') gridToShow = subjectGrid;
-                else if (viewName === 'topic') gridToShow = topicGrid;
-
-                if (gridToShow) {
-                    gridToShow.style.display = 'grid';
-                    gridToShow.classList.add('show');
-                    currentView = viewName;
+                resetButton.classList.remove('show');
+            } else if (targetPageId === 'viewer-container') {
+                selectionContainer.classList.remove('show');
+                viewerContainer.classList.add('show');
+                resetButton.classList.add('show');
+            }
+        }
+        
+        // --- Text Parsing Engine ---
+        const parseNclexBlock = (rawBlock) => {
+            let cleanText = rawBlock.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            let questionStem = '', choicesHtml = '', answerText = '', rationaleText = '';
+            const answerPattern = /(Answer:.*?(?=Rationale:|$))/i;
+            const answerMatch = cleanText.match(answerPattern);
+            if (answerMatch) {
+                const preciseAnswerMatch = answerMatch[0].match(/(Answer:\s*(.*))/i);
+                if(preciseAnswerMatch){
+                    answerText = `<strong>Answer:</strong> ${preciseAnswerMatch[2].trim()}`;
+                    cleanText = cleanText.replace(answerMatch[0], '').trim();
                 }
-                selectionContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-        }
-
-        function displayFatalError(message) {
-             hideInitialLoader(); hideAllUIViews(); selectionContainer.style.display = 'block'; selectionTitle.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Error'; selectionError.innerHTML = message; selectionError.style.display = 'block';
-        }
-
-        function createCard(text, type, clickHandler) {
-            const card = document.createElement('button');
-            card.classList.add(`${type}-card`);
-            card.textContent = text;
-            card.setAttribute('type', 'button');
-            card.addEventListener('click', (event) => {
-                const clickedCard = event.currentTarget;
-                clickedCard.classList.add('card-active-click');
-                setTimeout(() => { clickedCard.classList.remove('card-active-click'); }, CLICK_ANIMATION_DURATION);
-                clickHandler(text, clickedCard);
-            });
-            return card;
-        }
-
-        // --- Navigation Functions ---
-        function displayYearLevels() {
-             selectionTitle.innerHTML = '<i class="fas fa-layer-group"></i> Select Year Level'; yearGrid.innerHTML = '';
-             if (!transesData || Object.keys(transesData).length === 0) { yearGrid.innerHTML = '<p style="text-align: center; color: var(--gray);">No year levels found.</p>'; showSection('year'); return; }
-             const years = Object.keys(transesData).sort(); years.forEach(year => yearGrid.appendChild(createCard(year, 'year', selectYear))); showSection('year');
-             selectedYear = null; selectedSemester = null; selectedTerm = null; selectedSubject = null;
-         }
-        function selectYear(year, element) {
-            if (element) { document.querySelectorAll('.year-card').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); }
-            selectedYear = year; selectedSemester = null; selectedTerm = null; selectedSubject = null;
-            selectionTitle.innerHTML = `<i class="fas fa-calendar-alt"></i> Select Semester for ${year}`; semesterGrid.innerHTML = '';
-            const semesters = transesData[year] ? Object.keys(transesData[year]).sort() : [];
-            if (semesters.length === 0) { semesterGrid.innerHTML = '<p>No semesters found.</p>'; }
-            else { semesters.forEach(sem => semesterGrid.appendChild(createCard(sem, 'semester', selectSemester))); }
-            showSection('semester');
-        }
-        function selectSemester(semester, element) {
-            if (element) { document.querySelectorAll('.semester-card').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); }
-            selectedSemester = semester; selectedTerm = null; selectedSubject = null;
-            selectionTitle.innerHTML = `<i class="fas fa-tasks"></i> Select Term (${semester})`;
-            termGrid.innerHTML = '';
-            const terms = transesData[selectedYear]?.[selectedSemester] ? Object.keys(transesData[selectedYear][selectedSemester]).sort() : [];
-            if (terms.length === 0) { termGrid.innerHTML = '<p>No terms found.</p>'; }
-            else { terms.forEach(term => termGrid.appendChild(createCard(term, 'term', selectTerm))); }
-            showSection('term');
-        }
-        function selectTerm(term, element) {
-            if (element) { document.querySelectorAll('.term-card').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); }
-            selectedTerm = term; selectedSubject = null;
-            selectionTitle.innerHTML = `<i class="fas fa-book"></i> Select Subject (${selectedSemester} - ${term})`;
-            subjectGrid.innerHTML = '';
-            const subjects = transesData[selectedYear]?.[selectedSemester]?.[selectedTerm] ? Object.keys(transesData[selectedYear][selectedSemester][selectedTerm]).sort() : [];
-            if (subjects.length === 0) { subjectGrid.innerHTML = '<p>No subjects found.</p>'; }
-            else { subjects.forEach(sub => subjectGrid.appendChild(createCard(sub, 'subject', selectSubject))); }
-            showSection('subject');
-        }
-        function selectSubject(subject, element) {
-             if (element) { document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); }
-            selectedSubject = subject;
-            selectionTitle.innerHTML = `<i class="fas fa-file-alt"></i> Select Topic (${subject})`;
-            topicGrid.innerHTML = '';
-            const topics = transesData[selectedYear]?.[selectedSemester]?.[selectedTerm]?.[selectedSubject] ? Object.keys(transesData[selectedYear][selectedSemester][selectedTerm][selectedSubject]).sort() : [];
-            if (topics.length === 0) { topicGrid.innerHTML = '<p>No topics found.</p>'; }
-            else { topics.forEach(top => topicGrid.appendChild(createCard(top, 'topic', selectTopic))); }
-            showSection('topic');
-        }
-        function selectTopic(topic, element) {
-             if (element) { document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected')); element.classList.add('selected'); }
-             const pathValue = transesData?.[selectedYear]?.[selectedSemester]?.[selectedTerm]?.[selectedSubject]?.[topic];
-            viewerTitle.innerHTML = `<i class="fas fa-book-open"></i> Viewing: ${topic}`;
-            iframeWrapper.innerHTML = '';
-            if (pathValue && typeof pathValue === 'string' && pathValue.startsWith('https://docs.google.com/document/d/')) {
-                 const iframe = document.createElement('iframe');
-                 iframe.src = pathValue;
-                 iframe.title = `${topic} Reviewer`;
-                 iframe.setAttribute('allowfullscreen', '');
-                 iframeWrapper.appendChild(iframe);
-                 showSection('content');
+            const rationalePattern = /(Rationale:.*?(?=Answer:|$))/i;
+            const rationaleMatch = cleanText.match(rationalePattern);
+            if (rationaleMatch) {
+                rationaleText = `<strong>Rationale:</strong> ${rationaleMatch[0].substring(10).trim()}`;
+                cleanText = cleanText.replace(rationaleMatch[0], '').trim();
+            }
+            const firstChoiceIndex = cleanText.search(/\s[a-z]\)/i);
+            if (firstChoiceIndex > -1) {
+                questionStem = cleanText.substring(0, firstChoiceIndex).trim();
+                const choicesText = cleanText.substring(firstChoiceIndex).trim();
+                const choicesArray = choicesText.split(/(?=\s[a-z]\))/i);
+                choicesHtml = choicesArray.filter(c => c.trim()).map(c => `<p>${c.trim()}</p>`).join('');
             } else {
-                 iframeWrapper.innerHTML = `<div class="error-message">
-                                                 <p>Content Link Issue</p>
-                                                 <p>The link for "${topic}" is missing or invalid.</p>
-                                                 ${pathValue ? `<p style="font-size: 0.9em; color: var(--gray);">Value: ${pathValue}</p>` : ''}
-                                              </div>`;
-                 showSection('content');
+                questionStem = cleanText;
             }
+            let html = '<div class="nclex-question-block">';
+            html += `<p class="question-stem">${questionStem.replace(/^(Multiple Choice:|SATA:|SATA \(Select All That Apply\):)\s*/i, '')}</p>`;
+            html += `<div class="choices">${choicesHtml}</div>`;
+            if (answerText) html += `<div class="answer-box"><p>${answerText}</p></div>`;
+            if (rationaleText) html += `<div class="rationale-box"><p>${rationaleText}</p></div>`;
+            html += '</div>';
+            return html;
+        };
+        
+        // ### REFINED PARSING FUNCTION ###
+        const parseContent = (text) => {
+            if (!text) return '<div class="content-body"><p>Content not available for this topic.</p></div>';
+            
+            // Helper function to bold terms before a colon
+            const boldTerm = (line) => {
+                // This regex finds text from the start of the line up to a colon and makes it bold.
+                return line.replace(/^([A-Za-z\s/()]+:)/, '<strong>$1</strong>');
+            };
+
+            let processedText = text.replace(/{([^}]+?)}/g, '$$$$$1$$$$');
+            const lines = processedText.split('\n');
+            let html = '<div class="content-body">';
+            let listOpen = false;
+            
+            const closeList = () => {
+                if (listOpen) {
+                    html += '</ul>';
+                    listOpen = false;
+                }
+            };
+
+            lines.forEach(line => {
+                let trimmedLine = line.trim();
+                if (trimmedLine === '') return;
+
+                // Check for NCLEX questions first
+                if (trimmedLine.match(/^(SATA:|Multiple Choice:|SATA \(Select All That Apply\):)/i)) {
+                    closeList();
+                    html += parseNclexBlock(trimmedLine);
+                }
+                // Check for H2 headers (e.g., "I.", "1.")
+                else if (trimmedLine.match(/^([IVX]+|[0-9]+)\.\s/)) {
+                    closeList();
+                    html += `<h2>${trimmedLine}</h2>`;
+                }
+                // Check for H3 headers (e.g., "A.")
+                else if (trimmedLine.match(/^[A-Z]\.\s/)) {
+                    closeList();
+                    html += `<h3>${trimmedLine}</h3>`;
+                }
+                // Check for special info boxes
+                else if (trimmedLine.startsWith('[INFO]')) {
+                    closeList();
+                    html += `<div class="info-box info"><p>${boldTerm(trimmedLine.substring(6).trim())}</p></div>`;
+                }
+                else if (trimmedLine.startsWith('[PRIORITY]')) {
+                    closeList();
+                    html += `<div class="info-box priority"><p>${boldTerm(trimmedLine.substring(10).trim())}</p></div>`;
+                }
+                else if (trimmedLine.startsWith('[MNEMONIC]')) {
+                    closeList();
+                    html += `<div class="info-box mnemonic"><p>${boldTerm(trimmedLine.substring(10).trim())}</p></div>`;
+                }
+                // Check for list items
+                else if (trimmedLine.startsWith('* ')) {
+                    if (!listOpen) {
+                        html += '<ul>';
+                        listOpen = true;
+                    }
+                    html += `<li>${boldTerm(trimmedLine.substring(2))}</li>`;
+                }
+                // Handle all other lines as paragraphs
+                else {
+                    closeList();
+                    // Assume it's a title if it's in all caps and short
+                    if (trimmedLine.length < 50 && trimmedLine === trimmedLine.toUpperCase() && !trimmedLine.includes(':')) {
+                         html += `<h1>${trimmedLine}</h1>`;
+                    } else {
+                         html += `<p>${boldTerm(trimmedLine)}</p>`;
+                    }
+                }
+            });
+            
+            closeList(); // Ensure any open list is closed at the end
+            html += '</div>';
+            return html;
+        };
+        
+        // --- Navigation Logic ---
+        function renderSelectionPage(level) {
+            const titleMap = {
+                year: '<i class="fas fa-layer-group"></i> Select Year Level',
+                semester: `<i class="fas fa-calendar-alt"></i> ${selectionState.year}`,
+                term: `<i class="fas fa-tasks"></i> ${selectionState.semester}`,
+                subject: `<i class="fas fa-book"></i> ${selectionState.term}`,
+                topic: `<i class="fas fa-file-alt"></i> ${selectionState.subject}`
+            };
+            selectionTitleEl.innerHTML = titleMap[level] || 'Select';
+            let items, nextLevelHandler, currentGrid;
+            let currentData = transesData;
+            try {
+                switch (level) {
+                    case 'year':
+                        currentGrid = grids.year;
+                        items = Object.keys(currentData).sort();
+                        nextLevelHandler = (item) => { selectionState.year = item; navigateTo('semester'); };
+                        break;
+                    case 'semester':
+                        currentGrid = grids.semester;
+                        items = Object.keys(currentData[selectionState.year]).sort();
+                        nextLevelHandler = (item) => { selectionState.semester = item; navigateTo('term'); };
+                        break;
+                    case 'term':
+                        currentGrid = grids.term;
+                        items = Object.keys(currentData[selectionState.year][selectionState.semester]).sort();
+                        nextLevelHandler = (item) => { selectionState.term = item; navigateTo('subject'); };
+                        break;
+                    case 'subject':
+                        currentGrid = grids.subject;
+                        items = Object.keys(currentData[selectionState.year][selectionState.semester][selectionState.term]).sort();
+                        nextLevelHandler = (item) => { selectionState.subject = item; navigateTo('topic'); };
+                        break;
+                    case 'topic':
+                        currentGrid = grids.topic;
+                        items = Object.keys(currentData[selectionState.year][selectionState.semester][selectionState.term][selectionState.subject]).sort();
+                        nextLevelHandler = (item) => { selectionState.topic = item; displayTopic(item); };
+                        break;
+                }
+            } catch (e) {
+                console.error("Error navigating data:", e);
+                selectionError.textContent = "Could not load the requested items. The data might be missing.";
+                selectionError.style.display = 'block';
+                return;
+            }
+            Object.values(grids).forEach(grid => grid.classList.add('hidden'));
+            currentGrid.innerHTML = '';
+            currentGrid.classList.remove('hidden');
+            items.forEach(item => {
+                const card = document.createElement('button');
+                card.className = 'card';
+                card.textContent = item;
+                card.onclick = () => nextLevelHandler(item);
+                currentGrid.appendChild(card);
+            });
+            switchPage('selection-container');
+        }
+        
+        function navigateTo(level) {
+            stateHistory.push({ ...selectionState });
+            renderSelectionPage(level);
         }
 
-        // Reset Button Functionality
-        resetButton.addEventListener('click', () => {
-            let targetElement = null;
-            if (selectedSubject) {
-                 targetElement = document.querySelector(`.subject-card.selected`);
-                 // If coming from content view, reset means show topic list for current subject
-                 selectSubject(selectedSubject, targetElement);
-             } else {
-                 // Add more specific fallbacks if needed, otherwise go to start
-                  displayYearLevels();
-             }
-            // --- Refined Reset Logic: Step back one level based on current view ---
-            /* // Alternative Reset Logic - Steps back one level from current selection grid
-            let viewToGoBackTo = 'year'; // Default
-            let currentSelectionElement = null;
-
-            if (currentView === 'topic') { // If viewing topics, go back to subjects
-                viewToGoBackTo = 'subject';
-                currentSelectionElement = document.querySelector('.subject-card.selected');
-                if(selectedSubject && currentSelectionElement) selectSubject(selectedSubject, currentSelectionElement); else displayYearLevels();
-            } else if (currentView === 'subject') { // If viewing subjects, go back to terms
-                 viewToGoBackTo = 'term';
-                 currentSelectionElement = document.querySelector('.term-card.selected');
-                 if(selectedTerm && currentSelectionElement) selectTerm(selectedTerm, currentSelectionElement); else displayYearLevels();
-            } else if (currentView === 'term') { // If viewing terms, go back to semesters
-                 viewToGoBackTo = 'semester';
-                 currentSelectionElement = document.querySelector('.semester-card.selected');
-                 if(selectedSemester && currentSelectionElement) selectSemester(selectedSemester, currentSelectionElement); else displayYearLevels();
-            } else if (currentView === 'semester') { // If viewing semesters, go back to years
-                viewToGoBackTo = 'year';
-                 currentSelectionElement = document.querySelector('.year-card.selected');
-                 if(selectedYear && currentSelectionElement) selectYear(selectedYear, currentSelectionElement); else displayYearLevels();
-            } else { // Default or if viewing years/content
-                displayYearLevels();
+        function goBack() {
+            if (stateHistory.length > 0) {
+                const lastState = stateHistory.pop();
+                selectionState = lastState;
+                let prevLevel = 'year';
+                if(selectionState.subject) prevLevel = 'topic';
+                else if(selectionState.term) prevLevel = 'subject';
+                else if(selectionState.semester) prevLevel = 'term';
+                else if(selectionState.year) prevLevel = 'semester';
+                renderSelectionPage(prevLevel);
+            } else {
+                 renderSelectionPage('year');
             }
-            */
+        }
+        
+        function displayTopic(topic) {
+            const { year, semester, term, subject } = selectionState;
+            const content = transesData[year][semester][term][subject][topic];
+            viewerTitleEl.innerHTML = `<i class="fas fa-book-open"></i> ${topic}`;
+            contentWrapper.innerHTML = parseContent(content);
+            if (window.renderMathInElement) {
+                renderMathInElement(contentWrapper, {
+                    delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}]
+                });
+            }
+            switchPage('viewer-container');
+        }
+        
+        // --- Event Listeners ---
+        resetButton.addEventListener('click', goBack);
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            selectionState = { year: null, semester: null, term: null, subject: null, topic: null };
+            stateHistory = [];
+            renderSelectionPage('year');
         });
 
-
-        // --- Initial Load - Fetch data ---
-        document.addEventListener('DOMContentLoaded', () => {
-             if(currentYearSpan) { currentYearSpan.textContent = new Date().getFullYear(); }
-             if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL === PLACEHOLDER_URL) { displayFatalError("Configuration error: Web App URL not set."); return; }
-
-             console.log(`Attempting to fetch data from: ${GAS_WEB_APP_URL}`);
-             fetch(GAS_WEB_APP_URL)
-                 .then(response => {
-                     console.log("Fetch response received, Status:", response.status);
-                     if (!response.ok) { return response.text().then(text => { throw new Error(`Network response was not ok: ${response.statusText} (${response.status}). Body: ${text}`); }); }
-                     return response.json();
-                 })
-                 .then(data => {
-                     console.log("Data successfully parsed:", data);
-                     if (data.error) { throw new Error(`Apps Script Error: ${data.message || 'Unknown script error'}`); }
-                     transesData = data;
-                     if (Object.keys(transesData).length > 0) { displayYearLevels(); }
-                     else { console.warn("Fetched data is empty:", transesData); displayFatalError("No reviewer data found."); }
-                 })
-                 .catch(error => {
-                     console.error('Error fetching/processing data:', error);
-                     let errorMsg = `Failed to load data.<br>(${error.message})<br><br>Check: Connection, GAS URL, Deployment Access ('Anyone'), Local HTTPS.`;
-                     displayFatalError(errorMsg);
-                 })
-                 .finally(() => { hideInitialLoader(); });
-        });
+        // --- Initial Data Fetch ---
+        fetch(GAS_WEB_APP_URL)
+            .then(response => {
+                if (!response.ok) throw new Error(`Network error (Status: ${response.status})`);
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) throw new Error(`Apps Script Error: ${data.message}`);
+                transesData = data;
+                loaderOverlay.style.display = 'none';
+                renderSelectionPage('year'); 
+            })
+            .catch(error => {
+                loaderOverlay.style.display = 'none';
+                selectionContainer.classList.add('show');
+                selectionTitleEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
+                selectionError.innerHTML = `Failed to load reviewer data.<br><br><b>Details:</b> ${error.message}<br><br>Please check the script URL, deployment permissions ('Anyone'), and your internet connection.`;
+                selectionError.style.display = 'block';
+            });
+    });
     </script>
-
 </body>
 </html>
