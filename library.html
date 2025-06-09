@@ -7,70 +7,115 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
   <title>Nursing Digital Library | Olivarez College</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+
     :root {
-      --primary: #388E3C;
+      /* Color Palette (Green Scheme Restored) */
+      --primary-color: #388E3C;
       --primary-dark: #2B6E2F;
-      --primary-light: #C8E6C9;
-      --secondary: #2C3E50;
-      --light: #F8F9FA;
-      --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      --transition: all 0.3s ease; /* Smooth transitions */
+      --primary-light: #E8F5E9;
+      --gradient: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      
+      /* Text & Backgrounds */
+      --text-primary: #2C3E50;
+      --text-secondary: #5a6877;
+      --bg-light: #F8F9FA;
+      --bg-white: #ffffff;
+      --border-color: #e1e4e8;
+
+      /* UI Metrics (Scaled Down) */
+      --content-width: 1200px;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+
+      /* Animation & Transitions */
+      --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Shadows (Subtle) */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 10px 0 rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 8px 25px 0 rgba(0, 0, 0, 0.08);
     }
+
+    /* General Reset & Base Styles */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: var(--light);
-      color: var(--secondary);
-      line-height: 1.6;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      font-size: 15px; /* Reduced base font size from 16px to 15px */
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
-    /* Header */
+    @keyframes slideUpFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    body {
+      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-primary);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-size: 15px; /* Base font size scaled down */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    /* Header (Green Gradient Restored) */
     header {
       background: var(--gradient);
-      color: white;
-      padding: 0.6rem 0; /* Slightly reduced header padding */
+      color: var(--bg-white);
       position: sticky;
       top: 0;
       z-index: 1000;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: var(--transition); /* Add transition */
+      padding: 0.8rem 0;
+      box-shadow: var(--shadow-md);
     }
+
     .header-content {
-      max-width: 1200px;
+      max-width: var(--content-width);
       margin: 0 auto;
-      padding: 0 1rem;
+      padding: 0 1.5rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      transition: var(--transition);
+      justify-content: space-between;
+      position: relative;
     }
-      .header-content:hover{
-           transform: scale(1.02);
-      }
+
     .logo-group {
       display: flex;
       align-items: center;
       gap: 0.75rem;
-        transition: var(--transition)
     }
-      .logo-group:hover{
-        transform: scale(1.01);
-      }
+
     .logo {
-      width: 40px; /* Slightly smaller logo */
-      height: 40px; /* Slightly smaller logo */
-      border-radius: 8px;
-      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+    }
+
+    h1 {
+      font-size: 1.25rem; /* Scaled down */
+      font-weight: 600;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     .back-home {
@@ -79,431 +124,338 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: var(--transition);
+      transition: var(--transition-fast);
+      font-size: 1.25rem;
     }
     .back-home:hover {
-      opacity: 0.8; /* Subtle hover effect */
-    }
-    h1 {
-      font-size: 1.25rem; /* Reduced h1 font size */
-      font-weight: 600;
-      transition: var(--transition);
+      opacity: 0.8;
     }
 
     /* Main Content */
     main {
       flex: 1;
-      padding: 1.75rem 1rem; /* Slightly reduced main padding */
-      max-width: 1200px;
+      padding: 2rem 1.5rem; /* Scaled down */
+      max-width: var(--content-width);
       margin: 0 auto;
       width: 100%;
     }
 
-    /* Admin Panel */
+    /* Base Button Style (Scaled Down) */
+    .button-base {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition-fast);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+
+    .button-primary {
+        background-color: var(--primary-color);
+        color: var(--bg-white);
+    }
+    .button-primary:hover {
+        background-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Admin Panel & Upload Button */
+    #show-admin-button {
+      display: block;
+      margin: 0 auto 2rem auto;
+    }
+
     .admin-panel {
-      background: white;
-      border-radius: 16px;
-      padding: 1.25rem; /* Slightly reduced admin-panel padding */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      margin-bottom: 1.75rem; /* Slightly reduced margin-bottom */
-      display: none;  /* Initially hidden */
-      transition: var(--transition); /* Add transition */
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem; /* Scaled down */
+      box-shadow: var(--shadow-md);
+      margin-bottom: 2rem;
+      display: none;
+      border: 1px solid var(--border-color);
     }
     .admin-panel h2 {
-      margin-bottom: 0.9rem; /* Slightly reduced margin-bottom in h2 */
-      font-size: 1.15rem; /* Reduced h2 font size */
-      color: var(--secondary);
-      transition: var(--transition);
+      font-size: 1.15rem; /* Scaled down */
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
     }
     #book-form {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.8rem;
     }
-    #book-form input, #book-form button {
-      padding: 0.6rem; /* Slightly reduced input/button padding in form */
-      font-size: 0.9rem; /* Reduced font size in form inputs/buttons */
-      border-radius: 8px;
-      border: 2px solid var(--primary);
-      transition: var(--transition);
+    #book-form input {
+      background-color: var(--bg-white);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 14px; /* Scaled down */
+      font-size: 0.9rem; /* Scaled down */
+      transition: var(--transition-fast);
+    }
+    #book-form input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--primary-light);
     }
     #book-form button {
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-       transition: var(--transition);
-    }
-    #book-form button:hover {
-      background: var(--primary-dark);
-      transform: scale(1.05);
-    }
-
-    /* Show Admin Button */
-    #show-admin-button {
-      background-color: var(--primary);
-      color: white;
-      padding: 9px 14px; /* Slightly reduced padding in admin button */
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.9rem; /* Reduced font size in admin button */
-      margin-bottom: 1.75rem; /* Slightly reduced margin-bottom */
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      transition: var(--transition); /* Add transition */
-    }
-    #show-admin-button:hover {
-      background-color: var(--primary-dark);
-      transform: scale(1.05); /* Slight scale on hover */
+      margin-top: 0.5rem;
     }
 
     /* Library Container */
     .library-container {
-      background: white;
-      border-radius: 16px;
-      padding: 1.25rem; /* Slightly reduced library container padding */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: var(--transition);
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem; /* Scaled down */
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      animation: slideUpFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .library-container:hover{
-          transform: scale(1.01);
+
+    .library-container h2 {
+        font-weight: 600;
+        font-size: 1.2rem;
     }
+
     /* Filters Section */
     .filters {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 0.9rem; /* Slightly reduced filter gap */
-      margin: 1.75rem 0; /* Slightly reduced filter margin */
-       transition: var(--transition);
-    }
-     .filters:hover{
-          transform: scale(1.01);
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem; /* Scaled down */
+      margin: 1.5rem 0; /* Scaled down */
     }
     .search-box {
       position: relative;
-        transition: var(--transition)
     }
-    .search-box:hover{
- transform: scale(1.02);
-    }
-
-    .search-input {
+    .search-input, select {
       width: 100%;
-      padding: 0.7rem 1.1rem; /* Slightly reduced search input padding */
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      font-size: 0.9rem; /* Reduced search input font size */
-      padding-left: 2.5rem;
-      background: white;
-      transition: box-shadow 0.2s ease, transform 0.2s ease; /* Include transform */
+      padding: 10px 14px; /* Scaled down */
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.9rem; /* Scaled down */
+      background-color: var(--bg-white);
+      transition: var(--transition-fast);
     }
-    .search-input:focus {
+    .search-input:focus, select:focus {
       outline: none;
+      border-color: var(--primary-color);
       box-shadow: 0 0 0 3px var(--primary-light);
-      transform: scale(1.02); /* Slightly enlarge on focus */
+    }
+    .search-input {
+      padding-left: 2.5rem;
     }
     .search-icon {
       position: absolute;
       left: 1rem;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--primary);
-      transition: var(--transition);
+      color: var(--text-secondary);
     }
     select {
-      width: 100%;
-      padding: 0.7rem 1.1rem; /* Slightly reduced select padding */
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      background: white;
-      font-size: 0.9rem; /* Reduced select font size */
       appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23388E3C'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a6877' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
       background-repeat: no-repeat;
       background-position: right 1rem center;
       background-size: 1em;
-      transition: var(--transition);
     }
 
-    select:focus{
-         transform: scale(1.02);
-    }
-    /* Book Carousel */
-    .carousel-container {
-      position: relative;
-      margin: 0 -1rem;
-      padding: 0.4rem 0; /* Slightly reduced carousel padding */
-      transition: var(--transition)
-    }
+    /* Book Carousel (Now a responsive grid) */
     .book-carousel {
-      display: flex;
-      gap: 0.9rem; /* Slightly reduced carousel book gap */
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      padding: 0 1rem;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-        transition: var(--transition)
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem; /* Scaled down */
     }
-    .book-carousel::-webkit-scrollbar {
-      display: none;
-    }
-    .book-item {
-      scroll-snap-align: start;
-      flex: 0 0 280px;
-      background: white;
-      border-radius: 12px;
-      padding: 1.1rem; /* Slightly reduced book item padding */
-      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-      transition: transform 0.2s ease; /* Add transition */
-      border: 1px solid rgba(56,142,60,0.1);
 
-      display: flex;          /* Enable Flexbox for book-item */
-      flex-direction: column; /* Stack content vertically */
-      justify-content: space-between; /* Distribute vertical space */
+    .book-item {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      transition: var(--transition-smooth);
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUpFadeIn 0.5s ease-out backwards;
     }
+
     .book-item:hover {
-      transform: translateY(-5px); /* More pronounced hover */
-       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+      transform: translateY(-6px); /* Slightly less lift */
+      box-shadow: var(--shadow-lg);
     }
+
     .book-image {
       width: 100%;
-      height: 160px; /* Reduced book image height */
-      border-radius: 8px;
+      height: 160px; /* Scaled down */
       object-fit: cover;
-      margin-bottom: 0.9rem; /* Slightly reduced margin-bottom */
       background: var(--primary-light);
-       transition: var(--transition)
+      border-bottom: 1px solid var(--border-color);
     }
-    .book-image:hover{
-        transform: scale(1.02);
+    .book-content {
+        padding: 1rem; /* Scaled down */
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
     .book-title {
-      font-size: 1rem; /* Reduced book title font size */
+      font-size: 1rem; /* Scaled down */
       font-weight: 600;
-      color: var(--secondary);
-      margin-bottom: 0.4rem; /* Slightly reduced margin-bottom */
-      transition: var(--transition);
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
     }
-
     .book-meta {
-      color: var(--primary);
-      font-size: 0.8rem; /* Reduced book meta font size */
+      color: var(--text-secondary);
+      font-size: 0.8rem; /* Scaled down */
       display: flex;
-      gap: 0.75rem;
-      opacity: 0.9;
-        transition: var(--transition);
+      flex-direction: column;
+      gap: 0.2rem;
+      margin-bottom: 1rem;
     }
     .view-pdf {
-      display: block;
-      margin-top: auto; /* Push View PDF to the bottom */
-      padding: 0.4rem 0.9rem; /* Slightly reduced view-pdf button padding */
-      background-color: var(--primary);
+      margin-top: auto;
+      background-color: var(--primary-color);
       color: white;
+      font-weight: 500;
       text-align: center;
-      border-radius: 5px;
+      padding: 8px 14px; /* Scaled down */
+      border-radius: var(--radius-md);
       text-decoration: none;
-      transition: var(--transition);
-       margin-top: auto; /* Push View PDF to the bottom */
-       font-size: 0.9rem; /* Reduced view-pdf button font size */
+      transition: var(--transition-fast);
+      font-size: 0.85rem;
     }
     .view-pdf:hover {
       background-color: var(--primary-dark);
-      transform: scale(1.03); /*Consistent scaling*/
+      transform: scale(1.03);
     }
 
-    /* Footer */
+    /* Footer (Green Gradient Restored) */
     footer {
       background: var(--gradient);
-      color: white;
-      padding: 1.25rem; /* Slightly reduced footer padding */
+      color: rgba(255, 255, 255, 0.9);
+      padding: 1.5rem; /* Scaled down */
       margin-top: auto;
-      transition: var(--transition);
     }
     .footer-content {
-      max-width: 1200px;
+      max-width: var(--content-width);
       margin: 0 auto;
       text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.9rem; /* Slightly reduced footer content gap */
-      transition: var(--transition);
+    }
+    .footer-content img {
+        width: 45px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 0.8rem;
     }
 
-    /* Password Modal */
+    /* Password Modal (Glassmorphism Style) */
     #password-modal {
-      display: none;
+      display: flex;
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      top: 0; left: 0; width: 100%; height: 100%;
       z-index: 1001;
       justify-content: center;
       align-items: center;
-      transition: opacity 0.3s ease; /* Fade in/out */
-      opacity: 0; /* Start hidden */
+      background-color: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px) saturate(150%);
+      -webkit-backdrop-filter: blur(8px) saturate(150%);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
     }
 
     #password-modal.show {
-        opacity: 1; /* Fade in */
-        display: flex; /* Use flex for centering */
-    }
-
-    #password-form {
-      background-color: white;
-      padding: 1.75rem; /* Slightly reduced password form padding */
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 0.9rem; /* Slightly reduced password form gap */
-      max-width: 300px;
-      width: 90%;
-      transition: var(--transition);
-      transform: scale(0.95); /* Start slightly smaller */
-      opacity: 0;
+        opacity: 1;
+        visibility: visible;
     }
     #password-modal.show #password-form {
         opacity: 1;
-        transform: scale(1);
-      }
+        transform: scale(1) translateY(0);
+    }
 
+    #password-form {
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 1.5rem; /* Scaled down */
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 90%;
+      max-width: 320px; /* Scaled down */
+      transform: scale(0.95) translateY(20px);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #password-form label {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
     #password-input {
-      padding: 0.6rem; /* Slightly reduced password input padding */
-      font-size: 0.9rem; /* Reduced password input font size */
-      border-radius: 4px;
-      border: 1px solid var(--primary);
-      transition: var(--transition);
+      padding: 10px;
+      font-size: 0.9rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-white);
     }
-
-    #password-submit {
-      padding: 0.6rem; /* Slightly reduced password submit button padding */
-      font-size: 0.9rem; /* Reduced password submit button font size */
-      border-radius: 4px;
-      background-color: var(--primary);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
+    #password-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px var(--primary-light);
     }
-    #password-submit:hover {
-      background-color: var(--primary-dark);
-       transform: scale(1.05);
-    }
-
     .error-message {
-      color: red;
+      color: #D32F2F;
       text-align: center;
-      margin-top: 0.5rem;
-      transition: var(--transition);
-      font-size: 0.9rem; /* Reduced error message font size */
+      font-size: 0.85rem;
+      font-weight: 500;
     }
 
     /* Responsive Styles */
     @media (max-width: 768px) {
-      .header-content { gap: 0.5rem; padding: 0 0.5rem; }
-      h1 { font-size: 1.1rem; }
-      .logo { width: 35px; height: 35px; } /* Further reduced logo size on smaller screens */
-      main { padding: 1.25rem 0.5rem; } /* Reduced main padding on smaller screens */
-      .library-container { padding: 0.9rem; border-radius: 12px; } /* Reduced library container padding */
-      .filters { grid-template-columns: 1fr; gap: 0.6rem; margin: 1.25rem 0; } /* Reduced filter gap and margin */
-      .search-input, select { padding: 0.6rem 0.9rem; font-size: 0.875rem; } /* Reduced input/select padding and font size */
-      .book-item { flex: 0 0 75%; padding: 1rem; }
-      #show-admin-button { font-size: 0.85rem; padding: 7px 11px; } /* Reduced admin button font and padding */
+      body { font-size: 14px; }
+      main, .header-content { padding: 1.5rem 1rem; }
+      .book-carousel { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
     }
+
     @media (max-width: 480px) {
-      h1 { font-size: 1rem; } /* Further reduced h1 font size on very small screens */
-      .book-item { flex: 0 0 85%; padding: 0.9rem; } /* Reduced book item padding on very small screens */
-      .book-image { height: 140px; } /* Reduced book image height on very small screens */
-      .book-title { font-size: 0.9rem; } /* Reduced book title font size on very small screens */
-      .book-meta { font-size: 0.75rem; } /* Reduced book meta font size on very small screens */
+        .filters { grid-template-columns: 1fr; }
+        .book-carousel { grid-template-columns: 1fr; }
+        .library-container, .admin-panel, #password-form { padding: 1.25rem; }
     }
-
-    /* Button Alignment & Symmetry Improvements */
-
-    /* General Button Styling - to create a base for symmetry */
-    button,
-    #show-admin-button,
-    #book-form button,
-    #password-submit,
-    .view-pdf {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 9px 14px; /* Slightly reduced button padding for symmetry with smaller fonts */
-        border-radius: 5px;
-        border: none;
-        cursor: pointer;
-        font-size: 0.9rem; /* Reduced button font size for overall scale down */
-        font-weight: bold;
-        text-align: center;
-        text-decoration: none;
-        transition: var(--transition);
-    }
-
-    /* Adjustments for specific buttons if needed */
-    #show-admin-button {
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 1.75rem; /* Slightly reduced margin-bottom to match other reduced margins */
-        display: block;
-    }
-
-    #book-form button,
-    #password-submit { /* Inherits general button styling */ }
-
-    .view-pdf {
-        margin-top: auto; /* Push View PDF to the bottom */
-        display: block;
-        font-size: 0.85rem; /* Further reduced view-pdf button font size if needed */
-        padding: 0.4rem 0.8rem; /* Slightly smaller padding for view-pdf button */
-    }
-
-
-    /* Refinement - for vertical centering within flex containers */
-    .header-content, .filters, .book-meta {
-        align-items: center;
-    }
-
-    /* Fine-tuning vertical text centering in buttons if needed */
-    button, #show-admin-button, #book-form button, #password-submit, .view-pdf {
-         line-height: 1.15;
-    }
-
-
   </style>
 </head>
 <body>
   <header>
     <div class="header-content">
-      <div class="logo-group">
-        <a href="index.html" class="back-home">
-          <i class="fas fa-chevron-left"></i>
-          <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+        <div class="logo-group">
+            <a href="index.html" class="back-home">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
                alt="College Logo"
                class="logo">
-        </a>
+        </div>
         <h1>Nursing Resource Hub</h1>
-      </div>
     </div>
   </header>
-    <main>
+
+  <main>
     <div id="password-modal">
       <form id="password-form">
-        <label for="password-input">Enter Password:</label>
+        <label for="password-input">Enter Admin Password</label>
         <input type="password" id="password-input" required>
-        <button type="submit" id="password-submit">Unlock</button>
-        <<p id="error-message" class="error-message" style="display: none;"></p>
+        <button type="submit" id="password-submit" class="button-base button-primary">Unlock</button>
+        <p id="error-message" class="error-message" style="display: none;"></p>
       </form>
     </div>
 
-    <button id="show-admin-button">Upload New Book</button>
+    <button id="show-admin-button" class="button-base button-primary">
+        <i class="fas fa-upload" style="margin-right: 8px;"></i>
+        Upload New Book
+    </button>
 
     <section class="admin-panel">
       <h2>Upload New Book</h2>
@@ -511,15 +463,15 @@
         <input type="text" id="book-title" placeholder="Book Title" required>
         <input type="text" id="book-year" placeholder="Year Level (e.g., 1st, 2nd, 3rd, 4th)" required>
         <input type="text" id="book-subject" placeholder="Subject" required>
-        <input type="url" id="book-image-url" placeholder="Image URL" required>
-        <input type="url" id="book-pdf-url" placeholder="PDF URL" required>
-        <button type="submit">Add Book</button>
+        <input type="url" id="book-image-url" placeholder="Image URL (e.g., from Imgur)" required>
+        <input type="url" id="book-pdf-url" placeholder="PDF URL (e.g., from Google Drive)" required>
+        <button type="submit" class="button-base button-primary">Add Book</button>
       </form>
     </section>
 
     <section class="library-container">
-      <h2 style="margin-bottom: 1.5rem; color: var(--secondary);">
-        <i class="fas fa-book-open" style="color: var(--primary); margin-right: 0.5rem;"></i>
+      <h2 style="margin-bottom: 1rem; color: var(--text-primary);">
+        <i class="fas fa-book-open" style="color: var(--primary-color); margin-right: 0.75rem;"></i>
         Digital Library
       </h2>
       <div class="filters">
@@ -527,7 +479,7 @@
           <input type="text"
                  id="search"
                  class="search-input"
-                 placeholder="Search resources..."
+                 placeholder="Search by title or subject..."
                  aria-label="Search resources">
           <i class="fas fa-search search-icon"></i>
         </div>
@@ -543,19 +495,16 @@
         </select>
       </div>
 
-      <div class="carousel-container">
-        <div class="book-carousel" id="book-carousel">
-          </div>
-      </div>
+      <div class="book-carousel" id="book-carousel">
+        </div>
     </section>
-
   </main>
-    <footer>
+
+  <footer>
     <div class="footer-content">
       <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-           alt="College Logo"
-           style="width: 60px; border-radius: 8px;">
-      <p style="opacity: 0.9;">&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
+           alt="College Logo">
+      <p>&copy; 2025 Olivarez College Tagaytay - Nursing Department</p>
     </div>
   </footer>
 
@@ -566,43 +515,50 @@
 
     // ✅ Load books from Google Sheets API
     async function loadBooks() {
+      const bookCarousel = document.getElementById('book-carousel');
+      bookCarousel.innerHTML = "<p>Loading resources...</p>"; // Loading state
       try {
-        console.log("📡 Fetching books from:", API_URL);
-
         const response = await fetch(`${API_URL}?cache=${Date.now()}`, { mode: 'cors' });
-        if (!response.ok) throw new Error("Failed to fetch books");
-
+        if (!response.ok) throw new Error(`Failed to fetch books. Status: ${response.status}`);
         const data = await response.json();
-        if (!Array.isArray(data)) throw new Error("Invalid data format");
-
+        if (!Array.isArray(data)) throw new Error("Invalid data format received from API.");
         allBooks = data;
         renderBooks(allBooks);
         updateFilters();
       } catch (error) {
         console.error("❌ Load Error:", error);
-        alert("Failed to load books. Please check your internet or API status.");
+        bookCarousel.innerHTML = `<p style="color: #D32F2F;">Failed to load library. Please check the API connection or try again later.</p>`;
       }
     }
 
     // ✅ Render books to the UI
     function renderBooks(books) {
       const bookCarousel = document.getElementById('book-carousel');
-      bookCarousel.innerHTML = books.length
-        ? books.map(book => createBookHTML(book)).join('')
-        : "<p>No books available.</p>";
+      if (!books.length) {
+        bookCarousel.innerHTML = "<p>No books match your criteria.</p>";
+        return;
+      }
+      bookCarousel.innerHTML = books.map((book, index) =>
+        createBookHTML(book, index)
+      ).join('');
     }
 
     // ✅ Create book HTML template
-    function createBookHTML(book) {
+    function createBookHTML(book, index) {
       return `
-        <div class="book-item" data-year="${book.year}" data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
-          <img src="${book.image}" class="book-image" alt="${book.title}">
-          <h3 class="book-title">${book.title}</h3>
-          <div class="book-meta">
-            <span>${book.year} Year</span>
-            <span>${book.subject}</span>
+        <div class="book-item"
+             style="animation-delay: ${index * 50}ms"
+             data-year="${book.year}"
+             data-subject="${book.subject.toLowerCase().replace(/ /g, '-')}">
+          <img src="${book.image}" class="book-image" alt="${book.title}" onerror="this.src='https://via.placeholder.com/260x160/E8F5E9/388E3C?text=Image+Not+Found';">
+          <div class="book-content">
+              <h3 class="book-title">${book.title}</h3>
+              <div class="book-meta">
+                <span><i class="fas fa-calendar-alt" style="margin-right: 5px; opacity: 0.7;"></i>${book.year} Year</span>
+                <span><i class="fas fa-tag" style="margin-right: 5px; opacity: 0.7;"></i>${book.subject}</span>
+              </div>
+              <a href="${book.pdf}" target="_blank" rel="noopener noreferrer" class="view-pdf">View PDF</a>
           </div>
-          <a href="${book.pdf}" target="_blank" class="view-pdf">View PDF</a>
         </div>
       `;
     }
@@ -610,6 +566,9 @@
     // ✅ Form submission handler
     async function submitBook(e) {
       e.preventDefault();
+      const submitButton = e.target.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Uploading...';
 
       const newBook = {
         title: document.getElementById("book-title").value.trim(),
@@ -621,32 +580,26 @@
 
       if (Object.values(newBook).some(value => !value)) {
         alert("Please fill all fields before submitting.");
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add Book';
         return;
       }
 
       try {
-        console.log("📤 Uploading book:", newBook);
-
-        const response = await fetch(API_URL, {
+        await fetch(API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
           body: JSON.stringify(newBook),
-          mode: "no-cors", // 🚨 Important: Force bypass CORS
-          cache: "no-cache"
+          mode: "no-cors",
         });
-
-        console.log("🔍 Full Response:", response);
-
-        // ❌ If response is empty (due to "no-cors"), assume success
-        alert("✅ Book added successfully!");
+        alert("✅ Book added successfully! The library will now reload.");
         document.getElementById("book-form").reset();
         await loadBooks();
       } catch (error) {
         console.error("❌ Upload failed:", error);
-        alert("Upload failed: " + error.message);
+        alert("Upload failed. See console for details.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Add Book';
       }
     }
 
@@ -656,18 +609,28 @@
       filterBooks();
     }
 
-    // ✅ Update subject filter based on selected year
+    // ✅ Update subject filter based on selected year/all books
     function updateSubjectFilter() {
-      const yearFilter = document.getElementById('year-filter').value;
-      const subjectFilter = document.getElementById('subject-filter');
-      subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+        const yearFilter = document.getElementById('year-filter').value;
+        const subjectFilter = document.getElementById('subject-filter');
+        const currentSubjectValue = subjectFilter.value;
 
-      if (yearFilter === 'all') return;
+        const relevantBooks = yearFilter === 'all'
+            ? allBooks
+            : allBooks.filter(book => book.year === yearFilter);
+        
+        const subjects = [...new Set(relevantBooks.map(book => book.subject))];
 
-      const subjects = [...new Set(allBooks.filter(book => book.year === yearFilter).map(book => book.subject))];
-      subjects.forEach(subject => {
-        subjectFilter.innerHTML += `<option value="${subject.toLowerCase().replace(/ /g, '-')}">${subject}</option>`;
-      });
+        subjectFilter.innerHTML = '<option value="all">All Subjects</option>';
+        subjects.sort().forEach(subject => {
+            const subjectValue = subject.toLowerCase().replace(/ /g, '-');
+            const option = new Option(subject, subjectValue);
+            subjectFilter.add(option);
+        });
+
+        if (Array.from(subjectFilter.options).some(opt => opt.value === currentSubjectValue)) {
+            subjectFilter.value = currentSubjectValue;
+        }
     }
 
     // ✅ Filter books based on search, year, and subject
@@ -686,66 +649,66 @@
       renderBooks(filteredBooks);
     }
 
-// ✅ Password Protection and Modal Logic
-const correctPassword = "211C-2986";
-const passwordModal = document.getElementById('password-modal');
-const passwordForm = document.getElementById('password-form');
-const passwordInput = document.getElementById('password-input');
-const errorMessage = document.getElementById('error-message');
-const adminPanel = document.querySelector('.admin-panel');
-const showAdminButton = document.getElementById('show-admin-button');
+    // ✅ Password Protection and Modal Logic
+    const correctPassword = "211C-2986";
+    const passwordModal = document.getElementById('password-modal');
+    const passwordForm = document.getElementById('password-form');
+    const passwordInput = document.getElementById('password-input');
+    const errorMessage = document.getElementById('error-message');
+    const adminPanel = document.querySelector('.admin-panel');
+    const showAdminButton = document.getElementById('show-admin-button');
 
-function showAdminPanel() {
-    adminPanel.style.display = 'block';
-    closePasswordModal(); // Use the new close function
-}
-
-// Function to show the modal with animation
-function showPasswordModal() {
-    passwordModal.classList.add('show'); // Use the class for animation
-    passwordInput.focus();
-}
-
-// Function to close the modal
-function closePasswordModal() {
-    passwordModal.classList.remove('show'); // Hide with animation
-    // Add a slight delay to allow the animation to complete before hiding.
-    setTimeout(() => {
-      passwordModal.style.display = 'none';
-    }, 300); // Match the transition duration in CSS
-}
-
-function checkPassword(event) {
-    event.preventDefault();
-    if (passwordInput.value === correctPassword) {
-        showAdminPanel();
-        document.getElementById('book-form').addEventListener('submit', submitBook);
-    } else {
-        errorMessage.textContent = "Incorrect password. Please try again.";
-        errorMessage.style.display = 'block';
-        passwordInput.value = '';
-    }
-}
-
-// Event listener for clicking outside the modal content
-passwordModal.addEventListener('click', function(event) {
-    if (event.target === passwordModal) { // Check if the click is on the modal background
+    function showAdminPanel() {
+        adminPanel.style.display = 'block';
+        showAdminButton.style.display = 'none';
         closePasswordModal();
     }
-});
 
-// Event Listeners
-showAdminButton.addEventListener('click', showPasswordModal);
-passwordForm.addEventListener('submit', checkPassword);
+    function showPasswordModal() {
+        passwordModal.classList.add('show');
+        passwordInput.focus();
+    }
 
+    function closePasswordModal() {
+        passwordModal.classList.remove('show');
+    }
 
-// Initial load
-document.addEventListener('DOMContentLoaded', () => {
-    loadBooks();
+    function checkPassword(event) {
+        event.preventDefault();
+        errorMessage.style.display = 'none'; // Hide on new attempt
+        if (passwordInput.value === correctPassword) {
+            showAdminPanel();
+            document.getElementById('book-form').addEventListener('submit', submitBook);
+        } else {
+            errorMessage.textContent = "Incorrect password. Please try again.";
+            errorMessage.style.display = 'block';
+            passwordInput.value = '';
+            passwordForm.style.animation = 'shake 0.5s ease';
+            setTimeout(() => { passwordForm.style.animation = '' }, 500);
+        }
+    }
+    
+    // Add a simple shake keyframe animation for failed password
+    const styleSheet = document.createElement("style")
+    styleSheet.type = "text/css"
+    styleSheet.innerText = `@keyframes shake {
+      10%, 90% { transform: translateX(-1px); }
+      20%, 80% { transform: translateX(2px); }
+      30%, 50%, 70% { transform: translateX(-4px); }
+      40%, 60% { transform: translateX(4px); }
+    }`
+    document.head.appendChild(styleSheet)
+    
+    // Event Listeners
+    passwordModal.addEventListener('click', (event) => (event.target === passwordModal) && closePasswordModal());
+    showAdminButton.addEventListener('click', showPasswordModal);
+    passwordForm.addEventListener('submit', checkPassword);
     document.getElementById('year-filter').addEventListener('change', updateFilters);
     document.getElementById('subject-filter').addEventListener('change', filterBooks);
     document.getElementById('search').addEventListener('input', filterBooks);
-});
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', loadBooks);
 </script>
 </body>
 </html>
