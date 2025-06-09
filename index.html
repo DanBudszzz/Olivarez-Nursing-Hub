@@ -2,103 +2,504 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
-    <meta name="description" content="Nursing Resource Hub - Digital library and learning resources for nursing students">
-    <title>Nursing Resource Hub - Digital library</title> <link rel="stylesheet" href="styles.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nursing Resource Hub - Digital library and learning resources for nursing students.">
+    <title>Nursing Resource Hub - Olivarez College</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        
+        :root {
+            --primary: #388E3C;
+            --primary-dark: #2B6E2F;
+            --primary-light: #C8E6C9;
+            --secondary: #2C3E50;
+            --light: #F8F9FA;
+            --gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Nunito Sans', sans-serif;
+            --content-width: 1024px;
+            --radius: 24px;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box; margin: 0; padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--light);
+            color: var(--secondary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s 0.2s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Header */
+        header {
+            position: sticky; top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .logo-container {
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .logo {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+        }
+        .site-title {
+            font-family: var(--font-heading); font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Navigation */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .desktop-nav .nav-links {
+            display: flex; gap: 0.5rem;
+        }
+        .nav-links {
+            list-style: none;
+        }
+        .nav-link {
+            padding: 0.6rem 1.3rem;
+            text-decoration: none;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500; font-size: 1rem;
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: white; color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .hero-container {
+            background: var(--gradient);
+            position: relative;
+        }
+        .hero {
+            display: flex; align-items: center;
+            text-align: left; color: white;
+            padding: 6rem 2rem 8rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-content {
+            max-width: var(--content-width);
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.2;
+            max-width: 20ch;
+        }
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            margin-top: 1rem; max-width: 50ch;
+            opacity: 0.9;
+        }
+        .hero-bg-image {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 45%;
+            max-width: 450px;
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .cta-btn {
+            display: inline-block; margin-top: 1.5rem; padding: 10px 24px;
+            background: white; color: var(--primary);
+            font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem;
+            text-decoration: none; border-radius: 50px;
+            transition: var(--transition);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: none; cursor: pointer;
+        }
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+        
+        /* ANIMATED WAVY DIVIDER */
+        .wave-divider {
+            position: relative;
+            width: 100%;
+            height: 15vh;
+            min-height: 100px;
+            max-height: 250px;
+            overflow: hidden;
+            background: var(--gradient); /* Fallback for the space */
+        }
+        .waves {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            bottom: -7px; /* Fix for Safari gap */
+            left: 0;
+        }
+        .parallax > use {
+            animation: wave-move 25s cubic-bezier(0.55, 0.5, 0.45, 0.5) infinite;
+        }
+        .parallax > use:nth-child(1) {
+            animation-delay: -2s;
+            animation-duration: 7s;
+        }
+        .parallax > use:nth-child(2) {
+            animation-delay: -3s;
+            animation-duration: 10s;
+        }
+        .parallax > use:nth-child(3) {
+            animation-delay: -4s;
+            animation-duration: 13s;
+        }
+        .parallax > use:nth-child(4) {
+            animation-delay: -5s;
+            animation-duration: 20s;
+        }
+        @keyframes wave-move {
+            0% {
+                transform: translate3d(-90px, 0, 0);
+            }
+            100% {
+                transform: translate3d(85px, 0, 0);
+            }
+        }
+        
+        /* Main Content */
+        main {
+            background-color: var(--light);
+            padding: 5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-wrapper {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px -15px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .section-wrapper.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .feature-section {
+            padding: 3.5rem;
+            display: flex;
+            align-items: center;
+            max-width: var(--content-width);
+            margin: 0 auto;
+            gap: 3rem;
+        }
+        .feature-section:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        .feature-text, .feature-graphic {
+            flex: 1;
+        }
+        .feature-graphic {
+            text-align: center;
+            position: relative;
+        }
+        
+        .section-icon {
+            font-size: 3.5rem;
+            display: inline-block;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 4px 10px rgba(56, 142, 60, 0.2));
+        }
+
+        .section-title {
+            font-family: var(--font-heading); font-size: 1.8rem;
+            font-weight: 600; color: var(--secondary);
+            margin-bottom: 0.75rem;
+        }
+        .card-description {
+            font-size: 1rem; margin-bottom: 1.5rem; max-width: 45ch;
+        }
+        .card-btn {
+            background: var(--primary); color: white;
+        }
+        .card-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--gradient);
+            color: rgba(255,255,255,0.8);
+            padding: 3rem 2rem; text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .footer-content {
+            display: flex; flex-direction: column; align-items: center; gap: 1rem;
+            max-width: var(--content-width); margin: 0 auto;
+        }
+        .footer-logo {
+            width: 50px; height: 50px; margin-bottom: 1rem;
+        }
+        
+        /* Mobile Menu Logic & Responsive */
+        .menu-toggle { display: none; }
+        @media (max-width: 768px) {
+            .desktop-nav { display: none; }
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 42px; height: 42px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.15);
+                border: 1px solid rgba(255,255,255,0.2);
+                transition: var(--transition);
+                position: relative;
+            }
+            .menu-toggle:hover {
+                background: rgba(255,255,255,0.25);
+            }
+            .hamburger, .hamburger::before, .hamburger::after {
+                content: ''; position: absolute;
+                width: 22px; height: 2px;
+                background-color: white;
+                border-radius: 3px;
+                transition: all 0.3s ease-in-out;
+            }
+            .hamburger { background: transparent; }
+            .hamburger::before { transform: translateY(-7px); }
+            .hamburger::after { transform: translateY(7px); }
+            body.mobile-menu-active .menu-toggle .hamburger::before { transform: translateY(0) rotate(45deg); background-color: var(--secondary); }
+            body.mobile-menu-active .menu-toggle .hamburger::after { transform: translateY(0) rotate(-45deg); background-color: var(--secondary); }
+
+            .feature-section, .feature-section:nth-child(even) {
+                flex-direction: column; text-align: center;
+                padding: 3rem 1.5rem; gap: 2rem;
+            }
+            .card-description { margin-left: auto; margin-right: auto; }
+            header { padding: 0.75rem 1.5rem; }
+            .hero { padding: 4rem 1.5rem 6rem 1.5rem; }
+            main { padding: 4rem 1rem; }
+            .hero-bg-image { display: none; }
+        }
+
+        .mobile-nav {
+            position: fixed; top: 0; right: -100%;
+            width: 80%; max-width: 300px; height: 100%;
+            background-color: white;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+            padding: 6rem 2rem 2rem 2rem;
+            z-index: 1001;
+            transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        body.mobile-menu-active .mobile-nav { right: 0; }
+        .mobile-nav .nav-links {
+            flex-direction: column; align-items: flex-start; gap: 1rem;
+        }
+        .mobile-nav .nav-link {
+            color: var(--secondary); font-size: 1.1rem;
+        }
+        .mobile-nav .nav-link:hover {
+            color: var(--primary); background-color: var(--primary-light);
+        }
+    </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-
     <header>
         <div class="logo-container">
-            <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-                 alt="Olivarez College Logo"
-                 class="logo"
-                 width="70"
-                 height="70"
-                 loading="lazy">
+            <a href="index.html" aria-label="Homepage">
+                <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
+                 alt="Olivarez College Logo" class="logo" width="40" height="40">
+            </a>
             <span class="site-title">Nursing Resource Hub</span>
         </div>
-
-        <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-            <span class="hamburger"></span>
-        </button>
-        <nav class="desktop-nav">
-            <ul class="nav-links">
-                <li><a href="#info" class="nav-link"><i class="fas fa-info-circle"></i><span class="link-text">Information</span></a></li>
-                <li><a href="#library" class="nav-link"><i class="fas fa-book"></i><span class="link-text">Library</span></a></li>
-                <li><a href="#practice-section" class="nav-link"><i class="fas fa-pencil-alt"></i><span class="link-text">Practice</span></a></li>
-                <li><a href="#reviewers" class="nav-link"><i class="fas fa-file-alt"></i><span class="link-text">Reviewers</span></a></li>
-            </ul>
-        </nav>
+        <div class="header-right">
+            <nav class="desktop-nav">
+                <ul class="nav-links">
+                    <li><a href="#info" class="nav-link">Information</a></li>
+                    <li><a href="#library" class="nav-link">Library</a></li>
+                    <li><a href="#practice-section" class="nav-link">Practice</a></li>
+                    <li><a href="#reviewers" class="nav-link">Reviewers</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-navigation">
+                <span class="hamburger"></span>
+            </button>
+        </div>
     </header>
-
-      <nav class="mobile-nav">
+    
+    <nav class="mobile-nav" id="mobile-navigation">
         <ul class="nav-links">
-            <li><a href="#info" class="nav-link"><i class="fas fa-info-circle"></i><span class="link-text">Information</span></a></li>
-            <li><a href="#library" class="nav-link"><i class="fas fa-book"></i><span class="link-text">Library</span></a></li>
-            <li><a href="#practice-section" class="nav-link"><i class="fas fa-pencil-alt"></i><span class="link-text">Practice</span></a></li>
-             <li><a href="#reviewers" class="nav-link"><i class="fas fa-file-alt"></i><span class="link-text">Reviewers</span></a></li>
+            <li><a href="#info" class="nav-link">Information</a></li>
+            <li><a href="#library" class="nav-link">Library</a></li>
+            <li><a href="#practice-section" class="nav-link">Practice</a></li>
+            <li><a href="#reviewers" class="nav-link">Reviewers</a></li>
         </ul>
     </nav>
 
-    <section class="hero" aria-labelledby="hero-heading">
-       <div class="hero-content">
-            <h1 id="hero-heading" class="hero-title">Welcome to Your Nursing Journey</h1>
-            <p class="hero-subtitle">Empowering Future Nurses with Knowledge and Resources</p>
-            <a href="#info" class="cta-btn">Explore Resources</a>
-       </div>
-        <div class="hero-overlay"></div>
-    </section>
-
-    <main id="main-content" class="container">
-        <section id="info" class="card" aria-labelledby="info-heading">
-          <h2 id="info-heading" class="section-title"><i class="fas fa-info-circle"></i>Latest Updates</h2>
-          <div class="loading-spinner"></div>
-          <div id="facebook-feed-container" role="region" aria-live="polite"></div>
-          <div id="feed-error" class="error-message" role="alert"></div>
+    <div class="hero-container">
+        <section class="hero" aria-labelledby="hero-heading">
+           <img src="" class="hero-bg-image">
+           <div class="hero-content">
+                <h1 id="hero-heading" class="hero-title">Advance Your Nursing Journey</h1>
+                <p class="hero-subtitle">Your central hub for essential e-books, practice quizzes, and curated reviewers to empower the next generation of Olivarian nurses.</p>
+                <a href="#main-content" class="cta-btn">Start Exploring <i class="fa-solid fa-arrow-right" style="margin-left: 8px; font-size: 0.9em;"></i></a>
+           </div>
         </section>
+        <div class="wave-divider">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(248,249,250,0.7)" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(248,249,250,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(248,249,250,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#f8f9fa" />
+                </g>
+            </svg>
+        </div>
+    </div>
 
-        <section id="library" class="card" aria-labelledby="library-heading">
-            <h2 id="library-heading" class="section-title"><i class="fas fa-book"></i> Digital Library</h2>
-            <p class="card-description">Dive into a curated collection of essential nursing resources.</p>
-            <button onclick="window.location.href='library.html'" class="cta-btn card-btn">Go to Digital Library</button>
-        </section>
+    <main id="main-content">
+        <div class="section-wrapper" id="info">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Latest Updates</h2>
+                    <p class="card-description">Stay informed with the latest news, schedules, and important announcements directly from the Nursing Department.</p>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-bullhorn"></i>
+                </div>
+            </section>
+        </div>
+        
+        <div class="section-wrapper" id="library">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Digital Library</h2>
+                    <p class="card-description">Dive into our curated collection of essential e-books and digital resources, available 24/7 to support your studies.</p>
+                    <button onclick="window.location.href='library.html'" class="cta-btn card-btn">Go to Library</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-book-open-reader"></i>
+                </div>
+            </section>
+        </div>
 
-        <section id="practice-section" class="card" aria-labelledby="practice-heading">
-            <h2 id="practice-heading" class="section-title"><i class="fas fa-pencil-alt"></i>Practice Tests</h2>
-            <p class="card-description">Hone your skills with interactive quizzes and assessments.</p>
-            <button onclick="window.location.href='practicequiz.html'" class="cta-btn card-btn">Go to Practice Quizzes</button>
-        </section>
+        <div class="section-wrapper" id="practice-section">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Practice Tests</h2>
+                    <p class="card-description">Hone your critical thinking and test-taking skills with interactive quizzes and assessments designed for your coursework.</p>
+                    <button onclick="window.location.href='practicequiz.html'" class="cta-btn card-btn">Go to Quizzes</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-pen-ruler"></i>
+                </div>
+            </section>
+        </div>
 
-         <section id="reviewers" class="card" aria-labelledby="reviewer-heading">
-            <h2 id="reviewer-heading" class="section-title"><i class="fas fa-file-alt"></i>Reviewers</h2> <p class="card-description">Learn with our comprehensive reviewers.</p>
-            <button onclick="window.location.href='transes.html'" class="cta-btn card-btn">View Reviewers</button> </section>
-         </main>
+        <div class="section-wrapper" id="reviewers">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Reviewers Hub</h2>
+                    <p class="card-description">Access comprehensive reviewers and condensed "transes" to streamline your study sessions and master key concepts.</p>
+                    <button onclick="window.location.href='transes.html'" class="cta-btn card-btn">View Reviewers</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-file-lines"></i>
+                </div>
+            </section>
+        </div>
+    </main>
 
     <footer>
       <div class="footer-content">
         <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
-             alt="College Logo"
-             class="footer-logo"
-             width="70"
-             height="70"
-             loading="lazy">
+             alt="College Logo" class="footer-logo" width="50" height="50">
         <div class="footer-text">
-          <p>&copy; <span id="current-year">2025</span> Olivarez College Nursing Department</p> <p>Contact: nursing@olivarezcollege.edu.ph</p>
+          <p>&copy; <span id="current-year"></span> Olivarez College Nursing Department</p>
+          <p>Contact: nursing@olivarezcollege.edu.ph</p>
         </div>
       </div>
     </footer>
-
-    <script src="script.js"></script>
+    
     <script>
-        // Simple script to update footer year dynamically
         document.addEventListener('DOMContentLoaded', () => {
-            const yearSpan = document.getElementById('current-year');
-            if (yearSpan) {
-                yearSpan.textContent = new Date().getFullYear();
+            document.body.classList.add('loaded'); // Trigger fade-in
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Mobile Menu
+            const body = document.body;
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (menuToggle) {
+                const mobileNav = document.querySelector('.mobile-nav');
+                const closeMenu = () => {
+                    body.classList.remove('mobile-menu-active');
+                    menuToggle.setAttribute('aria-expanded', 'false');
+                };
+                menuToggle.addEventListener('click', () => {
+                    body.classList.toggle('mobile-menu-active');
+                    menuToggle.setAttribute('aria-expanded', body.classList.contains('mobile-menu-active'));
+                });
+                if (mobileNav) {
+                    mobileNav.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', closeMenu));
+                }
             }
+            
+            // Intersection Observer for scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                    }
+                });
+            }, {
+                threshold: 0.2
+            });
+            document.querySelectorAll('.section-wrapper').forEach(section => {
+                observer.observe(section);
+            });
         });
     </script>
 </body>
