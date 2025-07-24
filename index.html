@@ -32,7 +32,6 @@
             scroll-behavior: smooth;
         }
         
-        /* MODIFIED: Removed initial opacity and animation to work with preloader */
         body {
             font-family: var(--font-body);
             background-color: var(--light);
@@ -42,7 +41,6 @@
             overflow-x: hidden;
         }
         
-        /* --- NEW: Preloader Styles --- */
         #preloader {
             position: fixed;
             top: 0;
@@ -85,18 +83,16 @@
             30% { transform: translateY(-25px); }
         }
 
-        /* NEW: Hides content and scrollbar while preloading */
         body.preloading {
             overflow: hidden;
         }
 
-        /* NEW: Hides main elements to be faded in after preloader */
+        /* Add transition for menu open/close effect */
         header, .hero-container, main, footer {
             opacity: 0;
-            transition: opacity 0.6s ease-in-out 0.2s;
+            transition: opacity 0.6s ease-in-out 0.2s, transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
         
-        /* NEW: Class added by JS to fade in content */
         body.loaded header,
         body.loaded .hero-container,
         body.loaded main,
@@ -127,7 +123,6 @@
             font-size: 1.1rem;
         }
 
-        /* --- NEW INDICATOR MENU STYLES --- */
         .nav {
           display: inline-flex;
           position: relative;
@@ -144,6 +139,7 @@
           font-family: "DM Sans", sans-serif;
           font-weight: 500;
           position: relative;
+          white-space: nowrap;
         }
         .nav-item:before {
           content: "";
@@ -173,7 +169,6 @@
           z-index: 1;
           border-radius: 8px 8px 0 0;
         }
-        /* --- END NEW MENU STYLES --- */
         
         /* Hero Section */
         .hero-container {
@@ -231,7 +226,6 @@
             transform: translateY(-3px) scale(1.05);
         }
         
-        /* ANIMATED WAVY DIVIDER */
         .wave-divider {
             position: relative;
             width: 100%;
@@ -345,27 +339,94 @@
             width: 50px; height: 50px; margin-bottom: 1rem;
         }
         
-        /* Responsive Adjustments */
+        /* --- Mobile Side Menu --- */
+        .menu-toggle {
+            display: none; /* Hidden on desktop */
+            background: none; border: none; cursor: pointer;
+            padding: 10px; z-index: 1001;
+        }
+        .menu-toggle .bar {
+            display: block; width: 25px; height: 3px;
+            background-color: white; margin: 5px 0;
+            transition: transform 0.4s, opacity 0.4s;
+        }
+        .side-nav {
+            height: 100%; width: 250px; position: fixed;
+            z-index: 1000; top: 0; right: 0;
+            background-color: var(--primary-dark);
+            padding-top: 80px;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+        .side-nav-item {
+            padding: 15px 25px; text-decoration: none;
+            font-size: 1.1rem; font-family: var(--font-heading);
+            color: var(--light); display: block;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .side-nav-item:hover {
+            background-color: var(--primary);
+        }
+        .overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999; cursor: pointer;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        /* --- Menu Open State --- */
+        body.menu-open { overflow: hidden; }
+        body.menu-open .side-nav { transform: translateX(0); }
+        body.menu-open .overlay { opacity: 1; visibility: visible; }
+        body.menu-open header, 
+        body.menu-open .hero-container, 
+        body.menu-open main, 
+        body.menu-open footer {
+            transform: translateX(-250px);
+        }
+        body.menu-open .menu-toggle .bar:nth-of-type(1) { transform: rotate(-45deg) translate(-5px, 6px); }
+        body.menu-open .menu-toggle .bar:nth-of-type(2) { opacity: 0; }
+        body.menu-open .menu-toggle .bar:nth-of-type(3) { transform: rotate(45deg) translate(-5px, -6px); }
+        
+        /* Staggered animation for menu items */
+        body.menu-open .side-nav-item { opacity: 1; transform: translateY(0); }
+        body.menu-open .side-nav-item:nth-child(1) { transition-delay: 0.05s; }
+        body.menu-open .side-nav-item:nth-child(2) { transition-delay: 0.1s; }
+        body.menu-open .side-nav-item:nth-child(3) { transition-delay: 0.15s; }
+        body.menu-open .side-nav-item:nth-child(4) { transition-delay: 0.2s; }
+
+
+        /* --- Media Queries for Responsive Design --- */
         @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                padding-bottom: 0;
-            }
-            .nav {
-                max-width: 100vw;
-                overflow-x: auto;
-            }
-            .nav-item {
-                padding: 15px 12px;
-            }
-            .feature-section, .feature-section:nth-child(even) {
+            body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+            header { padding: 0.5rem 1.5rem; }
+            .site-title { font-size: 1rem; }
+            .nav { display: none; } /* Hide original nav on mobile */
+            .menu-toggle { display: block; } /* Show hamburger menu on mobile */
+
+            .hero {
                 flex-direction: column; text-align: center;
-                padding: 3rem 1.5rem; gap: 2rem;
+                padding: 4rem 1.5rem 5rem 1.5rem;
             }
-            .card-description { margin-left: auto; margin-right: auto; }
-            .hero { padding: 4rem 1.5rem 6rem 1.5rem; }
-            main { padding: 4rem 1rem; }
+            .hero-content { display: flex; flex-direction: column; align-items: center; }
+            .hero-title, .hero-subtitle { max-width: 100%; }
             .hero-bg-image { display: none; }
+
+            main { padding: 3rem 1rem; }
+            
+            .feature-section {
+                flex-direction: column !important; 
+                padding: 2.5rem 1.5rem;
+                gap: 2rem;
+                text-align: center;
+            }
+            .feature-text { display: flex; flex-direction: column; align-items: center; }
+            .section-title { font-size: 1.6rem; }
+            .card-description { max-width: 100%; }
+            footer { padding: 2rem 1.5rem; }
         }
     </style>
 </head>
@@ -396,6 +457,12 @@
           <a href="#reviewers" class="nav-item" active-color="#E91E63">Reviewers</a>
           <span class="nav-indicator"></span>
         </nav>
+
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
     </header>
     
     <div class="hero-container">
@@ -487,33 +554,31 @@
       </div>
     </footer>
     
+    <div id="side-menu" class="side-nav">
+        <a href="#info" class="side-nav-item">Information</a>
+        <a href="#library" class="side-nav-item">Library</a>
+        <a href="#practice-section" class="side-nav-item">Practice</a>
+        <a href="#reviewers" class="side-nav-item">Reviewers</a>
+    </div>
+    <div id="menu-overlay" class="overlay"></div>
+
     <script>
-        // --- NEW: Preloader Script ---
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            
-            // Use a timeout to ensure the animation is visible for a minimum duration
             setTimeout(() => {
                 if (preloader) {
                     preloader.classList.add('preloader-hidden');
                 }
-                
-                // Add 'loaded' class to body to trigger fade-in of main content
                 document.body.classList.add('loaded');
-                
-                // Remove the 'preloading' class after the preloader fade-out transition is complete
                 setTimeout(() => {
                     document.body.classList.remove('preloading');
-                }, 800); // This duration should match the preloader's CSS transition time
-            }, 2000); // Minimum display time of 500ms
+                }, 800);
+            }, 2000);
         });
 
-        // --- Original Page Script ---
         document.addEventListener('DOMContentLoaded', () => {
-            // REMOVED: document.body.classList.add('loaded'); This is now handled by the preloader script
             document.getElementById('current-year').textContent = new Date().getFullYear();
 
-            // --- NEW MENU SCRIPT ---
             const indicator = document.querySelector('.nav-indicator');
             const items = document.querySelectorAll('.nav-item');
             const sections = document.querySelectorAll('main .section-wrapper');
@@ -533,17 +598,14 @@
               }
             }
             
-            // Handle clicks on nav items
             items.forEach(item => {
               item.addEventListener('click', (e) => {
                 handleIndicator(e.target);
               });
             });
 
-            // Set initial indicator on page load
             handleIndicator(document.querySelector('.nav-item.is-active'));
 
-            // --- INTERSECTION OBSERVER FOR SCROLLSPY ---
             const scrollObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -552,14 +614,10 @@
                     }
                 });
             }, { 
-                rootMargin: "-50% 0px -50% 0px" // Trigger when section is in the middle of the viewport
+                rootMargin: "-50% 0px -50% 0px"
             });
-
-            sections.forEach(section => {
-                scrollObserver.observe(section);
-            });
+            sections.forEach(section => scrollObserver.observe(section));
             
-            // --- ORIGINAL INTERSECTION OBSERVER FOR FADE-IN ANIMATIONS ---
             const animationObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -571,6 +629,47 @@
             });
             document.querySelectorAll('.section-wrapper').forEach(section => {
                 animationObserver.observe(section);
+            });
+
+            // --- MOBILE MENU SCRIPT ---
+            const menuToggle = document.querySelector('.menu-toggle');
+            const sideNav = document.getElementById('side-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const sideNavItems = document.querySelectorAll('.side-nav-item');
+            const body = document.body;
+
+            function closeMenu() {
+                body.classList.remove('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+
+            function openMenu() {
+                body.classList.add('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'true');
+            }
+
+            menuToggle.addEventListener('click', () => {
+                body.classList.contains('menu-open') ? closeMenu() : openMenu();
+            });
+
+            menuOverlay.addEventListener('click', closeMenu);
+
+            sideNavItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    closeMenu();
+
+                    if (targetSection) {
+                        setTimeout(() => {
+                            targetSection.scrollIntoView({ behavior: 'smooth' });
+                            const desktopNavItem = document.querySelector(`.nav-item[href="${targetId}"]`);
+                            handleIndicator(desktopNavItem);
+                        }, 500); // Wait for menu close animation
+                    }
+                });
             });
         });
     </script>
