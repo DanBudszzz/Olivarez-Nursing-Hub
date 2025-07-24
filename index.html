@@ -345,30 +345,22 @@
             width: 50px; height: 50px; margin-bottom: 1rem;
         }
         
-        /* MODIFIED: Responsive Adjustments for Navigation */
+        /* Responsive Adjustments */
         @media (max-width: 768px) {
+            html {
+                font-size: 15px; /* Adjust base font size for smaller screens to scale rem units */
+            }
             header {
                 flex-direction: column;
-                align-items: center; /* Center items for a cleaner look */
-                padding: 0.5rem 1rem; /* Adjust padding for smaller screens */
-            }
-            .logo-container {
-                margin-bottom: 0.5rem; /* Add some space between logo and nav */
+                padding-bottom: 0;
             }
             .nav {
-                max-width: 100%;
-                overflow-x: visible; /* Allow content to wrap */
-                flex-wrap: wrap; /* Allow nav items to wrap to the next line */
-                justify-content: center; /* Center the navigation items */
-                padding-bottom: 10px; /* Add padding to contain the indicator */
+                max-width: 100vw;
+                overflow-x: auto;
             }
             .nav-item {
-                flex-shrink: 0; /* Prevent items from shrinking */
-                padding: 10px 12px; /* Reduce padding to fit more items */
-                margin: 0 2px; /* Reduce margin */
+                padding: 15px 12px;
             }
-            /* End of Navigation Fix */
-            
             .feature-section, .feature-section:nth-child(even) {
                 flex-direction: column; text-align: center;
                 padding: 3rem 1.5rem; gap: 2rem;
@@ -516,7 +508,7 @@
                 setTimeout(() => {
                     document.body.classList.remove('preloading');
                 }, 800); // This duration should match the preloader's CSS transition time
-            }, 500); // Minimum display time of 500ms
+            }, 2000); // Minimum display time of 500ms
         });
 
         // --- Original Page Script ---
