@@ -347,28 +347,67 @@
         
         /* Responsive Adjustments */
         @media (max-width: 768px) {
-            html {
-                font-size: 15px; /* Adjust base font size for smaller screens to scale rem units */
+            /* Main Content */
+            main {
+                padding: 3rem 1rem;
             }
+
+            /* Header */
             header {
                 flex-direction: column;
-                padding-bottom: 0;
+                padding: 0.5rem 1rem 0;
+            }
+            .logo-container {
+                width: 100%;
             }
             .nav {
+                width: 100%;
                 max-width: 100vw;
                 overflow-x: auto;
+                justify-content: flex-start;
             }
             .nav-item {
                 padding: 15px 12px;
+                white-space: nowrap;
             }
-            .feature-section, .feature-section:nth-child(even) {
-                flex-direction: column; text-align: center;
-                padding: 3rem 1.5rem; gap: 2rem;
+
+            /* Hero Section */
+            .hero {
+                padding: 4rem 1.5rem;
+                text-align: center;
             }
-            .card-description { margin-left: auto; margin-right: auto; }
-            .hero { padding: 4rem 1.5rem 6rem 1.5rem; }
-            main { padding: 4rem 1rem; }
-            .hero-bg-image { display: none; }
+            .hero-title {
+                font-size: 2.2rem;
+                max-width: none;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-bg-image {
+                display: none;
+            }
+
+            /* Feature Sections */
+            .feature-section,
+            .feature-section:nth-child(even) {
+                flex-direction: column;
+                text-align: center;
+                padding: 2.5rem 1.5rem;
+                gap: 1.5rem;
+            }
+            .section-icon {
+                font-size: 3rem;
+                margin-bottom: 0.5rem;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .card-description {
+                margin-left: auto;
+                margin-right: auto;
+            }
         }
     </style>
 </head>
