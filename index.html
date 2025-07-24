@@ -31,7 +31,8 @@
         html {
             scroll-behavior: smooth;
         }
-
+        
+        /* MODIFIED: Removed initial opacity and animation to work with preloader */
         body {
             font-family: var(--font-body);
             background-color: var(--light);
@@ -39,13 +40,68 @@
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            opacity: 0;
-            animation: fadeIn 0.5s 0.2s ease forwards;
-            /* Removed margin-left from old menu */
         }
         
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        /* --- NEW: Preloader Styles --- */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 9999;
+            background: var(--gradient);
+            display: grid;
+            place-content: center;
+            transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #preloader.preloader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-container {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .preloader-dot {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            animation: preloader-wave 1.4s ease-in-out infinite;
+        }
+
+        .preloader-dot:nth-child(2) { animation-delay: -1.2s; }
+        .preloader-dot:nth-child(3) { animation-delay: -1.0s; }
+        .preloader-dot:nth-child(4) { animation-delay: -0.8s; }
+
+        @keyframes preloader-wave {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-25px); }
+        }
+
+        /* NEW: Hides content and scrollbar while preloading */
+        body.preloading {
+            overflow: hidden;
+        }
+
+        /* NEW: Hides main elements to be faded in after preloader */
+        header, .hero-container, main, footer {
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out 0.2s;
+        }
+        
+        /* NEW: Class added by JS to fade in content */
+        body.loaded header,
+        body.loaded .hero-container,
+        body.loaded main,
+        body.loaded footer {
+            opacity: 1;
         }
 
         /* Header */
@@ -53,7 +109,7 @@
             position: sticky; top: 0;
             width: 100%;
             z-index: 900;
-            padding: 0.5rem 2rem; /* Adjusted padding for nav height */
+            padding: 0.5rem 2rem;
             display: flex; align-items: center; justify-content: space-between;
             background: var(--gradient);
             color: white;
@@ -216,14 +272,14 @@
         }
         
         .section-wrapper {
-    background-color: white;
-    border-radius: var(--radius);
-    box-shadow: 0 10px 40px -15px rgba(0,0,0,0.08);
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-    scroll-margin-top: 100px; /* <-- Add this line */
-}
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px -15px rgba(0,0,0,0.08);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            scroll-margin-top: 100px;
+        }
 
         .section-wrapper.in-view {
             opacity: 1;
@@ -313,7 +369,16 @@
         }
     </style>
 </head>
-<body>
+<body class="preloading">
+
+    <div id="preloader">
+        <div class="preloader-container">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
 
     <header>
         <div class="logo-container">
@@ -324,7 +389,6 @@
             <span class="site-title">Nursing Resource Hub</span>
         </div>
         
-        <!-- New Animated Indicator Menu -->
         <nav class="nav">
           <a href="#info" class="nav-item is-active" active-color="#4CAF50">Information</a>
           <a href="#library" class="nav-item" active-color="#2196F3">Library</a>
@@ -424,8 +488,29 @@
     </footer>
     
     <script>
+        // --- NEW: Preloader Script ---
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            
+            // Use a timeout to ensure the animation is visible for a minimum duration
+            setTimeout(() => {
+                if (preloader) {
+                    preloader.classList.add('preloader-hidden');
+                }
+                
+                // Add 'loaded' class to body to trigger fade-in of main content
+                document.body.classList.add('loaded');
+                
+                // Remove the 'preloading' class after the preloader fade-out transition is complete
+                setTimeout(() => {
+                    document.body.classList.remove('preloading');
+                }, 800); // This duration should match the preloader's CSS transition time
+            }, 2000); // Minimum display time of 500ms
+        });
+
+        // --- Original Page Script ---
         document.addEventListener('DOMContentLoaded', () => {
-            document.body.classList.add('loaded'); // Trigger fade-in
+            // REMOVED: document.body.classList.add('loaded'); This is now handled by the preloader script
             document.getElementById('current-year').textContent = new Date().getFullYear();
 
             // --- NEW MENU SCRIPT ---
