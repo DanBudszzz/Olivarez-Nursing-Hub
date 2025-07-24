@@ -87,10 +87,8 @@
             overflow: hidden;
         }
 
-        /* Add transition for menu open/close effect */
         header, .hero-container, main, footer {
             opacity: 0;
-            transition: opacity 0.6s ease-in-out 0.2s, transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
         }
         
         body.loaded header,
@@ -110,6 +108,7 @@
             background: var(--gradient);
             color: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease-in-out 0.2s;
         }
         .logo-container {
             display: flex; align-items: center; gap: 1rem;
@@ -174,6 +173,7 @@
         .hero-container {
             background: var(--gradient);
             position: relative;
+            transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease-in-out 0.2s;
         }
         .hero {
             display: flex; align-items: center;
@@ -263,6 +263,7 @@
             gap: 2rem;
             position: relative;
             z-index: 1;
+            transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease-in-out 0.2s;
         }
         
         .section-wrapper {
@@ -330,6 +331,7 @@
             padding: 3rem 2rem; text-align: center;
             position: relative;
             z-index: 1;
+            transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease-in-out 0.2s;
         }
         .footer-content {
             display: flex; flex-direction: column; align-items: center; gap: 1rem;
@@ -356,14 +358,24 @@
             background-color: var(--primary-dark);
             padding-top: 80px;
             transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+            transition: transform 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         .side-nav-item {
-            padding: 15px 25px; text-decoration: none;
-            font-size: 1.1rem; font-family: var(--font-heading);
-            color: var(--light); display: block;
-            opacity: 0; transform: translateY(20px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-family: var(--font-heading);
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .side-nav-item i {
+            width: 20px;
+            text-align: center;
         }
         .side-nav-item:hover {
             background-color: var(--primary);
@@ -374,29 +386,32 @@
             background-color: rgba(0,0,0,0.5);
             z-index: 999; cursor: pointer;
             opacity: 0; visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
+            transition: opacity 0.4s, visibility 0.4s;
         }
 
         /* --- Menu Open State --- */
         body.menu-open { overflow: hidden; }
-        body.menu-open .side-nav { transform: translateX(0); }
-        body.menu-open .overlay { opacity: 1; visibility: visible; }
-        body.menu-open header, 
-        body.menu-open .hero-container, 
-        body.menu-open main, 
+
+        body.menu-open header,
+        body.menu-open .hero-container,
+        body.menu-open main,
         body.menu-open footer {
             transform: translateX(-250px);
         }
+
+        body.menu-open .side-nav { transform: translateX(0); }
+        body.menu-open .overlay { opacity: 1; visibility: visible; }
+        
         body.menu-open .menu-toggle .bar:nth-of-type(1) { transform: rotate(-45deg) translate(-5px, 6px); }
         body.menu-open .menu-toggle .bar:nth-of-type(2) { opacity: 0; }
         body.menu-open .menu-toggle .bar:nth-of-type(3) { transform: rotate(45deg) translate(-5px, -6px); }
         
         /* Staggered animation for menu items */
         body.menu-open .side-nav-item { opacity: 1; transform: translateY(0); }
-        body.menu-open .side-nav-item:nth-child(1) { transition-delay: 0.05s; }
-        body.menu-open .side-nav-item:nth-child(2) { transition-delay: 0.1s; }
-        body.menu-open .side-nav-item:nth-child(3) { transition-delay: 0.15s; }
-        body.menu-open .side-nav-item:nth-child(4) { transition-delay: 0.2s; }
+        body.menu-open .side-nav-item:nth-child(1) { transition-delay: 0.08s; }
+        body.menu-open .side-nav-item:nth-child(2) { transition-delay: 0.11s; }
+        body.menu-open .side-nav-item:nth-child(3) { transition-delay: 0.14s; }
+        body.menu-open .side-nav-item:nth-child(4) { transition-delay: 0.17s; }
 
 
         /* --- Media Queries for Responsive Design --- */
@@ -555,10 +570,22 @@
     </footer>
     
     <div id="side-menu" class="side-nav">
-        <a href="#info" class="side-nav-item">Information</a>
-        <a href="#library" class="side-nav-item">Library</a>
-        <a href="#practice-section" class="side-nav-item">Practice</a>
-        <a href="#reviewers" class="side-nav-item">Reviewers</a>
+        <a href="#info" class="side-nav-item">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Information</span>
+        </a>
+        <a href="#library" class="side-nav-item">
+            <i class="fa-solid fa-book-open-reader"></i>
+            <span>Library</span>
+        </a>
+        <a href="#practice-section" class="side-nav-item">
+            <i class="fa-solid fa-pen-ruler"></i>
+            <span>Practice</span>
+        </a>
+        <a href="#reviewers" class="side-nav-item">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>Reviewers</span>
+        </a>
     </div>
     <div id="menu-overlay" class="overlay"></div>
 
