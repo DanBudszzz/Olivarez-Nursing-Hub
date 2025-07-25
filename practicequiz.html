@@ -639,6 +639,18 @@
         populateTimerDropdowns();
         loadSettings();
         
+            document.querySelectorAll('.settings-item .toggle-switch').forEach(toggleSwitchDiv => {
+        toggleSwitchDiv.addEventListener('click', (event) => {
+            const checkbox = toggleSwitchDiv.querySelector('input[type="checkbox"]');
+            // This ensures we don't accidentally double-trigger the event
+            if (checkbox && event.target !== checkbox) {
+                checkbox.checked = !checkbox.checked;
+                // Manually trigger a 'change' event so that dependent functions run
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+    });
+        
         const [csvResult, legacyResult] = await Promise.allSettled([
             fetchCsvDataAndTransform(),
             fetchLegacyDataAndTransform()
