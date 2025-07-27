@@ -806,7 +806,7 @@
                 const { year, semester, term, subject, topic } = this.state.selection;
                 const content = this.state.transesData[year][semester][term][subject][topic];
                 this.elements.viewerTitle.innerHTML = `<i class="fas fa-book-reader"></i> ${topic}`;
-                this.elements.contentWrapper.innerHTML = this.parseContent(content);
+                this.elements.contentWrapper.innerHTML = this.parseContent(content.content || content);
                 if (window.renderMathInElement) {
                     window.renderMathInElement(this.elements.contentWrapper, {
                         delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}]
@@ -866,44 +866,72 @@
             },
 
             parseContent(text) {
-                if (!text) return '<div class="content-body"><p>Content not available for this topic.</p></div>';
-                const boldTerm = (line) => line.replace(/^([A-Za-z\s/()]+:)/, '<strong>$1</strong>');
+                if (!text || typeof text !== 'string') return '<div class="content-body"><p>Content not available for this topic.</p></div>';
+
+                const formatLine = (line) => {
+                    if (!line) return '';
+                    let formatted = line
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                        .replace(/_(.*?)_/g, '<u>$1</u>');
+                    formatted = formatted.replace(/^([A-Za-z\s/()\-]+:)/, '<strong>$1</strong>');
+                    return formatted;
+                };
+
                 let processedText = text.replace(/{([^}]+?)}/g, '$$$$$1$$$$');
                 const lines = processedText.split('\n');
                 let html = '<div class="content-body">';
                 let listOpen = false;
-                
+
+                let inLegacyNclexBlock = false;
+                let nclexChoicesHtml = '';
+
                 const closeList = () => { if (listOpen) { html += '</ul>'; listOpen = false; } };
 
-                const parseNclexBlock = (rawBlock) => {
+                const flushAndCloseLegacyNclexBlock = () => {
+                    if (inLegacyNclexBlock) {
+                        if (nclexChoicesHtml) {
+                            html += `<div class="choices">${nclexChoicesHtml}</div>`;
+                            nclexChoicesHtml = '';
+                        }
+                        html += '</div>'; // Close .nclex-question-block
+                        inLegacyNclexBlock = false;
+                    }
+                };
+                
+                const parseFlexibleNclexBlock = (rawBlock) => {
                     let cleanText = rawBlock.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
                     let questionStem = '', choicesHtml = '', answerText = '', rationaleText = '';
+
                     const answerPattern = /(Answer:.*?(?=Rationale:|$))/i;
                     const answerMatch = cleanText.match(answerPattern);
                     if (answerMatch) {
                         const preciseAnswerMatch = answerMatch[0].match(/(Answer:\s*(.*))/i);
                         if(preciseAnswerMatch){
-                            answerText = `<strong>Answer:</strong> ${preciseAnswerMatch[2].trim()}`;
+                            answerText = `<strong>Answer:</strong> ${formatLine(preciseAnswerMatch[2].trim())}`;
                             cleanText = cleanText.replace(answerMatch[0], '').trim();
                         }
                     }
+                    
                     const rationalePattern = /(Rationale:.*?(?=Answer:|$))/i;
                     const rationaleMatch = cleanText.match(rationalePattern);
                     if (rationaleMatch) {
-                        rationaleText = `<strong>Rationale:</strong> ${rationaleMatch[0].substring(10).trim()}`;
+                        rationaleText = `<strong>Rationale:</strong> ${formatLine(rationaleMatch[0].substring(10).trim())}`;
                         cleanText = cleanText.replace(rationaleMatch[0], '').trim();
                     }
+
                     const firstChoiceIndex = cleanText.search(/\s[a-z]\)/i);
                     if (firstChoiceIndex > -1) {
                         questionStem = cleanText.substring(0, firstChoiceIndex).trim();
                         const choicesText = cleanText.substring(firstChoiceIndex).trim();
                         const choicesArray = choicesText.split(/(?=\s[a-z]\))/i);
-                        choicesHtml = choicesArray.filter(c => c.trim()).map(c => `<p>${c.trim()}</p>`).join('');
+                        choicesHtml = choicesArray.filter(c => c.trim()).map(c => `<p>${formatLine(c.trim())}</p>`).join('');
                     } else {
                         questionStem = cleanText;
                     }
+
                     let blockHtml = '<div class="nclex-question-block">';
-                    blockHtml += `<p class="question-stem">${questionStem.replace(/^(Multiple Choice:|SATA:|SATA \(Select All That Apply\):)\s*/i, '')}</p>`;
+                    blockHtml += `<p class="question-stem">${formatLine(questionStem.replace(/^(Multiple Choice:|SATA:|SATA \(Select All That Apply\):)\s*/i, ''))}</p>`;
                     blockHtml += `<div class="choices">${choicesHtml}</div>`;
                     if (answerText) blockHtml += `<div class="answer-box"><p>${answerText}</p></div>`;
                     if (rationaleText) blockHtml += `<div class="rationale-box"><p>${rationaleText}</p></div>`;
@@ -913,20 +941,52 @@
 
                 lines.forEach(line => {
                     let trimmedLine = line.trim();
-                    if (trimmedLine === '') return;
-                    if (trimmedLine.match(/^(SATA:|Multiple Choice:|SATA \(Select All That Apply\):)/i)) { closeList(); html += parseNclexBlock(trimmedLine); } 
-                    else if (trimmedLine.match(/^([IVX]+|[0-9]+)\.\s/)) { closeList(); html += `<h2>${trimmedLine}</h2>`; }
-                    else if (trimmedLine.match(/^[A-Z]\.\s/)) { closeList(); html += `<h3>${trimmedLine}</h3>`; } 
-                    else if (trimmedLine.startsWith('[INFO]')) { closeList(); html += `<div class="info-box info"><p>${boldTerm(trimmedLine.substring(6).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('[PRIORITY]')) { closeList(); html += `<div class="info-box priority"><p>${boldTerm(trimmedLine.substring(10).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('[MNEMONIC]')) { closeList(); html += `<div class="info-box mnemonic"><p>${boldTerm(trimmedLine.substring(10).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('* ')) { if (!listOpen) { html += '<ul>'; listOpen = true; } html += `<li>${boldTerm(trimmedLine.substring(2))}</li>`; } 
-                    else { closeList();
-                        if (trimmedLine.length < 60 && trimmedLine === trimmedLine.toUpperCase() && !trimmedLine.includes(':')) html += `<h1>${trimmedLine}</h1>`;
-                        else html += `<p>${boldTerm(trimmedLine)}</p>`;
+
+                    if (inLegacyNclexBlock) {
+                        if (trimmedLine.startsWith('* ')) {
+                            nclexChoicesHtml += `<p>${formatLine(trimmedLine.substring(2))}</p>`;
+                            return;
+                        } else if (trimmedLine.startsWith('[ANSWER]')) {
+                            if (nclexChoicesHtml) { html += `<div class="choices">${nclexChoicesHtml}</div>`; nclexChoicesHtml = ''; }
+                            html += `<div class="answer-box"><p><strong>Answer:</strong> ${formatLine(trimmedLine.substring(8).trim())}</p></div>`;
+                            return;
+                        } else if (trimmedLine.startsWith('[RATIONALE]')) {
+                            if (nclexChoicesHtml) { html += `<div class="choices">${nclexChoicesHtml}</div>`; nclexChoicesHtml = ''; }
+                            html += `<div class="rationale-box"><p><strong>Rationale:</strong> ${formatLine(trimmedLine.substring(11).trim())}</p></div>`;
+                            flushAndCloseLegacyNclexBlock();
+                            return;
+                        } else {
+                            flushAndCloseLegacyNclexBlock();
+                            if (trimmedLine === '') return;
+                        }
+                    }
+
+                    if (trimmedLine.match(/^(SATA:|Multiple Choice:|SATA \(Select All That Apply\):)/i)) {
+                        closeList(); html += parseFlexibleNclexBlock(trimmedLine);
+                    }
+                    else if (trimmedLine.startsWith('[NCLEX-QUESTION]')) {
+                        closeList();
+                        inLegacyNclexBlock = true;
+                        html += `<div class="nclex-question-block"><p class="question-stem">${formatLine(trimmedLine.substring(16).trim())}</p>`;
+                    }
+                    else if (trimmedLine.startsWith('[TITLE]')) { closeList(); html += `<h1>${formatLine(trimmedLine.substring(7).trim())}</h1>`; }
+                    else if (trimmedLine.match(/^([IVXLC]+\.|[0-9]+\.)\s/)) { closeList(); html += `<h2>${formatLine(trimmedLine)}</h2>`; }
+                    else if (trimmedLine.match(/^[A-Z]\.\s/)) { closeList(); html += `<h3>${formatLine(trimmedLine)}</h3>`; }
+                    else if (trimmedLine.startsWith('[INFO]')) { closeList(); html += `<div class="info-box info"><p>${formatLine(trimmedLine.substring(6).trim())}</p></div>`; }
+                    else if (trimmedLine.startsWith('[PRIORITY]')) { closeList(); html += `<div class="info-box priority"><p>${formatLine(trimmedLine.substring(10).trim())}</p></div>`; }
+                    else if (trimmedLine.startsWith('[MNEMONIC]')) { closeList(); html += `<div class="info-box mnemonic"><p>${formatLine(trimmedLine.substring(10).trim())}</p></div>`; }
+                    else if (trimmedLine.startsWith('* ')) { if (!listOpen) { html += '<ul>'; listOpen = true; } html += `<li>${formatLine(trimmedLine.substring(2))}</li>`; }
+                    else if (trimmedLine !== '') {
+                        closeList();
+                        if (trimmedLine.length < 60 && trimmedLine === trimmedLine.toUpperCase() && !trimmedLine.includes(':')) {
+                            html += `<h1>${formatLine(trimmedLine)}</h1>`;
+                        } else {
+                            html += `<p>${formatLine(trimmedLine)}</p>`;
+                        }
                     }
                 });
-                
+
+                flushAndCloseLegacyNclexBlock();
                 closeList();
                 html += '</div>';
                 return html;
