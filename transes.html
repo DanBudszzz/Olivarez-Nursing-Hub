@@ -97,8 +97,29 @@
         .logo { width: 2.25rem; /* 36px */ height: 2.25rem; /* 36px */ }
         .header-title { font-size: 1.15rem; font-weight: 600; margin: 0; white-space: nowrap; }
         
-        /* Theme Switch */
-        .theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; }
+        /* Theme & Update Actions */
+        .theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; gap: var(--space-md); }
+        #check-updates-btn {
+            background: transparent;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+            line-height: 1;
+        }
+        #check-updates-btn:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: rotate(90deg);
+        }
+        html[data-theme='dark'] #check-updates-btn {
+            color: var(--header-text);
+        }
         .theme-switch { display: inline-block; height: 1.375rem; /* 22px */ position: relative; width: 2.75rem; /* 44px */ }
         .theme-switch input { display: none; }
         .slider { background-color: rgba(128,128,128,0.4); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 1.375rem; /* 22px */ }
@@ -383,6 +404,9 @@
                 <h1 class="header-title">Nursing Reviewers</h1>
             </a>
             <div class="theme-switch-wrapper">
+                <button id="check-updates-btn" title="Check for Updates" aria-label="Check for new content">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
                 <label class="theme-switch" for="theme-checkbox">
                     <input type="checkbox" id="theme-checkbox" />
                     <div class="slider">
@@ -499,8 +523,9 @@
                     searchResultsTitle: document.getElementById('search-results-title'),
                     // Back to Top
                     backToTopButton: document.getElementById('back-to-top'),
-                    // Theme
+                    // Theme & Updates
                     themeToggle: document.getElementById('theme-checkbox'),
+                    updatesBtn: document.getElementById('check-updates-btn'),
                 };
             },
 
@@ -516,7 +541,6 @@
                     e.preventDefault();
                     if (this.elements.searchInput) {
                         const searchTerm = this.elements.searchInput.value.trim();
-                        // Only search if there's a term, otherwise just keep focus
                         if (searchTerm) {
                             this.handleSearch(searchTerm);
                         } else {
@@ -538,6 +562,12 @@
 
                 // Theme Toggle
                 this.elements.themeToggle?.addEventListener('change', (e) => this.setTheme(e.target.checked ? 'dark' : 'light'));
+
+                // Check for Updates
+                this.elements.updatesBtn?.addEventListener('click', () => {
+                    localStorage.removeItem(this.CACHE_KEY);
+                    location.reload(true);
+                });
             },
 
             fetchData() {
@@ -864,7 +894,7 @@
                     this.elements.backToTopButton?.classList.remove('show');
                 }
             },
-
+            
             parseContent(text) {
                 if (!text || typeof text !== 'string') return '<div class="content-body"><p>Content not available for this topic.</p></div>';
 
