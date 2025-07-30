@@ -9,10 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0m-4xv24pOPp8H49D52e0N6/AM82cTzD7x5hDIEhYKxPcmP6hU6p4D6U9rB8D2" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7FO8CEt6P4h6zM2WImPjwQXPsEMq3+s4LVnRTDkyS4Gv2+1yY2sc3By5YfG9Y+2D" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/Gf1E3aNStScegeBfu4Yp3s6FGmoA6XtF9WvVNotm3Z2T5FDu" crossorigin="anonymous"></script>
-
     <style>
         :root {
             --primary: #388E3C;
@@ -85,13 +81,14 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
-            min-height: 100%;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             transition: background-color 0.3s, color 0.3s;
             font-size: 1rem;
         }
-        header { background: var(--header-bg); color: var(--header-text); padding: var(--space-sm) 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); height: 4rem; /* 64px */ display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; transition: background-color 0.3s; border-bottom: 1px solid var(--border-color); }
+        header { background: var(--header-bg); color: var(--header-text); padding: var(--space-sm) 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); height: 4rem; /* 64px */ display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; transition: background-color 0.3s, transform 0.3s ease-in-out; border-bottom: 1px solid var(--border-color); }
+        .header--hidden { transform: translateY(-100%); }
         .header-content { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-lg); display: flex; align-items: center; justify-content: space-between; width: 100%; gap: var(--space-md); }
         .logo-container { display: flex; align-items: center; gap: var(--space-md); color: inherit; text-decoration: none; }
         .logo { width: 2.25rem; /* 36px */ height: 2.25rem; /* 36px */ }
@@ -135,6 +132,10 @@
         main { flex-grow: 1; padding: var(--space-lg); width: 100%; display: flex; flex-direction: column; align-items: center; }
         .page-container { width: 100%; max-width: 1280px; display: none; flex-direction: column; animation: fadeIn 0.5s ease-in-out; }
         .page-container.show { display: flex; }
+        .viewer-container {
+            flex: 1;
+            min-height: 0; /* Ensures container can shrink and grow properly in a flex context */
+        }
         
         /* New Animated Search Bar */
         .search-container {
@@ -243,28 +244,290 @@
         .search-result-topic { font-weight: 600; font-size: 1.1rem; }
         .search-result-path { font-size: 0.85rem; color: var(--text-tertiary); margin-top: var(--space-xs); }
 
-        .content-wrapper { width: 100%; overflow-y: auto; border-radius: var(--border-radius); margin-top: var(--space-lg); background-color: var(--bg-tertiary); border: 1px solid var(--border-color-light); padding: var(--space-xl) clamp(1rem, 4vw, 3rem); }
-        .content-body { font-family: var(--font-serif); line-height: 1.8; color: var(--text-secondary); max-width: 56.25rem; /* 900px */ margin: 0 auto; }
-        .content-body h1, .content-body h2, .content-body h3 { font-family: var(--font-family); color: var(--text-primary); margin: 2.5em 0 1.2em 0; font-weight: 600; }
-        .content-body h1 { font-size: 2.1rem; text-align: center; border: none; color: var(--primary); }
-        .content-body h2 { font-size: 1.7rem; border-bottom: 3px solid var(--primary-light); padding-bottom: 0.4em;}
-        .content-body h3 { font-size: 1.4rem; border-left: 4px solid var(--primary); padding-left: 0.8em;}
-        .content-body p { margin-bottom: 1.2em; }
-        .content-body ul { list-style: none; padding-left: 0; margin-bottom: 1.2em; }
-        .content-body li { padding-left: 1.5em; position: relative; margin-bottom: 0.6em;}
-        .content-body li::before { content: '•'; color: var(--primary); font-weight: bold; position: absolute; left: 0; }
+        .content-wrapper {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: var(--border-radius);
+            margin-top: var(--space-lg);
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color-light);
+            padding: 0;
+            min-height: 0;
+        }
+
+        #pdf-render-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--space-md) 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-md);
+            transition: filter 0.3s;
+        }
+        #pdf-render-area.pdf-inverted {
+             filter: invert(1) hue-rotate(180deg);
+        }
+        #pdf-render-area.pageless {
+            gap: 0;
+        }
+
+        .pdf-page-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         
-        .info-box, .nclex-question-block { margin: var(--space-lg) 0; padding: var(--space-lg); border-radius: var(--border-radius); background-color: var(--bg-secondary); border: 1px solid var(--border-color-light); box-shadow: var(--card-shadow); font-family: var(--font-family); }
-        .info-box { border-left-width: 5px; border-left-style: solid; }
-        .info-box.info { border-color: var(--info); background-color: var(--info-light); }
-        .info-box.priority { border-color: var(--danger); background-color: var(--danger-light); }
-        .info-box.mnemonic { border-color: var(--primary); background-color: var(--primary-light); }
-        .nclex-question-block .question-stem { font-weight: 600; margin-bottom: var(--space-md); display: block; }
-        .nclex-question-block .choices p { margin-left: 1em; margin-bottom: 0.8em; }
-        .answer-box { margin-top: var(--space-md); padding: var(--space-sm) var(--space-md); background-color: var(--info-light); border: 1px solid var(--info); border-left: 4px solid var(--info); border-radius: 6px; }
-        .rationale-box { margin-top: var(--space-sm); padding: var(--space-sm) var(--space-md); background-color: var(--success-light); border: 1px solid var(--primary-light); border-left: 4px solid var(--primary); border-radius: 6px; }
-        .katex { font-size: 1.1em; }
+        .page-placeholder {
+            width: 100%;
+            background-color: var(--border-color-light);
+            border-radius: 4px;
+        }
+
+        #pdf-render-area canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border-radius: 4px;
+            transition: transform 0.3s ease-out;
+        }
+
+        #pdf-viewer-controls {
+            position: fixed; /* Changed from sticky to be always on screen */
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1010;
+            background: rgba(var(--bg-tertiary-rgb), 0.9);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: var(--space-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            width: max-content;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        #pdf-viewer-controls.hidden {
+            opacity: 0;
+            transform: translate(-50%, 150%);
+            pointer-events: none;
+        }
+
+        #pdf-viewer-controls button {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color .2s;
+        }
+        #pdf-viewer-controls button:hover:not(:disabled) {
+            background-color: var(--border-color-light);
+        }
+        #pdf-viewer-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .page-indicator { display: flex; align-items: center; gap: var(--space-xs); font-weight: 500; }
+        #pdf-page-num {
+            width: 3.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 4px;
+            padding: 0.3rem;
+            font-weight: 500;
+            -moz-appearance: textfield;
+        }
+        #pdf-page-num::-webkit-outer-spin-button,
+        #pdf-page-num::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        #pdf-zoom-level { font-weight: 500; width: 4rem; text-align: center; }
+        #pdf-viewer-controls .divider {
+            width: 1px;
+            height: 1.5rem;
+            background: var(--border-color);
+            margin: 0 var(--space-sm);
+        }
+        body.pdf-fullscreen #pdf-fullscreen i::before { content: "\f066"; } /* fa-compress */
         
+        /* Viewer Settings Panel */
+        #settings-panel-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1015;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #settings-panel-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+        #pdf-settings-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background-color: var(--bg-secondary);
+            z-index: 1020;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+        #pdf-settings-panel.show {
+            transform: translateX(0);
+        }
+        .settings-header {
+            padding: var(--space-md) var(--space-lg);
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .settings-header #close-settings-btn {
+            background: none;
+            border: none;
+            color: var(--text-tertiary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .settings-content {
+            padding: var(--space-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .setting-item.column {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-sm);
+        }
+        .setting-label-group {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-weight: 500;
+        }
+        .setting-label-group i {
+            color: var(--text-tertiary);
+            width: 1.2rem;
+            text-align: center;
+        }
+        .setting-item .setting-control-group {
+            display: flex;
+            gap: var(--space-sm);
+        }
+        .setting-control-group.wide {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        .setting-item .setting-control-group button {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all .2s;
+        }
+        .setting-item .setting-control-group button:hover {
+            background-color: var(--border-color-light);
+            border-color: var(--primary);
+        }
+
+        /* Custom Toggle Switch */
+        .qol-switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .qol-switch input { opacity: 0; width: 0; height: 0; }
+        .qol-slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border-color); transition: .3s; border-radius: 22px; }
+        .qol-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .qol-slider { background-color: var(--primary); }
+        input:checked + .qol-slider:before { transform: translateX(22px); }
+
+        /* Custom Zoom Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            flex-grow: 1; height: 6px; background: var(--border-color-light);
+            outline: none; border-radius: 3px; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 18px; height: 18px; background: var(--primary);
+            border-radius: 50%; cursor: pointer; transition: background-color 0.2s;
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 18px; height: 18px; background: var(--primary);
+            border-radius: 50%; cursor: pointer; border: none;
+            transition: background-color 0.2s;
+        }
+        #zoom-slider-value {
+            font-weight: 500;
+            min-width: 3.5rem; /* Prevents layout shift */
+            text-align: right;
+        }
+
+
+        .viewer-state-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1005;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-tertiary);
+            gap: 1rem;
+            padding: var(--space-lg);
+            text-align: center;
+        }
+        .viewer-state-overlay.show { display: flex; }
+        .viewer-state-overlay .error-link {
+            display: inline-block;
+            margin-top: var(--space-md);
+            padding: var(--space-sm) var(--space-md);
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .viewer-state-overlay .error-link:hover {
+            background-color: var(--primary-dark);
+        }
+
         #initial-loader-overlay { position: fixed; inset: 0; background-color: var(--bg-primary); z-index: 2000; display: flex; justify-content: center; align-items: center; flex-direction: column; gap: 1rem; transition: opacity 0.5s ease-out; }
         .loader { border: 6px solid var(--primary-light); border-top: 6px solid var(--primary); border-radius: 50%; width: 3.125rem; /* 50px */ height: 3.125rem; /* 50px */ animation: spin 1s linear infinite; }
         .loader-text { font-weight: 500; color: var(--text-primary); }
@@ -288,6 +551,46 @@
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- Viewer Full-screen mode --- */
+        body.viewer-active footer,
+        body.viewer-active #breadcrumb-nav,
+        body.viewer-active #back-to-top,
+        body.viewer-active .selection-container,
+        body.viewer-active .search-results-container {
+            display: none !important;
+        }
+
+        body.viewer-active main {
+            padding: 0;
+            display: contents;
+        }
+        
+        body.viewer-active .viewer-container {
+            max-width: none;
+            padding: 0;
+        }
+        
+        body.viewer-active #viewer-title {
+            padding: var(--space-md) var(--space-lg);
+            margin: 0;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        body.viewer-active .content-wrapper {
+            margin-top: 0;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+            border-bottom: none;
+            min-height: 0;
+        }
+        
+        body.viewer-active #back-button {
+            margin: var(--space-md) auto; /* Center the back button */
+            flex-shrink: 0;
+        }
+        
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
             html {
@@ -333,14 +636,6 @@
                 min-height: 6.25rem; /* 100px */
                 border-radius: 0.625rem; /* 10px */
             }
-            
-            .content-wrapper {
-                padding: var(--space-lg) var(--space-md);
-            }
-
-            .content-body h1 { font-size: 1.9rem; }
-            .content-body h2 { font-size: 1.5rem; }
-            .content-body h3 { font-size: 1.3rem; }
 
             footer {
                 padding: var(--space-sm) 0;
@@ -378,17 +673,21 @@
                 min-height: 5.625rem; /* 90px */
             }
             
-            .content-wrapper {
-                padding: var(--space-md) var(--space-sm);
+            #pdf-viewer-controls {
+                gap: var(--space-xs);
+                padding: var(--space-xs);
             }
-
-            .info-box, .nclex-question-block {
-                padding: var(--space-md);
+            #pdf-viewer-controls button {
+                width: 2rem;
+                height: 2rem;
+                font-size: 0.9rem;
             }
-            
-            .content-body h1 { font-size: 1.7rem; }
-            .content-body h2 { font-size: 1.4rem; }
-            .content-body h3 { font-size: 1.2rem; }
+            #pdf-viewer-controls .divider {
+                margin: 0 var(--space-xs);
+            }
+             #pdf-settings-panel {
+                width: 250px;
+            }
         }
     </style>
 </head>
@@ -439,8 +738,84 @@
 
         <div class="page-container viewer-container" id="viewer-container">
             <h2 class="page-title" id="viewer-title"></h2>
-            <div class="content-wrapper" id="content-wrapper"></div>
+            <div class="content-wrapper" id="content-wrapper">
+                <div id="pdf-render-area"></div>
+
+                <div id="pdf-viewer-controls" class="hidden">
+                    <button id="pdf-prev" title="Previous Page" aria-label="Previous Page"><i class="fas fa-arrow-left"></i></button>
+                    <div class="page-indicator">
+                        <input type="number" id="pdf-page-num" min="1" aria-label="Current Page">
+                        <span>/</span>
+                        <span id="pdf-page-count">0</span>
+                    </div>
+                    <button id="pdf-next" title="Next Page" aria-label="Next Page"><i class="fas fa-arrow-right"></i></button>
+                    <div class="divider"></div>
+                    <button id="pdf-zoom-out" title="Zoom Out" aria-label="Zoom Out"><i class="fas fa-search-minus"></i></button>
+                    <span id="pdf-zoom-level">100%</span>
+                    <button id="pdf-zoom-in" title="Zoom In" aria-label="Zoom In"><i class="fas fa-search-plus"></i></button>
+                    <div class="divider"></div>
+                    <button id="pdf-download" title="Download PDF" aria-label="Download PDF"><i class="fas fa-download"></i></button>
+                    <button id="pdf-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
+                    <button id="pdf-settings-btn" title="View Settings" aria-label="View Settings"><i class="fas fa-cog"></i></button>
+                </div>
+
+                <div id="pdf-loader" class="viewer-state-overlay">
+                    <div class="loader"></div>
+                    <p class="loader-text">Loading PDF Document...</p>
+                </div>
+                <div id="pdf-error" class="viewer-state-overlay"></div>
+            </div>
             <button class="back-button" id="back-button">Back to Selection</button>
+        </div>
+
+        <div id="settings-panel-overlay"></div>
+        <div id="pdf-settings-panel">
+            <div class="settings-header">
+                <span>View Options</span>
+                <button id="close-settings-btn" aria-label="Close Settings"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <i class="fas fa-moon"></i>
+                        <label for="invert-colors-toggle">Dark Mode</label>
+                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="invert-colors-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                         <i class="fas fa-stream"></i>
+                         <label for="pageless-toggle">Pageless</label>
+                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="pageless-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
+                </div>
+                 <div class="setting-item column">
+                    <div class="setting-label-group">
+                        <i class="fas fa-search-plus"></i>
+                        <label for="zoom-slider">Zoom</label>
+                    </div>
+                    <div class="setting-control-group wide">
+                        <input type="range" id="zoom-slider" min="25" max="500" step="5" value="100">
+                        <span id="zoom-slider-value">100%</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <i class="fas fa-sync-alt"></i>
+                        <label>Rotate</label>
+                    </div>
+                    <div class="setting-control-group">
+                       <button id="pdf-rotate-ccw" title="Rotate Counter-Clockwise" aria-label="Rotate Counter-Clockwise"><i class="fas fa-undo"></i></button>
+                       <button id="pdf-rotate-cw" title="Rotate Clockwise" aria-label="Rotate Clockwise"><i class="fas fa-redo"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="page-container search-results-container" id="search-results-container">
@@ -456,9 +831,12 @@
     <button id="back-to-top" title="Go to top" aria-label="Go to top"><i class="fas fa-arrow-up"></i></button>
 
     <script type="module">
+        import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.mjs';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.worker.mjs';
+
         const App = {
             // --- Constants ---
-            GAS_WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwA2wAeG_otRW0_Zz6wnK4me91bUP3oRVfBZpRi9UJQeD5DQwIgBT1a44DZl5SP4ng7kA/exec',
+            GAS_WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyy_G1vRDF2aZJDcIPS0Q3aQQvCJV0BkQ1U9tM3uAyDbuB83YiyIRB1Y8uqLD2wo77xvQ/exec',
             CACHE_KEY: 'nursingDataCache',
             CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
 
@@ -470,28 +848,40 @@
                 isLoading: true,
                 error: null,
                 searchTerm: '',
+                lastScrollY: 0,
+            },
+            
+            pdf: {
+                doc: null,
+                currentPage: 1,
+                totalPages: 0,
+                zoom: 1.0,
+                rotation: 0,
+                isRenderingPage: new Set(),
+                observer: null,
+                downloadUrl: null,
             },
             
             // --- Cached Elements ---
             elements: {},
 
-            // --- Timers ---
-            debounceTimer: null,
-
             // --- Core Methods ---
             init() {
                 this.cacheDOMElements();
                 this.initTheme();
+                this.initViewerSettings();
                 this.bindEvents();
                 this.render();
                 this.fetchData();
-                if (this.elements.currentYear) {
-                    this.elements.currentYear.textContent = new Date().getFullYear();
-                }
+                this.elements.currentYear.textContent = new Date().getFullYear();
+                 // Convert --bg-tertiary to RGB for backdrop-filter compatibility
+                const tertiaryBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim();
+                document.documentElement.style.setProperty('--bg-tertiary-rgb', this.hexToRgb(tertiaryBg));
             },
 
             cacheDOMElements() {
                 this.elements = {
+                    header: document.querySelector('header'),
                     loaderOverlay: document.getElementById('initial-loader-overlay'),
                     homeLink: document.getElementById('home-link'),
                     currentYear: document.getElementById('current-year'),
@@ -526,48 +916,62 @@
                     // Theme & Updates
                     themeToggle: document.getElementById('theme-checkbox'),
                     updatesBtn: document.getElementById('check-updates-btn'),
+                    // PDF Viewer
+                    pdfControls: document.getElementById('pdf-viewer-controls'),
+                    pdfRenderArea: document.getElementById('pdf-render-area'),
+                    pdfLoader: document.getElementById('pdf-loader'),
+                    pdfError: document.getElementById('pdf-error'),
+                    pdfPrevBtn: document.getElementById('pdf-prev'),
+                    pdfNextBtn: document.getElementById('pdf-next'),
+                    pdfPageNumInput: document.getElementById('pdf-page-num'),
+                    pdfPageCount: document.getElementById('pdf-page-count'),
+                    pdfZoomInBtn: document.getElementById('pdf-zoom-in'),
+                    pdfZoomOutBtn: document.getElementById('pdf-zoom-out'),
+                    pdfZoomLevel: document.getElementById('pdf-zoom-level'),
+                    pdfDownloadBtn: document.getElementById('pdf-download'),
+                    pdfFullscreenBtn: document.getElementById('pdf-fullscreen'),
+                    pdfSettingsBtn: document.getElementById('pdf-settings-btn'),
+                    // PDF Settings Panel
+                    settingsPanel: document.getElementById('pdf-settings-panel'),
+                    settingsOverlay: document.getElementById('settings-panel-overlay'),
+                    closeSettingsBtn: document.getElementById('close-settings-btn'),
+                    invertColorsToggle: document.getElementById('invert-colors-toggle'),
+                    pagelessToggle: document.getElementById('pageless-toggle'),
+                    rotateCwBtn: document.getElementById('pdf-rotate-cw'),
+                    rotateCcwBtn: document.getElementById('pdf-rotate-ccw'),
+                    zoomSlider: document.getElementById('zoom-slider'),
+                    zoomSliderValue: document.getElementById('zoom-slider-value'),
                 };
             },
 
             bindEvents() {
-                this.elements.homeLink?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    this.resetToHome();
-                });
+                this.elements.homeLink?.addEventListener('click', (e) => { e.preventDefault(); this.resetToHome(); });
                 this.elements.backButton?.addEventListener('click', () => this.navigateBack());
-                
-                // Search Events
-                this.elements.searchForm?.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    if (this.elements.searchInput) {
-                        const searchTerm = this.elements.searchInput.value.trim();
-                        if (searchTerm) {
-                            this.handleSearch(searchTerm);
-                        } else {
-                            this.elements.searchInput.focus();
-                        }
-                    }
-                });
-                this.elements.clearSearchBtn?.addEventListener('click', () => {
-                    if (this.elements.searchInput) {
-                        this.elements.searchInput.value = '';
-                    }
-                    this.handleSearch('');
-                    this.elements.searchInput?.focus();
-                });
-
-                // Scroll Event for Back to Top
-                window.addEventListener('scroll', () => this.toggleBackToTopButton());
+                this.elements.searchForm?.addEventListener('submit', (e) => { e.preventDefault(); this.handleSearch(this.elements.searchInput.value); });
+                this.elements.clearSearchBtn?.addEventListener('click', () => { this.elements.searchInput.value = ''; this.handleSearch(''); this.elements.searchInput?.focus(); });
+                window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
                 this.elements.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-                // Theme Toggle
                 this.elements.themeToggle?.addEventListener('change', (e) => this.setTheme(e.target.checked ? 'dark' : 'light'));
+                this.elements.updatesBtn?.addEventListener('click', () => { localStorage.removeItem(this.CACHE_KEY); location.reload(true); });
 
-                // Check for Updates
-                this.elements.updatesBtn?.addEventListener('click', () => {
-                    localStorage.removeItem(this.CACHE_KEY);
-                    location.reload(true);
-                });
+                // PDF Viewer Events
+                this.elements.pdfPrevBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage - 1));
+                this.elements.pdfNextBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage + 1));
+                this.elements.pdfZoomInBtn?.addEventListener('click', () => this.changePdfZoom(0.2));
+                this.elements.pdfZoomOutBtn?.addEventListener('click', () => this.changePdfZoom(-0.2));
+                this.elements.pdfDownloadBtn?.addEventListener('click', () => window.open(this.pdf.downloadUrl, '_blank'));
+                this.elements.pdfFullscreenBtn?.addEventListener('click', () => this.togglePdfFullscreen());
+                this.elements.pdfPageNumInput?.addEventListener('change', (e) => this.changePdfPage(parseInt(e.target.value, 10)));
+                
+                // Settings Panel Events
+                this.elements.pdfSettingsBtn?.addEventListener('click', () => this.toggleSettingsPanel(true));
+                this.elements.closeSettingsBtn?.addEventListener('click', () => this.toggleSettingsPanel(false));
+                this.elements.settingsOverlay?.addEventListener('click', () => this.toggleSettingsPanel(false));
+                this.elements.invertColorsToggle?.addEventListener('change', (e) => this.toggleInvertColors(e.target.checked));
+                this.elements.pagelessToggle?.addEventListener('change', (e) => this.togglePagelessMode(e.target.checked));
+                this.elements.rotateCwBtn?.addEventListener('click', () => this.rotatePdf(90));
+                this.elements.rotateCcwBtn?.addEventListener('click', () => this.rotatePdf(-90));
+                this.elements.zoomSlider?.addEventListener('input', (e) => this.changePdfZoom(parseFloat(e.target.value) / 100, true));
             },
 
             fetchData() {
@@ -577,449 +981,230 @@
                     this.state.isLoading = false;
                     this.state.currentView = 'selection';
                     this.render();
-                    this.fetchAndCacheInBackground(); // Check for updates silently
+                    this.fetchAndCacheInBackground();
                 } else {
-                    this.fetchAndCache(); // First time fetch
+                    this.fetchAndCache();
                 }
             },
 
             fetchAndCache() {
+                if (this.GAS_WEB_APP_URL.includes('REPLACE_WITH')) {
+                    this.state.isLoading = false;
+                    this.state.error = 'Configuration needed: `GAS_WEB_APP_URL` is not set.';
+                    this.state.currentView = 'error';
+                    this.render(); return;
+                }
                 fetch(this.GAS_WEB_APP_URL)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`Network error (Status: ${response.status})`);
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.error) throw new Error(`Apps Script Error: ${data.message}`);
-                        this.setCache(data);
-                        this.state.transesData = data;
-                        this.state.isLoading = false;
-                        this.state.currentView = 'selection';
-                        this.render();
-                    })
-                    .catch(error => {
-                        this.state.isLoading = false;
-                        this.state.error = `Failed to load reviewer data. Please check your internet connection and try again. Details: ${error.message}`;
-                        this.state.currentView = 'error';
-                        this.render();
-                    });
+                    .then(response => { if (!response.ok) throw new Error(`Network error (Status: ${response.status})`); return response.json(); })
+                    .then(data => { if (data.error) throw new Error(`Apps Script Error: ${data.message}`); this.setCache(data); this.state.transesData = data; this.state.isLoading = false; this.state.currentView = 'selection'; this.render(); })
+                    .catch(error => { this.state.isLoading = false; this.state.error = `Failed to load reviewer data. Please check your internet connection. Details: ${error.message}`; this.state.currentView = 'error'; this.render(); });
             },
             
             fetchAndCacheInBackground() {
-                 fetch(this.GAS_WEB_APP_URL)
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data && !data.error) {
-                            this.setCache(data);
-                        }
-                    }).catch(console.error); // Silently fail in background
+                 if (this.GAS_WEB_APP_URL.includes('REPLACE_WITH')) return;
+                 fetch(this.GAS_WEB_APP_URL).then(res => res.json()).then(data => { if (data && !data.error) this.setCache(data); }).catch(console.error);
             },
 
-            // --- Caching ---
-            setCache(data) {
-                const cacheData = {
-                    timestamp: new Date().getTime(),
-                    data: data,
-                };
-                localStorage.setItem(this.CACHE_KEY, JSON.stringify(cacheData));
-            },
+            setCache(data) { localStorage.setItem(this.CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data })); },
+            getCache() { const c = localStorage.getItem(this.CACHE_KEY); if (!c) return null; const { timestamp, data } = JSON.parse(c); if (Date.now() - timestamp > this.CACHE_DURATION_MS) { localStorage.removeItem(this.CACHE_KEY); return null; } return data; },
 
-            getCache() {
-                const cached = localStorage.getItem(this.CACHE_KEY);
-                if (!cached) return null;
+            initTheme() { const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); this.setTheme(savedTheme); },
+            setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); if (this.elements.themeToggle) this.elements.themeToggle.checked = theme === 'dark'; },
 
-                const { timestamp, data } = JSON.parse(cached);
-                if (new Date().getTime() - timestamp > this.CACHE_DURATION_MS) {
-                    localStorage.removeItem(this.CACHE_KEY);
-                    return null; // Cache expired
-                }
-                return data;
-            },
-
-            // --- Theming ---
-            initTheme() {
-                const savedTheme = localStorage.getItem('theme');
-                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-                this.setTheme(theme);
-            },
-
-            setTheme(theme) {
-                document.documentElement.setAttribute('data-theme', theme);
-                localStorage.setItem('theme', theme);
-                if (this.elements.themeToggle) {
-                    this.elements.themeToggle.checked = theme === 'dark';
-                }
-            },
-
-            // --- Navigation & State Changes ---
-            resetToHome() {
-                this.state.selection = { year: null, semester: null, term: null, subject: null, topic: null };
-                this.state.currentView = 'selection';
-                if (this.elements.searchInput) {
-                    this.elements.searchInput.value = '';
-                }
-                this.state.searchTerm = '';
-                this.render();
-            },
+            resetToHome() { this.cleanupPdfViewer(); this.state.selection = { year: null, semester: null, term: null, subject: null, topic: null }; this.state.currentView = 'selection'; if (this.elements.searchInput) this.elements.searchInput.value = ''; this.state.searchTerm = ''; this.render(); },
+            navigateTo(level, item) { this.state.selection[level] = item; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const i = levels.indexOf(level); for (let j = i + 1; j < levels.length; j++) { this.state.selection[levels[j]] = null; } this.state.currentView = 'selection'; this.render(); },
+            navigateBack() { this.cleanupPdfViewer(); if (this.state.currentView === 'viewer') { this.state.currentView = 'selection'; this.render(); return; } const levels = ['topic', 'subject', 'term', 'semester', 'year']; for (const level of levels) { if (this.state.selection[level]) { this.state.selection[level] = null; this.state.currentView = 'selection'; this.render(); return; } } this.resetToHome(); },
+            displayTopic(path) { this.state.selection = path; this.state.currentView = 'viewer'; this.render(); },
+            handleSearch(term) { this.state.searchTerm = term.trim(); if (this.elements.clearSearchBtn) this.elements.clearSearchBtn.style.display = this.state.searchTerm ? 'block' : 'none'; this.state.currentView = this.state.searchTerm ? 'search' : 'selection'; this.render(); },
             
-            navigateTo(level, item) {
-                this.state.selection[level] = item;
-                const levels = ['year', 'semester', 'term', 'subject', 'topic'];
-                const currentLevelIndex = levels.indexOf(level);
-                for (let i = currentLevelIndex + 1; i < levels.length; i++) {
-                    this.state.selection[levels[i]] = null;
-                }
-                this.state.currentView = 'selection';
-                this.render();
-            },
-
-            navigateBack() {
-                const levels = ['topic', 'subject', 'term', 'semester', 'year'];
-                for (const level of levels) {
-                    if (this.state.selection[level]) {
-                        this.state.selection[level] = null;
-                        this.state.currentView = 'selection';
-                        this.render();
-                        return;
-                    }
-                }
-                this.resetToHome();
-            },
-
-            displayTopic(path) {
-                this.state.selection = path;
-                this.state.currentView = 'viewer';
-                this.render();
-            },
-
-            handleSearch(term) {
-                this.state.searchTerm = term.trim();
-                if (this.elements.clearSearchBtn) {
-                    this.elements.clearSearchBtn.style.display = this.state.searchTerm ? 'block' : 'none';
-                }
-                this.state.currentView = this.state.searchTerm ? 'search' : 'selection';
-                this.render();
-            },
-
-            // --- Rendering ---
             render() {
                 const { currentView, isLoading, error } = this.state;
+                document.body.classList.toggle('viewer-active', currentView === 'viewer');
+                if(currentView !== 'viewer') this.elements.header?.classList.remove('header--hidden');
+
+                if (isLoading) { this.elements.loaderOverlay.style.display = 'flex'; return; }
+                if (this.elements.loaderOverlay.style.opacity !== '0') { this.elements.loaderOverlay.style.opacity = '0'; setTimeout(() => { this.elements.loaderOverlay.style.display = 'none'; }, 500); }
                 
-                if (isLoading) {
-                    this.elements.loaderOverlay.style.display = 'flex';
-                    return;
-                }
-                
-                if (this.elements.loaderOverlay.style.opacity !== '0') {
-                    this.elements.loaderOverlay.style.opacity = '0';
-                    setTimeout(() => { this.elements.loaderOverlay.style.display = 'none'; }, 500);
-                }
-                
-                this.elements.selectionContainer?.classList.remove('show');
-                this.elements.viewerContainer?.classList.remove('show');
-                this.elements.searchResultsContainer?.classList.remove('show');
+                this.elements.selectionContainer?.classList.remove('show'); this.elements.viewerContainer?.classList.remove('show'); this.elements.searchResultsContainer?.classList.remove('show');
                 this.elements.appError.style.display = 'none';
                 
-                const isSearchFocused = document.activeElement === this.elements.searchInput;
-                if (!isSearchFocused) {
-                   window.scrollTo(0, 0);
-                }
+                if (document.activeElement !== this.elements.searchInput) window.scrollTo(0, 0);
 
-
-                if (error) {
-                    this.elements.appError.innerHTML = error;
-                    this.elements.appError.style.display = 'block';
-                } else {
+                if (error) { this.elements.appError.innerHTML = error; this.elements.appError.style.display = 'block'; }
+                else {
                     this.renderBreadcrumbs();
-                    if (currentView === 'selection') {
-                        this.elements.selectionContainer?.classList.add('show');
-                        this.renderSelectionPage();
-                    } else if (currentView === 'viewer') {
-                        this.elements.viewerContainer?.classList.add('show');
-                        this.renderViewerPage();
-                    } else if (currentView === 'search') {
-                        this.elements.searchResultsContainer?.classList.add('show');
-                        this.renderSearchResults();
-                    }
+                    if (currentView === 'selection') { this.elements.selectionContainer?.classList.add('show'); this.renderSelectionPage(); }
+                    else if (currentView === 'viewer') { this.elements.viewerContainer?.classList.add('show'); this.renderViewerPage(); }
+                    else if (currentView === 'search') { this.elements.searchResultsContainer?.classList.add('show'); this.renderSearchResults(); }
                 }
             },
+            renderBreadcrumbs() { const { selection } = this.state; let html = '<a href="#" data-level="home">Home</a>'; const levels = ['year', 'semester', 'term', 'subject']; levels.forEach(level => { if (selection[level]) html += `<span>/</span><a href="#" data-level="${level}">${selection[level]}</a>`; }); if (selection.topic && this.state.currentView === 'viewer') { html += `<span>/</span>${selection.topic}`; } this.elements.breadcrumbNav.innerHTML = html; this.elements.breadcrumbNav.querySelectorAll('a').forEach(link => link.addEventListener('click', e => { e.preventDefault(); const level = e.target.dataset.level; if (level === 'home') return this.resetToHome(); const tempSelection = {}; for (const l of levels) { if (this.state.selection[l]) tempSelection[l] = this.state.selection[l]; if (l === level) break; } this.state.selection = tempSelection; this.state.currentView = 'selection'; this.render(); })); },
+            renderSelectionPage() { const { selection, transesData } = this.state; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const icons = { year: 'fa-calendar-days', semester: 'fa-layer-group', term: 'fa-tasks', subject: 'fa-book-open', topic: 'fa-file-alt' }; let currentLevel = 'year'; let currentData = transesData; let title = '<i class="fas fa-school"></i> Select Year Level'; for (const level of levels) { if (selection[level]) { currentData = currentData[selection[level]]; currentLevel = levels[levels.indexOf(level) + 1]; } else break; } const titleMap = { semester: `<i class="fas fa-layer-group"></i> Select Semester`, term: `<i class="fas fa-tasks"></i> Select Term`, subject: `<i class="fas fa-book-open"></i> Select Subject`, topic: `<i class="fas fa-file-alt"></i> Select Topic` }; if(currentLevel !== 'year' && titleMap[currentLevel]) title = titleMap[currentLevel]; this.elements.selectionTitle.innerHTML = title; Object.values(this.elements.grids).forEach(grid => grid.classList.add('hidden')); const currentGrid = this.elements.grids[currentLevel]; if (!currentGrid) return; currentGrid.innerHTML = ''; currentGrid.classList.remove('hidden'); if (!currentData || Object.keys(currentData).length === 0) { currentGrid.innerHTML = `<p>No items found for this selection.</p>`; return; } Object.keys(currentData).sort().forEach(item => { const card = document.createElement('button'); card.className = 'card'; card.innerHTML = `<i class="fas ${icons[currentLevel]}"></i><span>${item}</span>`; card.onclick = () => { if (currentLevel === 'topic') this.displayTopic({ ...selection, topic: item }); else this.navigateTo(currentLevel, item); }; currentGrid.appendChild(card); }); },
+            renderViewerPage() { this.elements.viewerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${this.state.selection.topic}`; this.elements.backButton?.classList.add('show'); this.loadPdf(); },
+            renderSearchResults() { const term = this.state.searchTerm.toLowerCase(); this.elements.searchResultsTitle.innerHTML = `<i class="fas fa-search"></i> Results for "${this.state.searchTerm}"`; if (!this.elements.searchResultsList) return; this.elements.searchResultsList.innerHTML = ''; const results = []; const data = this.state.transesData; for (const year in data) for (const semester in data[year]) for (const t in data[year][semester]) for (const subject in data[year][semester][t]) for (const topic in data[year][semester][t][subject]) if (topic.toLowerCase().includes(term) || subject.toLowerCase().includes(term)) results.push({ path: { year, semester, term: t, subject, topic } }); if(results.length === 0) { this.elements.searchResultsList.innerHTML = `<li>No topics found matching your search.</li>`; return; } results.forEach(result => { const li = document.createElement('li'); li.className = 'search-result-item'; const { year, semester, term, subject, topic } = result.path; const pathString = `${year} &gt; ${semester} &gt; ${term} &gt; ${subject}`; li.innerHTML = `<a href="#"><div class="search-result-topic">${topic}</div><div class="search-result-path">${pathString}</div></a>`; li.querySelector('a')?.addEventListener('click', (e) => { e.preventDefault(); this.displayTopic(result.path); }); this.elements.searchResultsList.appendChild(li); }); },
 
-            renderBreadcrumbs() {
-                const { selection } = this.state;
-                let html = '<a href="#" data-level="home">Home</a>';
-                const levels = ['year', 'semester', 'term', 'subject'];
-                for (const level of levels) {
-                    if (selection[level]) {
-                        html += `<span>/</span><a href="#" data-level="${level}">${selection[level]}</a>`;
-                    } else {
-                        break;
-                    }
-                }
-                if (selection.topic && this.state.currentView === 'viewer') {
-                     html += `<span>/</span>${selection.topic}`;
-                }
+            // --- PDF Viewer Methods ---
+            getDirectDriveUrl: (url) => (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url),
+            showViewerState(state, message = '') { this.elements.pdfLoader.classList.remove('show'); this.elements.pdfError.classList.remove('show'); this.elements.pdfControls.classList.add('hidden'); if (state === 'loader') this.elements.pdfLoader.classList.add('show'); else if (state === 'error') { this.elements.pdfError.innerHTML = message; this.elements.pdfError.classList.add('show'); } else if (state === 'content') this.elements.pdfControls.classList.remove('hidden'); },
+            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, isRenderingPage: new Set(), observer: null, downloadUrl: null }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
 
-                this.elements.breadcrumbNav.innerHTML = html;
-                this.elements.breadcrumbNav.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', e => {
-                        e.preventDefault();
-                        const level = e.target.dataset.level;
-                        if (level === 'home') {
-                            this.resetToHome();
-                        } else {
-                            const tempSelection = {};
-                            for(let i = 0; i < levels.length; i++) {
-                                const l = levels[i];
-                                if (this.state.selection[l]) {
-                                    tempSelection[l] = this.state.selection[l];
-                                }
-                                if (l === level) break;
-                            }
-                            this.state.selection = tempSelection;
-                            this.state.currentView = 'selection';
-                            this.render();
-                        }
-                    });
-                });
+            async _finishPdfSetup(pdfDoc) {
+                this.pdf.doc = pdfDoc;
+                this.pdf.totalPages = pdfDoc.numPages;
+
+                await this.setupPdfPages();
+                this.showViewerState('content');
+
+                // Set initial zoom to 100%. The default is already 1.0 from cleanupPdfViewer.
+                this.pdf.zoom = 1.0;
+
+                this.setupIntersectionObserver();
+                this.updatePdfControls();
             },
 
-            renderSelectionPage() {
-                const { selection, transesData } = this.state;
-                const levels = ['year', 'semester', 'term', 'subject', 'topic'];
-                const icons = { year: 'fa-calendar-days', semester: 'fa-layer-group', term: 'fa-tasks', subject: 'fa-book-open', topic: 'fa-file-alt' };
-                let currentLevel = 'year';
-                let currentData = transesData;
-                let title = '<i class="fas fa-school"></i> Select Year Level';
-
-                for (const level of levels) {
-                    if (selection[level]) {
-                        currentData = currentData[selection[level]];
-                        currentLevel = levels[levels.indexOf(level) + 1];
-                    } else break;
-                }
-                
-                const titleMap = {
-                    semester: `<i class="fas fa-layer-group"></i> Select Semester`,
-                    term: `<i class="fas fa-tasks"></i> Select Term`,
-                    subject: `<i class="fas fa-book-open"></i> Select Subject`,
-                    topic: `<i class="fas fa-file-alt"></i> Select Topic`
-                };
-                if(currentLevel !== 'year' && titleMap[currentLevel]) title = titleMap[currentLevel];
-
-                this.elements.selectionTitle.innerHTML = title;
-                Object.values(this.elements.grids).forEach(grid => grid.classList.add('hidden'));
-                const currentGrid = this.elements.grids[currentLevel];
-                if (!currentGrid) return;
-                
-                currentGrid.innerHTML = '';
-                currentGrid.classList.remove('hidden');
-
-                if (!currentData || Object.keys(currentData).length === 0) {
-                    currentGrid.innerHTML = `<p>No items found for this selection.</p>`;
-                    return;
-                }
-
-                Object.keys(currentData).sort().forEach(item => {
-                    const card = document.createElement('button');
-                    card.className = 'card';
-                    card.innerHTML = `<i class="fas ${icons[currentLevel]}"></i><span>${item}</span>`;
-                    card.onclick = () => {
-                        if (currentLevel === 'topic') this.displayTopic({ ...selection, topic: item });
-                        else this.navigateTo(currentLevel, item);
-                    };
-                    currentGrid.appendChild(card);
-                });
-            },
-
-            renderViewerPage() {
+            async loadPdf() {
                 const { year, semester, term, subject, topic } = this.state.selection;
-                const content = this.state.transesData[year][semester][term][subject][topic];
-                this.elements.viewerTitle.innerHTML = `<i class="fas fa-book-reader"></i> ${topic}`;
-                this.elements.contentWrapper.innerHTML = this.parseContent(content.content || content);
-                if (window.renderMathInElement) {
-                    window.renderMathInElement(this.elements.contentWrapper, {
-                        delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}]
-                    });
-                }
-                this.elements.backButton?.classList.add('show');
-            },
+                const topicData = this.state.transesData?.[year]?.[semester]?.[term]?.[subject]?.[topic];
+                this.cleanupPdfViewer();
+                this.showViewerState('loader');
 
-            renderSearchResults() {
-                const term = this.state.searchTerm.toLowerCase();
-                this.elements.searchResultsTitle.innerHTML = `<i class="fas fa-search"></i> Results for "${this.state.searchTerm}"`;
-                if (!this.elements.searchResultsList) return;
-
-                this.elements.searchResultsList.innerHTML = '';
-                const results = [];
-                const data = this.state.transesData;
-
-                for (const year in data) {
-                    for (const semester in data[year]) {
-                        for (const t in data[year][semester]) {
-                            for (const subject in data[year][semester][t]) {
-                                for (const topic in data[year][semester][t][subject]) {
-                                    if (topic.toLowerCase().includes(term) || subject.toLowerCase().includes(term)) {
-                                        results.push({ path: { year, semester, term: t, subject, topic } });
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if(results.length === 0) {
-                    this.elements.searchResultsList.innerHTML = `<li>No topics found matching your search.</li>`;
+                if (!topicData || !topicData.pdfUrl || topicData.pdfUrl.startsWith('Error:')) {
+                    this.showViewerState('error', 'Content not available. The PDF link might be missing or invalid.');
                     return;
                 }
                 
-                results.forEach(result => {
-                    const li = document.createElement('li');
-                    li.className = 'search-result-item';
-                    const { year, semester, term, subject, topic } = result.path;
-                    const pathString = `${year} &gt; ${semester} &gt; ${term} &gt; ${subject}`;
-                    li.innerHTML = `<a href="#"><div class="search-result-topic">${topic}</div><div class="search-result-path">${pathString}</div></a>`;
-                    li.querySelector('a')?.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.displayTopic(result.path);
-                    });
-                    this.elements.searchResultsList.appendChild(li);
-                });
-            },
-            
-            toggleBackToTopButton() {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-                    this.elements.backToTopButton?.classList.add('show');
-                } else {
-                    this.elements.backToTopButton?.classList.remove('show');
+                const originalPdfUrl = topicData.pdfUrl;
+                this.pdf.downloadUrl = this.getDirectDriveUrl(originalPdfUrl);
+                const fileIdMatch = originalPdfUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+
+                if (!fileIdMatch || this.GAS_WEB_APP_URL.includes('REPLACE_WITH')) {
+                    try {
+                        const loadingTask = pdfjsLib.getDocument({ url: this.pdf.downloadUrl, cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/cmaps/', cMapPacked: true });
+                        const pdfDoc = await loadingTask.promise;
+                        await this._finishPdfSetup(pdfDoc);
+                    } catch (error) {
+                         console.error("PDF.js Error (direct URL):", error);
+                         this.showViewerState('error', `<strong>Failed to load interactive PDF.</strong><br>This can happen due to network issues or browser security policies (CORS).<br><small>Error: ${error.message}</small><br><br><a href="${this.pdf.downloadUrl}" target="_blank" rel="noopener noreferrer" class="error-link">Try Opening in New Tab</a>`);
+                    }
+                    return;
+                }
+
+                const fileId = fileIdMatch[1];
+                const proxyUrl = `${this.GAS_WEB_APP_URL}?action=fetchPdf&fileId=${fileId}`;
+
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error(`Proxy request failed. Status: ${response.status} ${response.statusText}`);
+                    const data = await response.json();
+                    if (data.error) throw new Error(`Backend error: ${data.message || 'Unknown error'}`);
+                    if (!data.base64Data) throw new Error("Invalid response from backend: PDF data is missing.");
+                    const byteArray = Uint8Array.from(atob(data.base64Data), c => c.charCodeAt(0));
+                    const loadingTask = pdfjsLib.getDocument({ data: byteArray, cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/cmaps/', cMapPacked: true });
+                    const pdfDoc = await loadingTask.promise;
+                    await this._finishPdfSetup(pdfDoc);
+                } catch (error) {
+                    console.error("PDF Loading Error (via proxy):", error);
+                    let errorMessage = `<strong>Failed to load interactive PDF.</strong><br>This might be an issue with the file permissions on Google Drive or the backend service.`;
+                    errorMessage += `<br><small>Details: ${error.message}</small>`;
+                    errorMessage += `<br><br><a href="${this.pdf.downloadUrl}" target="_blank" rel="noopener noreferrer" class="error-link">Try Opening in New Tab</a>`;
+                    this.showViewerState('error', errorMessage);
                 }
             },
-            
-            parseContent(text) {
-                if (!text || typeof text !== 'string') return '<div class="content-body"><p>Content not available for this topic.</p></div>';
+            async setupPdfPages() {
+                this.elements.pdfRenderArea.innerHTML = ''; const fragment = document.createDocumentFragment();
+                for (let i = 1; i <= this.pdf.totalPages; i++) {
+                    const pageContainer = document.createElement('div');
+                    pageContainer.id = `page-container-${i}`; pageContainer.className = 'pdf-page-container'; pageContainer.dataset.pageNumber = i;
+                    const placeholder = document.createElement('div'); placeholder.className = 'page-placeholder';
+                    const page = await this.pdf.doc.getPage(i); 
+                    const viewport = page.getViewport({ scale: 1, rotation: this.pdf.rotation });
+                    placeholder.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
+                    page.cleanup();
+                    pageContainer.appendChild(placeholder); fragment.appendChild(pageContainer);
+                }
+                this.elements.pdfRenderArea.appendChild(fragment);
+            },
+            setupIntersectionObserver() {
+                if (this.pdf.observer) this.pdf.observer.disconnect();
+                this.pdf.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => { if (entry.isIntersecting) this.renderPdfPage(parseInt(entry.target.dataset.pageNumber, 10)); });
+                    this.updateCurrentPageIndicator(entries);
+                }, { root: this.elements.pdfRenderArea, rootMargin: '500px 0px' });
+                this.elements.pdfRenderArea.querySelectorAll('.pdf-page-container').forEach(el => this.pdf.observer.observe(el));
+            },
+            updateCurrentPageIndicator(entries) { const visiblePages = entries.filter(e => e.isIntersecting).map(e => ({ num: parseInt(e.target.dataset.pageNumber, 10), ratio: e.intersectionRatio, })); if (visiblePages.length > 0) { const mostVisible = visiblePages.reduce((a, b) => a.ratio > b.ratio ? a : b); this.pdf.currentPage = mostVisible.num; this.updatePdfControls(); } },
+            async renderPdfPage(pageNum) {
+                if (this.pdf.isRenderingPage.has(pageNum) || !this.pdf.doc) return;
+                try {
+                    this.pdf.isRenderingPage.add(pageNum);
+                    const container = this.elements.pdfRenderArea.querySelector(`#page-container-${pageNum}`);
+                    if (!container || container.dataset.rendered === 'true') { this.pdf.isRenderingPage.delete(pageNum); return; }
+                    const page = await this.pdf.doc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: this.pdf.zoom, rotation: this.pdf.rotation });
+                    const canvas = document.createElement('canvas'); const context = canvas.getContext('2d');
+                    canvas.height = viewport.height; canvas.width = viewport.width;
+                    const placeholder = container.querySelector('.page-placeholder');
+                    if(placeholder) placeholder.style.display = 'none';
+                    container.appendChild(canvas);
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    container.dataset.rendered = 'true';
+                    page.cleanup();
+                } catch (error) { console.error(`Failed to render page ${pageNum}:`, error); const container = this.elements.pdfRenderArea.querySelector(`#page-container-${pageNum}`); if(container) container.innerHTML = `<p class="page-error">Error rendering page ${pageNum}</p>`; } finally { this.pdf.isRenderingPage.delete(pageNum); }
+            },
+            updatePdfControls() {
+                if(!this.pdf.doc) return;
+                this.elements.pdfPageNumInput.value = this.pdf.currentPage;
+                this.elements.pdfPageNumInput.max = this.pdf.totalPages;
+                this.elements.pdfPageCount.textContent = this.pdf.totalPages;
+                this.elements.pdfPrevBtn.disabled = this.pdf.currentPage <= 1;
+                this.elements.pdfNextBtn.disabled = this.pdf.currentPage >= this.pdf.totalPages;
 
-                const formatLine = (line) => {
-                    if (!line) return '';
-                    let formatted = line
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                        .replace(/_(.*?)_/g, '<u>$1</u>');
-                    formatted = formatted.replace(/^([A-Za-z\s/()\-]+:)/, '<strong>$1</strong>');
-                    return formatted;
-                };
+                const zoomPercent = Math.round(this.pdf.zoom * 100);
+                this.elements.pdfZoomLevel.textContent = `${zoomPercent}%`;
+                if(this.elements.zoomSlider) this.elements.zoomSlider.value = zoomPercent;
+                if(this.elements.zoomSliderValue) this.elements.zoomSliderValue.textContent = `${zoomPercent}%`;
+            },
+            changePdfPage(pageNum) { const num = Math.max(1, Math.min(pageNum || 1, this.pdf.totalPages)); const targetPage = this.elements.pdfRenderArea.querySelector(`#page-container-${num}`); if (targetPage) targetPage.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
+            rerenderAllVisiblePages() { if (!this.pdf.doc) return; this.elements.pdfRenderArea.querySelectorAll('.pdf-page-container[data-rendered="true"]').forEach(container => { container.dataset.rendered = 'false'; const canvas = container.querySelector('canvas'); if(canvas) canvas.remove(); const placeholder = container.querySelector('.page-placeholder'); if(placeholder) placeholder.style.display = 'block'; }); this.setupIntersectionObserver(); },
+            changePdfZoom(value, isAbsolute = false) {
+                if (!this.pdf.doc) return;
+                let newZoom;
+                if (isAbsolute) {
+                    newZoom = value;
+                } else {
+                    newZoom = this.pdf.zoom + value;
+                }
+                this.pdf.zoom = Math.max(0.25, Math.min(5, newZoom)); // Clamp between 25% and 500%
+                this.rerenderAllVisiblePages();
+                this.updatePdfControls();
+            },
+            togglePdfFullscreen() { if (!document.fullscreenElement) { this.elements.viewerContainer.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); document.body.classList.add('pdf-fullscreen'); } else { document.exitFullscreen(); document.body.classList.remove('pdf-fullscreen'); } },
 
-                let processedText = text.replace(/{([^}]+?)}/g, '$$$$$1$$$$');
-                const lines = processedText.split('\n');
-                let html = '<div class="content-body">';
-                let listOpen = false;
+            // --- Viewer Settings Methods ---
+            initViewerSettings() {
+                const inverted = localStorage.getItem('viewerInvertColors') === 'true';
+                const pageless = localStorage.getItem('viewerPagelessMode') === 'true';
+                this.elements.invertColorsToggle.checked = inverted;
+                this.elements.pagelessToggle.checked = pageless;
+                this.elements.pdfRenderArea.classList.toggle('pdf-inverted', inverted);
+                this.elements.pdfRenderArea.classList.toggle('pageless', pageless);
+            },
+            toggleSettingsPanel(show) { this.elements.settingsPanel.classList.toggle('show', show); this.elements.settingsOverlay.classList.toggle('show', show); },
+            toggleInvertColors(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
+            togglePagelessMode(isActive) { this.elements.pdfRenderArea.classList.toggle('pageless', isActive); localStorage.setItem('viewerPagelessMode', isActive); },
+            async rotatePdf(degrees) {
+                if (!this.pdf.doc) return;
+                this.pdf.rotation = (this.pdf.rotation + degrees + 360) % 360; // Ensure positive result
+                // We need to rebuild the placeholders and re-render everything
+                await this.setupPdfPages();
+                this.rerenderAllVisiblePages();
+            },
 
-                let inLegacyNclexBlock = false;
-                let nclexChoicesHtml = '';
-
-                const closeList = () => { if (listOpen) { html += '</ul>'; listOpen = false; } };
-
-                const flushAndCloseLegacyNclexBlock = () => {
-                    if (inLegacyNclexBlock) {
-                        if (nclexChoicesHtml) {
-                            html += `<div class="choices">${nclexChoicesHtml}</div>`;
-                            nclexChoicesHtml = '';
-                        }
-                        html += '</div>'; // Close .nclex-question-block
-                        inLegacyNclexBlock = false;
-                    }
-                };
-                
-                const parseFlexibleNclexBlock = (rawBlock) => {
-                    let cleanText = rawBlock.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-                    let questionStem = '', choicesHtml = '', answerText = '', rationaleText = '';
-
-                    const answerPattern = /(Answer:.*?(?=Rationale:|$))/i;
-                    const answerMatch = cleanText.match(answerPattern);
-                    if (answerMatch) {
-                        const preciseAnswerMatch = answerMatch[0].match(/(Answer:\s*(.*))/i);
-                        if(preciseAnswerMatch){
-                            answerText = `<strong>Answer:</strong> ${formatLine(preciseAnswerMatch[2].trim())}`;
-                            cleanText = cleanText.replace(answerMatch[0], '').trim();
-                        }
-                    }
-                    
-                    const rationalePattern = /(Rationale:.*?(?=Answer:|$))/i;
-                    const rationaleMatch = cleanText.match(rationalePattern);
-                    if (rationaleMatch) {
-                        rationaleText = `<strong>Rationale:</strong> ${formatLine(rationaleMatch[0].substring(10).trim())}`;
-                        cleanText = cleanText.replace(rationaleMatch[0], '').trim();
-                    }
-
-                    const firstChoiceIndex = cleanText.search(/\s[a-z]\)/i);
-                    if (firstChoiceIndex > -1) {
-                        questionStem = cleanText.substring(0, firstChoiceIndex).trim();
-                        const choicesText = cleanText.substring(firstChoiceIndex).trim();
-                        const choicesArray = choicesText.split(/(?=\s[a-z]\))/i);
-                        choicesHtml = choicesArray.filter(c => c.trim()).map(c => `<p>${formatLine(c.trim())}</p>`).join('');
-                    } else {
-                        questionStem = cleanText;
-                    }
-
-                    let blockHtml = '<div class="nclex-question-block">';
-                    blockHtml += `<p class="question-stem">${formatLine(questionStem.replace(/^(Multiple Choice:|SATA:|SATA \(Select All That Apply\):)\s*/i, ''))}</p>`;
-                    blockHtml += `<div class="choices">${choicesHtml}</div>`;
-                    if (answerText) blockHtml += `<div class="answer-box"><p>${answerText}</p></div>`;
-                    if (rationaleText) blockHtml += `<div class="rationale-box"><p>${rationaleText}</p></div>`;
-                    blockHtml += '</div>';
-                    return blockHtml;
-                };
-
-                lines.forEach(line => {
-                    let trimmedLine = line.trim();
-
-                    if (inLegacyNclexBlock) {
-                        if (trimmedLine.startsWith('* ')) {
-                            nclexChoicesHtml += `<p>${formatLine(trimmedLine.substring(2))}</p>`;
-                            return;
-                        } else if (trimmedLine.startsWith('[ANSWER]')) {
-                            if (nclexChoicesHtml) { html += `<div class="choices">${nclexChoicesHtml}</div>`; nclexChoicesHtml = ''; }
-                            html += `<div class="answer-box"><p><strong>Answer:</strong> ${formatLine(trimmedLine.substring(8).trim())}</p></div>`;
-                            return;
-                        } else if (trimmedLine.startsWith('[RATIONALE]')) {
-                            if (nclexChoicesHtml) { html += `<div class="choices">${nclexChoicesHtml}</div>`; nclexChoicesHtml = ''; }
-                            html += `<div class="rationale-box"><p><strong>Rationale:</strong> ${formatLine(trimmedLine.substring(11).trim())}</p></div>`;
-                            flushAndCloseLegacyNclexBlock();
-                            return;
-                        } else {
-                            flushAndCloseLegacyNclexBlock();
-                            if (trimmedLine === '') return;
-                        }
-                    }
-
-                    if (trimmedLine.match(/^(SATA:|Multiple Choice:|SATA \(Select All That Apply\):)/i)) {
-                        closeList(); html += parseFlexibleNclexBlock(trimmedLine);
-                    }
-                    else if (trimmedLine.startsWith('[NCLEX-QUESTION]')) {
-                        closeList();
-                        inLegacyNclexBlock = true;
-                        html += `<div class="nclex-question-block"><p class="question-stem">${formatLine(trimmedLine.substring(16).trim())}</p>`;
-                    }
-                    else if (trimmedLine.startsWith('[TITLE]')) { closeList(); html += `<h1>${formatLine(trimmedLine.substring(7).trim())}</h1>`; }
-                    else if (trimmedLine.match(/^([IVXLC]+\.|[0-9]+\.)\s/)) { closeList(); html += `<h2>${formatLine(trimmedLine)}</h2>`; }
-                    else if (trimmedLine.match(/^[A-Z]\.\s/)) { closeList(); html += `<h3>${formatLine(trimmedLine)}</h3>`; }
-                    else if (trimmedLine.startsWith('[INFO]')) { closeList(); html += `<div class="info-box info"><p>${formatLine(trimmedLine.substring(6).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('[PRIORITY]')) { closeList(); html += `<div class="info-box priority"><p>${formatLine(trimmedLine.substring(10).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('[MNEMONIC]')) { closeList(); html += `<div class="info-box mnemonic"><p>${formatLine(trimmedLine.substring(10).trim())}</p></div>`; }
-                    else if (trimmedLine.startsWith('* ')) { if (!listOpen) { html += '<ul>'; listOpen = true; } html += `<li>${formatLine(trimmedLine.substring(2))}</li>`; }
-                    else if (trimmedLine !== '') {
-                        closeList();
-                        if (trimmedLine.length < 60 && trimmedLine === trimmedLine.toUpperCase() && !trimmedLine.includes(':')) {
-                            html += `<h1>${formatLine(trimmedLine)}</h1>`;
-                        } else {
-                            html += `<p>${formatLine(trimmedLine)}</p>`;
-                        }
-                    }
-                });
-
-                flushAndCloseLegacyNclexBlock();
-                closeList();
-                html += '</div>';
-                return html;
+            // --- Utilities ---
+            handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); this.elements.header?.classList.remove('header--hidden'); this.state.lastScrollY = y <= 0 ? 0 : y; },
+            hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 255, 255';
             },
         };
 
