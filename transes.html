@@ -271,17 +271,13 @@
             flex-grow: 1;
             overflow: auto; /* Allows both vertical and horizontal scrolling */
             padding: var(--space-md) 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--space-md);
             transition: filter 0.3s;
+            /* Removed flex properties to use margin:auto for centering, which correctly handles overflow for scrolling. */
         }
         #pdf-render-area.pdf-inverted {
              filter: invert(1) hue-rotate(180deg);
         }
         #pdf-render-area.pageless {
-            gap: 0;
             padding: var(--space-md) var(--space-xl);
         }
         #pdf-render-area.pageless .pdf-page-container {
@@ -293,7 +289,8 @@
 
         .pdf-page-container {
             position: relative;
-            flex-shrink: 0; /* Prevent flexbox from shrinking containers */
+            /* Centering and spacing handled by margin, which also fixes horizontal scroll on zoom. */
+            margin: 0 auto var(--space-md) auto;
             /* Container size will be set by JS */
         }
         
@@ -707,17 +704,24 @@
             #pdf-viewer-controls {
                 gap: var(--space-xs);
                 padding: var(--space-xs);
+                width: calc(100% - 1rem); /* Add some horizontal margin */
+                justify-content: space-around; /* Distribute items more evenly */
+                bottom: 0.5rem;
             }
             #pdf-viewer-controls button {
-                width: 2rem;
-                height: 2rem;
-                font-size: 0.9rem;
+                width: 2.5rem; /* 40px, better touch target */
+                height: 2.5rem;
+                font-size: 1rem;
+            }
+            #pdf-page-num {
+                width: 3em;
             }
             #pdf-viewer-controls .divider {
                 margin: 0 var(--space-xs);
             }
              #pdf-settings-panel {
-                width: 250px;
+                width: 280px;
+                max-width: 95vw;
             }
         }
     </style>
@@ -1110,6 +1114,13 @@
                 this.pdf.baseViewport = firstPage.getViewport({ scale: 1 });
                 firstPage.cleanup();
                 
+                // Calculate initial zoom to fit page width to the container for better mobile experience
+                const containerWidth = this.elements.pdfRenderArea.clientWidth;
+                const padding = 16; // 8px padding on each side
+                const targetWidth = containerWidth > padding ? containerWidth - padding : 300; 
+                const pageNaturalWidth = this.pdf.baseViewport.width;
+                this.pdf.zoom = targetWidth / pageNaturalWidth;
+                
                 this.setupPdfPageContainers();
                 this.updatePageDimensions();
                 this.showViewerState('content');
@@ -1251,17 +1262,30 @@
                     }
                     
                     const page = await this.pdf.doc.getPage(pageNum);
-                    // Use the specific page's viewport for rendering to ensure correctness
-                    const viewport = page.getViewport({ scale: this.pdf.zoom, rotation: this.pdf.rotation });
+                    
+                    // --- High-Resolution Rendering Logic ---
+                    const dpr = window.devicePixelRatio || 1;
+                    // Create a viewport scaled to the device's pixel ratio for a high-resolution canvas
+                    const viewport = page.getViewport({ scale: this.pdf.zoom * dpr, rotation: this.pdf.rotation });
                     
                     const canvas = document.createElement('canvas'); 
                     const context = canvas.getContext('2d');
+                    
+                    // Set the canvas's internal (bitmap) size to the high-res viewport size
                     canvas.height = viewport.height; 
                     canvas.width = viewport.width;
                     
-                    container.appendChild(canvas);
+                    // The existing CSS makes the canvas's display size fit its container.
+                    // The container is sized correctly in `updatePageDimensions` based on the unscaled zoom level.
+                    // This effectively scales down the high-res canvas bitmap to the display size, making it sharp.
                     
-                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    await page.render({ 
+                        canvasContext: context, 
+                        viewport: viewport 
+                    }).promise;
+                    // --- End High-Resolution Logic ---
+
+                    container.appendChild(canvas);
                     container.dataset.rendered = 'true';
                     const placeholder = container.querySelector('.page-placeholder');
                     if(placeholder) placeholder.style.display = 'none';
