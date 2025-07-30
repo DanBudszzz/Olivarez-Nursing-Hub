@@ -235,6 +235,13 @@
 
         .page-title { display: flex; align-items: center; gap: var(--space-sm); font-size: 1.7rem; font-weight: 600; padding-bottom: var(--space-md); border-bottom: 1px solid var(--border-color-light); margin-bottom: var(--space-lg); }
         
+        #viewer-title {
+            transition: transform 0.3s ease-in-out;
+        }
+        #viewer-title.viewer-title--hidden {
+            transform: translateY(-120%);
+        }
+
         .grid-container { display: grid; gap: var(--space-md); }
         .grid-container.hidden { display: none; }
         .year-grid, .semester-grid, .term-grid { grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); /* 200px */ }
@@ -313,6 +320,8 @@
             display: block;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             border-radius: 4px;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
         }
         
         #pdf-render-area.pageless canvas {
@@ -907,6 +916,7 @@
                 observer: null,
                 downloadUrl: null,
                 isZooming: false,
+                lastScrollTop: 0,
             },
             
             // --- Cached Elements ---
@@ -1000,6 +1010,7 @@
                 this.elements.updatesBtn?.addEventListener('click', () => { localStorage.removeItem(this.CACHE_KEY); location.reload(true); });
 
                 // PDF Viewer Events
+                this.elements.pdfRenderArea?.addEventListener('scroll', () => this.handlePdfScroll(), { passive: true });
                 this.elements.pdfPrevBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage - 1));
                 this.elements.pdfNextBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage + 1));
                 this.elements.pdfZoomInBtn?.addEventListener('click', () => this.changePdfZoom(0.2));
@@ -1103,7 +1114,7 @@
             // --- PDF Viewer Methods ---
             getDirectDriveUrl: (url) => (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url),
             showViewerState(state, message = '') { this.elements.pdfLoader.classList.remove('show'); this.elements.pdfError.classList.remove('show'); this.elements.pdfControls.classList.add('hidden'); if (state === 'loader') this.elements.pdfLoader.classList.add('show'); else if (state === 'error') { this.elements.pdfError.innerHTML = message; this.elements.pdfError.classList.add('show'); } else if (state === 'content') this.elements.pdfControls.classList.remove('hidden'); },
-            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null, isZooming: false }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
+            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null, isZooming: false, lastScrollTop: 0 }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.elements.viewerTitle?.classList.remove('viewer-title--hidden'); this.toggleSettingsPanel(false); },
 
             async _finishPdfSetup(pdfDoc) {
                 this.pdf.doc = pdfDoc;
@@ -1390,6 +1401,23 @@
 
             // --- Utilities ---
             handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); if(y > this.state.lastScrollY && y > 100) { this.elements.header?.classList.add('header--hidden'); } else { this.elements.header?.classList.remove('header--hidden'); } this.state.lastScrollY = y <= 0 ? 0 : y; },
+            handlePdfScroll() {
+                if (!this.elements.viewerTitle || !this.elements.pdfRenderArea) return;
+                const scrollTop = this.elements.pdfRenderArea.scrollTop;
+
+                // Prevent toggling on minor scrolls or bounces
+                if (Math.abs(scrollTop - this.pdf.lastScrollTop) <= 10) return;
+
+                if (scrollTop > this.pdf.lastScrollTop && scrollTop > 50) {
+                    // Scrolling Down
+                    this.elements.viewerTitle.classList.add('viewer-title--hidden');
+                } else if (scrollTop < this.pdf.lastScrollTop) {
+                    // Scrolling Up
+                    this.elements.viewerTitle.classList.remove('viewer-title--hidden');
+                }
+                
+                this.pdf.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            },
         };
 
         document.addEventListener('DOMContentLoaded', () => App.init());
