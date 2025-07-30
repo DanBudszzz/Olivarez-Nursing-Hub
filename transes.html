@@ -261,7 +261,7 @@
 
         #pdf-render-area {
             flex-grow: 1;
-            overflow-y: auto;
+            overflow: auto; /* Changed to auto for horizontal scroll on zoom */
             padding: var(--space-md) 0;
             display: flex;
             flex-direction: column;
@@ -274,27 +274,42 @@
         }
         #pdf-render-area.pageless {
             gap: 0;
+            padding: var(--space-md) var(--space-xl);
+        }
+        #pdf-render-area.pageless .pdf-page-container {
+            margin-bottom: var(--space-sm);
         }
 
         .pdf-page-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative;
+            flex-shrink: 0; /* Prevent flexbox from shrinking containers */
+            /* Container size will be set by JS */
         }
         
         .page-placeholder {
-            width: 100%;
             background-color: var(--border-color-light);
             border-radius: 4px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         #pdf-render-area canvas {
-            max-width: 100%;
-            height: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: block;
             box-shadow: 0 5px 20px rgba(0,0,0,0.15);
             border-radius: 4px;
-            transition: transform 0.3s ease-out;
+        }
+        
+        #pdf-render-area.pageless canvas {
+            box-shadow: none;
+            border-radius: 0;
         }
 
         #pdf-viewer-controls {
@@ -597,6 +612,10 @@
                 font-size: 93.75%; /* 15px */
             }
             
+            #pdf-render-area.pageless {
+                padding: var(--space-md);
+            }
+            
             .header-content {
                 padding: 0 var(--space-md);
             }
@@ -857,6 +876,7 @@
                 totalPages: 0,
                 zoom: 1.0,
                 rotation: 0,
+                baseViewport: null, // Stores page 1's viewport at scale 1, rotation 0
                 isRenderingPage: new Set(),
                 observer: null,
                 downloadUrl: null,
@@ -1046,18 +1066,20 @@
             // --- PDF Viewer Methods ---
             getDirectDriveUrl: (url) => (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url),
             showViewerState(state, message = '') { this.elements.pdfLoader.classList.remove('show'); this.elements.pdfError.classList.remove('show'); this.elements.pdfControls.classList.add('hidden'); if (state === 'loader') this.elements.pdfLoader.classList.add('show'); else if (state === 'error') { this.elements.pdfError.innerHTML = message; this.elements.pdfError.classList.add('show'); } else if (state === 'content') this.elements.pdfControls.classList.remove('hidden'); },
-            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, isRenderingPage: new Set(), observer: null, downloadUrl: null }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
+            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
 
             async _finishPdfSetup(pdfDoc) {
                 this.pdf.doc = pdfDoc;
                 this.pdf.totalPages = pdfDoc.numPages;
 
-                await this.setupPdfPages();
+                // Greatly speed up initial load by only getting page 1's geometry
+                const firstPage = await pdfDoc.getPage(1);
+                this.pdf.baseViewport = firstPage.getViewport({ scale: 1 });
+                firstPage.cleanup();
+                
+                this.setupPdfPageContainers();
+                this.updatePageDimensions();
                 this.showViewerState('content');
-
-                // Set initial zoom to 100%. The default is already 1.0 from cleanupPdfViewer.
-                this.pdf.zoom = 1.0;
-
                 this.setupIntersectionObserver();
                 this.updatePdfControls();
             },
@@ -1110,46 +1132,115 @@
                     this.showViewerState('error', errorMessage);
                 }
             },
-            async setupPdfPages() {
-                this.elements.pdfRenderArea.innerHTML = ''; const fragment = document.createDocumentFragment();
+            
+            // Creates the page containers and placeholders without fetching page data
+            setupPdfPageContainers() {
+                this.elements.pdfRenderArea.innerHTML = ''; 
+                const fragment = document.createDocumentFragment();
                 for (let i = 1; i <= this.pdf.totalPages; i++) {
                     const pageContainer = document.createElement('div');
-                    pageContainer.id = `page-container-${i}`; pageContainer.className = 'pdf-page-container'; pageContainer.dataset.pageNumber = i;
-                    const placeholder = document.createElement('div'); placeholder.className = 'page-placeholder';
-                    const page = await this.pdf.doc.getPage(i); 
-                    const viewport = page.getViewport({ scale: 1, rotation: this.pdf.rotation });
-                    placeholder.style.aspectRatio = `${viewport.width} / ${viewport.height}`;
-                    page.cleanup();
-                    pageContainer.appendChild(placeholder); fragment.appendChild(pageContainer);
+                    pageContainer.id = `page-container-${i}`; 
+                    pageContainer.className = 'pdf-page-container'; 
+                    pageContainer.dataset.pageNumber = i;
+                    
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'page-placeholder';
+                    pageContainer.appendChild(placeholder);
+                    fragment.appendChild(pageContainer);
                 }
                 this.elements.pdfRenderArea.appendChild(fragment);
             },
+            
+            // Instantly resizes all page placeholders and clears old canvases
+            updatePageDimensions() {
+                if (!this.pdf.baseViewport) return;
+
+                const { rotation, zoom, baseViewport } = this.pdf;
+                const isSideways = rotation === 90 || rotation === 270;
+                
+                // Calculate the dimensions of the page based on zoom and rotation
+                const effectiveWidth = (isSideways ? baseViewport.height : baseViewport.width) * zoom;
+                const effectiveHeight = (isSideways ? baseViewport.width : baseViewport.height) * zoom;
+
+                // Apply new dimensions to all placeholders and clear rendered canvases
+                for (let i = 1; i <= this.pdf.totalPages; i++) {
+                    const container = this.elements.pdfRenderArea.querySelector(`#page-container-${i}`);
+                    if (!container) continue;
+                    
+                    container.style.width = `${effectiveWidth}px`;
+                    container.style.height = `${effectiveHeight}px`;
+
+                    const canvas = container.querySelector('canvas');
+                    if (canvas) {
+                        canvas.remove();
+                        container.dataset.rendered = 'false';
+                        const placeholder = container.querySelector('.page-placeholder');
+                        if (placeholder) placeholder.style.display = 'block';
+                    }
+                }
+            },
+
             setupIntersectionObserver() {
                 if (this.pdf.observer) this.pdf.observer.disconnect();
                 this.pdf.observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => { if (entry.isIntersecting) this.renderPdfPage(parseInt(entry.target.dataset.pageNumber, 10)); });
+                    entries.forEach(entry => { 
+                        if (entry.isIntersecting) {
+                            this.renderPdfPage(parseInt(entry.target.dataset.pageNumber, 10)); 
+                        }
+                    });
                     this.updateCurrentPageIndicator(entries);
                 }, { root: this.elements.pdfRenderArea, rootMargin: '500px 0px' });
                 this.elements.pdfRenderArea.querySelectorAll('.pdf-page-container').forEach(el => this.pdf.observer.observe(el));
             },
-            updateCurrentPageIndicator(entries) { const visiblePages = entries.filter(e => e.isIntersecting).map(e => ({ num: parseInt(e.target.dataset.pageNumber, 10), ratio: e.intersectionRatio, })); if (visiblePages.length > 0) { const mostVisible = visiblePages.reduce((a, b) => a.ratio > b.ratio ? a : b); this.pdf.currentPage = mostVisible.num; this.updatePdfControls(); } },
+
+            updateCurrentPageIndicator(entries) { 
+                const visiblePages = entries
+                    .filter(e => e.isIntersecting)
+                    .map(e => ({ 
+                        num: parseInt(e.target.dataset.pageNumber, 10), 
+                        ratio: e.intersectionRatio,
+                    })); 
+                if (visiblePages.length > 0) { 
+                    const mostVisible = visiblePages.reduce((a, b) => a.ratio > b.ratio ? a : b); 
+                    this.pdf.currentPage = mostVisible.num; 
+                    this.updatePdfControls(); 
+                } 
+            },
+
             async renderPdfPage(pageNum) {
                 if (this.pdf.isRenderingPage.has(pageNum) || !this.pdf.doc) return;
                 try {
                     this.pdf.isRenderingPage.add(pageNum);
                     const container = this.elements.pdfRenderArea.querySelector(`#page-container-${pageNum}`);
-                    if (!container || container.dataset.rendered === 'true') { this.pdf.isRenderingPage.delete(pageNum); return; }
+                    if (!container || container.dataset.rendered === 'true') {
+                        this.pdf.isRenderingPage.delete(pageNum);
+                        return;
+                    }
+                    
                     const page = await this.pdf.doc.getPage(pageNum);
+                    // Use the specific page's viewport for rendering to ensure correctness
                     const viewport = page.getViewport({ scale: this.pdf.zoom, rotation: this.pdf.rotation });
-                    const canvas = document.createElement('canvas'); const context = canvas.getContext('2d');
-                    canvas.height = viewport.height; canvas.width = viewport.width;
-                    const placeholder = container.querySelector('.page-placeholder');
-                    if(placeholder) placeholder.style.display = 'none';
+                    
+                    const canvas = document.createElement('canvas'); 
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height; 
+                    canvas.width = viewport.width;
+                    
                     container.appendChild(canvas);
+                    
                     await page.render({ canvasContext: context, viewport: viewport }).promise;
                     container.dataset.rendered = 'true';
+                    const placeholder = container.querySelector('.page-placeholder');
+                    if(placeholder) placeholder.style.display = 'none';
                     page.cleanup();
-                } catch (error) { console.error(`Failed to render page ${pageNum}:`, error); const container = this.elements.pdfRenderArea.querySelector(`#page-container-${pageNum}`); if(container) container.innerHTML = `<p class="page-error">Error rendering page ${pageNum}</p>`; } finally { this.pdf.isRenderingPage.delete(pageNum); }
+
+                } catch (error) { 
+                    console.error(`Failed to render page ${pageNum}:`, error); 
+                    const container = this.elements.pdfRenderArea.querySelector(`#page-container-${pageNum}`); 
+                    if(container) container.innerHTML = `<p class="page-error">Error rendering page ${pageNum}</p>`; 
+                } finally { 
+                    this.pdf.isRenderingPage.delete(pageNum); 
+                }
             },
             updatePdfControls() {
                 if(!this.pdf.doc) return;
@@ -1164,19 +1255,31 @@
                 if(this.elements.zoomSlider) this.elements.zoomSlider.value = zoomPercent;
                 if(this.elements.zoomSliderValue) this.elements.zoomSliderValue.textContent = `${zoomPercent}%`;
             },
-            changePdfPage(pageNum) { const num = Math.max(1, Math.min(pageNum || 1, this.pdf.totalPages)); const targetPage = this.elements.pdfRenderArea.querySelector(`#page-container-${num}`); if (targetPage) targetPage.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
-            rerenderAllVisiblePages() { if (!this.pdf.doc) return; this.elements.pdfRenderArea.querySelectorAll('.pdf-page-container[data-rendered="true"]').forEach(container => { container.dataset.rendered = 'false'; const canvas = container.querySelector('canvas'); if(canvas) canvas.remove(); const placeholder = container.querySelector('.page-placeholder'); if(placeholder) placeholder.style.display = 'block'; }); this.setupIntersectionObserver(); },
+            changePdfPage(pageNum) { 
+                const num = Math.max(1, Math.min(pageNum || 1, this.pdf.totalPages)); 
+                const targetPage = this.elements.pdfRenderArea.querySelector(`#page-container-${num}`); 
+                if (targetPage) {
+                    const scrollParent = this.elements.pdfRenderArea;
+                    const parentRect = scrollParent.getBoundingClientRect();
+                    const targetRect = targetPage.getBoundingClientRect();
+                    const targetOffsetTop = targetRect.top - parentRect.top + scrollParent.scrollTop;
+                    scrollParent.scrollTo({ top: targetOffsetTop, behavior: 'smooth' });
+                }
+            },
             changePdfZoom(value, isAbsolute = false) {
                 if (!this.pdf.doc) return;
-                let newZoom;
-                if (isAbsolute) {
-                    newZoom = value;
-                } else {
-                    newZoom = this.pdf.zoom + value;
-                }
+                const newZoom = isAbsolute ? value : this.pdf.zoom + value;
                 this.pdf.zoom = Math.max(0.25, Math.min(5, newZoom)); // Clamp between 25% and 500%
-                this.rerenderAllVisiblePages();
+                this.updatePageDimensions();
+                // We re-trigger render for visible items by disconnecting and reconnecting the observer
+                this.setupIntersectionObserver();
                 this.updatePdfControls();
+            },
+            rotatePdf(degrees) {
+                if (!this.pdf.doc) return;
+                this.pdf.rotation = (this.pdf.rotation + degrees + 360) % 360; // Ensure positive result
+                this.updatePageDimensions();
+                this.setupIntersectionObserver();
             },
             togglePdfFullscreen() { if (!document.fullscreenElement) { this.elements.viewerContainer.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); document.body.classList.add('pdf-fullscreen'); } else { document.exitFullscreen(); document.body.classList.remove('pdf-fullscreen'); } },
 
@@ -1191,17 +1294,13 @@
             },
             toggleSettingsPanel(show) { this.elements.settingsPanel.classList.toggle('show', show); this.elements.settingsOverlay.classList.toggle('show', show); },
             toggleInvertColors(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
-            togglePagelessMode(isActive) { this.elements.pdfRenderArea.classList.toggle('pageless', isActive); localStorage.setItem('viewerPagelessMode', isActive); },
-            async rotatePdf(degrees) {
-                if (!this.pdf.doc) return;
-                this.pdf.rotation = (this.pdf.rotation + degrees + 360) % 360; // Ensure positive result
-                // We need to rebuild the placeholders and re-render everything
-                await this.setupPdfPages();
-                this.rerenderAllVisiblePages();
+            togglePagelessMode(isActive) {
+                 this.elements.pdfRenderArea.classList.toggle('pageless', isActive);
+                 localStorage.setItem('viewerPagelessMode', isActive);
             },
 
             // --- Utilities ---
-            handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); this.elements.header?.classList.remove('header--hidden'); this.state.lastScrollY = y <= 0 ? 0 : y; },
+            handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); if(y > this.state.lastScrollY && y > 100) { this.elements.header?.classList.add('header--hidden'); } else { this.elements.header?.classList.remove('header--hidden'); } this.state.lastScrollY = y <= 0 ? 0 : y; },
             hexToRgb(hex) {
                 const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
                 return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 255, 255';
