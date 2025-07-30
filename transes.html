@@ -41,6 +41,10 @@
             --danger: #e74c3c;
             --danger-light: #fff0f0;
             --success-light: #f0fff0;
+            /* Viewer controls theme */
+            --controls-bg: rgba(248, 249, 250, 0.9);
+            --controls-text: #2C3E50;
+            --controls-border: #ccc;
         }
 
         html[data-theme='dark'] {
@@ -66,6 +70,10 @@
             --danger: #f1948a;
             --danger-light: #4a2a2a;
             --success-light: #224022;
+             /* Viewer controls theme */
+            --controls-bg: rgba(42, 42, 42, 0.9);
+            --controls-text: #e0e0e0;
+            --controls-border: #444;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -261,7 +269,7 @@
 
         #pdf-render-area {
             flex-grow: 1;
-            overflow: auto; /* Changed to auto for horizontal scroll on zoom */
+            overflow: auto; /* Allows both vertical and horizontal scrolling */
             padding: var(--space-md) 0;
             display: flex;
             flex-direction: column;
@@ -278,6 +286,9 @@
         }
         #pdf-render-area.pageless .pdf-page-container {
             margin-bottom: var(--space-sm);
+        }
+        #pdf-render-area.scroll-locked-x {
+            overflow-x: hidden;
         }
 
         .pdf-page-container {
@@ -318,10 +329,10 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1010;
-            background: rgba(var(--bg-tertiary-rgb), 0.9);
+            background: var(--controls-bg);
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--controls-border);
             border-radius: var(--border-radius);
             padding: var(--space-sm);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
@@ -329,7 +340,8 @@
             align-items: center;
             gap: var(--space-sm);
             width: max-content;
-            transition: opacity 0.3s, transform 0.3s;
+            color: var(--controls-text);
+            transition: opacity 0.3s, transform 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
         }
         #pdf-viewer-controls.hidden {
             opacity: 0;
@@ -340,7 +352,7 @@
         #pdf-viewer-controls button {
             background: transparent;
             border: none;
-            color: var(--text-primary);
+            color: var(--controls-text);
             font-size: 1.1rem;
             width: 2.5rem;
             height: 2.5rem;
@@ -362,7 +374,7 @@
         #pdf-page-num {
             width: 3.5rem;
             text-align: center;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--controls-border);
             background: var(--bg-secondary);
             color: var(--text-primary);
             border-radius: 4px;
@@ -375,7 +387,7 @@
             -webkit-appearance: none;
             margin: 0;
         }
-        #pdf-zoom-level { font-weight: 500; width: 4rem; text-align: center; }
+        #pdf-zoom-level { font-weight: 500; width: 4rem; text-align: center; display: flex; align-items: center; justify-content: center;}
         #pdf-viewer-controls .divider {
             width: 1px;
             height: 1.5rem;
@@ -814,6 +826,16 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <i class="fas fa-arrows-alt-h"></i>
+                        <label for="scroll-lock-toggle">Lock Horizontal Scroll</label>
+                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="scroll-lock-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
+                </div>
                  <div class="setting-item column">
                     <div class="setting-label-group">
                         <i class="fas fa-search-plus"></i>
@@ -880,6 +902,7 @@
                 isRenderingPage: new Set(),
                 observer: null,
                 downloadUrl: null,
+                isZooming: false,
             },
             
             // --- Cached Elements ---
@@ -894,9 +917,6 @@
                 this.render();
                 this.fetchData();
                 this.elements.currentYear.textContent = new Date().getFullYear();
-                 // Convert --bg-tertiary to RGB for backdrop-filter compatibility
-                const tertiaryBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-tertiary').trim();
-                document.documentElement.style.setProperty('--bg-tertiary-rgb', this.hexToRgb(tertiaryBg));
             },
 
             cacheDOMElements() {
@@ -957,6 +977,7 @@
                     closeSettingsBtn: document.getElementById('close-settings-btn'),
                     invertColorsToggle: document.getElementById('invert-colors-toggle'),
                     pagelessToggle: document.getElementById('pageless-toggle'),
+                    scrollLockToggle: document.getElementById('scroll-lock-toggle'),
                     rotateCwBtn: document.getElementById('pdf-rotate-cw'),
                     rotateCcwBtn: document.getElementById('pdf-rotate-ccw'),
                     zoomSlider: document.getElementById('zoom-slider'),
@@ -989,6 +1010,7 @@
                 this.elements.settingsOverlay?.addEventListener('click', () => this.toggleSettingsPanel(false));
                 this.elements.invertColorsToggle?.addEventListener('change', (e) => this.toggleInvertColors(e.target.checked));
                 this.elements.pagelessToggle?.addEventListener('change', (e) => this.togglePagelessMode(e.target.checked));
+                this.elements.scrollLockToggle?.addEventListener('change', (e) => this.toggleScrollLock(e.target.checked));
                 this.elements.rotateCwBtn?.addEventListener('click', () => this.rotatePdf(90));
                 this.elements.rotateCcwBtn?.addEventListener('click', () => this.rotatePdf(-90));
                 this.elements.zoomSlider?.addEventListener('input', (e) => this.changePdfZoom(parseFloat(e.target.value) / 100, true));
@@ -1029,7 +1051,18 @@
             getCache() { const c = localStorage.getItem(this.CACHE_KEY); if (!c) return null; const { timestamp, data } = JSON.parse(c); if (Date.now() - timestamp > this.CACHE_DURATION_MS) { localStorage.removeItem(this.CACHE_KEY); return null; } return data; },
 
             initTheme() { const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); this.setTheme(savedTheme); },
-            setTheme(theme) { document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); if (this.elements.themeToggle) this.elements.themeToggle.checked = theme === 'dark'; },
+            setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                if (this.elements.themeToggle) this.elements.themeToggle.checked = theme === 'dark';
+
+                // Sync PDF viewer's dark mode setting with the app's theme
+                const isDark = theme === 'dark';
+                if (this.elements.invertColorsToggle) {
+                    this.elements.invertColorsToggle.checked = isDark;
+                    this.toggleInvertColors(isDark);
+                }
+            },
 
             resetToHome() { this.cleanupPdfViewer(); this.state.selection = { year: null, semester: null, term: null, subject: null, topic: null }; this.state.currentView = 'selection'; if (this.elements.searchInput) this.elements.searchInput.value = ''; this.state.searchTerm = ''; this.render(); },
             navigateTo(level, item) { this.state.selection[level] = item; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const i = levels.indexOf(level); for (let j = i + 1; j < levels.length; j++) { this.state.selection[levels[j]] = null; } this.state.currentView = 'selection'; this.render(); },
@@ -1066,7 +1099,7 @@
             // --- PDF Viewer Methods ---
             getDirectDriveUrl: (url) => (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url),
             showViewerState(state, message = '') { this.elements.pdfLoader.classList.remove('show'); this.elements.pdfError.classList.remove('show'); this.elements.pdfControls.classList.add('hidden'); if (state === 'loader') this.elements.pdfLoader.classList.add('show'); else if (state === 'error') { this.elements.pdfError.innerHTML = message; this.elements.pdfError.classList.add('show'); } else if (state === 'content') this.elements.pdfControls.classList.remove('hidden'); },
-            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
+            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null, isZooming: false }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.toggleSettingsPanel(false); },
 
             async _finishPdfSetup(pdfDoc) {
                 this.pdf.doc = pdfDoc;
@@ -1251,9 +1284,19 @@
                 this.elements.pdfNextBtn.disabled = this.pdf.currentPage >= this.pdf.totalPages;
 
                 const zoomPercent = Math.round(this.pdf.zoom * 100);
-                this.elements.pdfZoomLevel.textContent = `${zoomPercent}%`;
-                if(this.elements.zoomSlider) this.elements.zoomSlider.value = zoomPercent;
+
+                if (!this.pdf.isZooming) {
+                    this.elements.pdfZoomLevel.textContent = `${zoomPercent}%`;
+                }
+                
+                if(this.elements.zoomSlider) {
+                    this.elements.zoomSlider.value = zoomPercent;
+                    this.elements.zoomSlider.disabled = this.pdf.isZooming;
+                }
                 if(this.elements.zoomSliderValue) this.elements.zoomSliderValue.textContent = `${zoomPercent}%`;
+
+                this.elements.pdfZoomOutBtn.disabled = this.pdf.isZooming || this.pdf.zoom <= 0.25;
+                this.elements.pdfZoomInBtn.disabled = this.pdf.isZooming || this.pdf.zoom >= 5;
             },
             changePdfPage(pageNum) { 
                 const num = Math.max(1, Math.min(pageNum || 1, this.pdf.totalPages)); 
@@ -1267,13 +1310,26 @@
                 }
             },
             changePdfZoom(value, isAbsolute = false) {
-                if (!this.pdf.doc) return;
+                if (!this.pdf.doc || this.pdf.isZooming) return;
+                
+                this.pdf.isZooming = true;
+                
+                // Show a mini-loader in the zoom display and disable controls
+                this.elements.pdfZoomLevel.innerHTML = `<div class="loader" style="width: 1.25rem; height: 1.25rem; border-width: 3px; margin: auto;"></div>`;
+                this.updatePdfControls(); // Disables buttons via the isZooming flag
+
                 const newZoom = isAbsolute ? value : this.pdf.zoom + value;
                 this.pdf.zoom = Math.max(0.25, Math.min(5, newZoom)); // Clamp between 25% and 500%
+                
                 this.updatePageDimensions();
-                // We re-trigger render for visible items by disconnecting and reconnecting the observer
                 this.setupIntersectionObserver();
-                this.updatePdfControls();
+                this.updatePdfControls(); // Update slider value
+
+                // User-requested 3-second cooldown to prevent spamming
+                setTimeout(() => {
+                    this.pdf.isZooming = false;
+                    this.updatePdfControls(); // Restore text and re-evaluate button states
+                }, 3000);
             },
             rotatePdf(degrees) {
                 if (!this.pdf.doc) return;
@@ -1285,12 +1341,17 @@
 
             // --- Viewer Settings Methods ---
             initViewerSettings() {
-                const inverted = localStorage.getItem('viewerInvertColors') === 'true';
+                // Now, the viewer's dark mode is primarily driven by the app's theme.
+                // We'll still check localStorage for pageless mode and scroll lock.
                 const pageless = localStorage.getItem('viewerPagelessMode') === 'true';
-                this.elements.invertColorsToggle.checked = inverted;
                 this.elements.pagelessToggle.checked = pageless;
-                this.elements.pdfRenderArea.classList.toggle('pdf-inverted', inverted);
                 this.elements.pdfRenderArea.classList.toggle('pageless', pageless);
+                
+                const scrollLock = localStorage.getItem('viewerScrollLock') === 'true';
+                this.elements.scrollLockToggle.checked = scrollLock;
+                this.elements.pdfRenderArea.classList.toggle('scroll-locked-x', scrollLock);
+
+                // The theme will be set by initTheme -> setTheme, which now handles the viewer's dark mode.
             },
             toggleSettingsPanel(show) { this.elements.settingsPanel.classList.toggle('show', show); this.elements.settingsOverlay.classList.toggle('show', show); },
             toggleInvertColors(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
@@ -1298,13 +1359,13 @@
                  this.elements.pdfRenderArea.classList.toggle('pageless', isActive);
                  localStorage.setItem('viewerPagelessMode', isActive);
             },
+            toggleScrollLock(isLocked) {
+                this.elements.pdfRenderArea.classList.toggle('scroll-locked-x', isLocked);
+                localStorage.setItem('viewerScrollLock', isLocked);
+            },
 
             // --- Utilities ---
             handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); if(y > this.state.lastScrollY && y > 100) { this.elements.header?.classList.add('header--hidden'); } else { this.elements.header?.classList.remove('header--hidden'); } this.state.lastScrollY = y <= 0 ? 0 : y; },
-            hexToRgb(hex) {
-                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 255, 255';
-            },
         };
 
         document.addEventListener('DOMContentLoaded', () => App.init());
