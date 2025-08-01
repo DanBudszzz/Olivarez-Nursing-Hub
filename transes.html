@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1812,6 +1813,7 @@
                 if (this.tutorial.isActive) {
                     // Find the index of the step that triggers opening the panel
                     const settingsHotspotStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsHotspot);
+            
                     // Find the index of the step that displays the panel's contents
                     const settingsPanelStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsPanel);
             
@@ -2041,85 +2043,101 @@
                 const step = this.tutorial.steps[this.tutorial.step];
                 if (!step) { this.endTutorial(); return; }
 
+                // 1. Update content and button state.
                 this.elements.tutorialStepTitle.innerHTML = step.title;
                 this.elements.tutorialStepContent.innerHTML = step.content;
-                this.elements.tutorialOverlay.classList.add('show');
-                
                 this.elements.tutorialNextBtn.style.display = step.isActionStep ? 'none' : 'block';
                 this.elements.tutorialNextBtn.textContent = step.isFinalStep ? 'Finish' : 'Next';
 
-                const targetEl = step.target ? step.target() : null;
-                const highlightBox = this.elements.tutorialHighlightBox;
-                const stepBox = this.elements.tutorialStepBox;
+                // 2. Ensure the overlay is visible so dimensions can be calculated.
+                this.elements.tutorialOverlay.classList.add('show');
 
-                stepBox.style.transform = ''; // Reset transform before recalculating position
+                // 3. Define the positioning logic in a new function.
+                const positionElements = () => {
+                    const targetEl = step.target ? step.target() : null;
+                    const highlightBox = this.elements.tutorialHighlightBox;
+                    const stepBox = this.elements.tutorialStepBox;
 
-                if (targetEl) {
-                    const rect = targetEl.getBoundingClientRect();
-                    highlightBox.style.cssText = `
-                        width: ${rect.width}px; height: ${rect.height}px;
-                        top: ${rect.top}px; left: ${rect.left}px;
-                        border-radius: ${window.getComputedStyle(targetEl).borderRadius || '8px'};
-                    `;
-                    const isMobile = window.innerWidth <= 600;
-                    stepBox.classList.toggle('mobile-view', isMobile);
+                    // Reset any previous positioning styles
+                    stepBox.style.transform = '';
+                    stepBox.style.top = '';
+                    stepBox.style.left = '';
 
-                    if (!isMobile) {
-                        // --- ROBUST POSITIONING LOGIC ---
-                        const isSidePanel = rect.height > window.innerHeight * 0.7;
-                        let top, left;
+                    if (targetEl) {
+                        const rect = targetEl.getBoundingClientRect();
+                        // Ensure rect has valid dimensions, otherwise, something is wrong with the target.
+                        if (rect.width === 0 && rect.height === 0) {
+                            console.warn("Tutorial target element is not visible.", targetEl);
+                            // Fallback to centered view for this step.
+                            highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
+                            stepBox.classList.remove('mobile-view');
+                            stepBox.style.top = '50%';
+                            stepBox.style.left = '50%';
+                            stepBox.style.transform = 'translate(-50%, -50%)';
+                            return;
+                        }
 
-                        if (isSidePanel) {
-                            // It's a tall panel on the side, position the box next to it.
-                            top = rect.top + rect.height / 2 - stepBox.offsetHeight / 2;
+                        highlightBox.style.cssText = `
+                            width: ${rect.width}px; height: ${rect.height}px;
+                            top: ${rect.top}px; left: ${rect.left}px;
+                            border-radius: ${window.getComputedStyle(targetEl).borderRadius || '8px'};
+                        `;
+                        const isMobile = window.innerWidth <= 600;
+                        stepBox.classList.toggle('mobile-view', isMobile);
+
+                        if (!isMobile) {
+                            // Use the dimensions of the tutorial box itself for calculations.
+                            const stepBoxHeight = stepBox.offsetHeight;
+                            const stepBoxWidth = stepBox.offsetWidth;
+
+                            const isSidePanel = rect.height > window.innerHeight * 0.7;
+                            let top, left;
+
+                            if (isSidePanel) {
+                                top = rect.top + rect.height / 2 - stepBoxHeight / 2;
+                                if (rect.left + rect.width / 2 > window.innerWidth / 2) {
+                                    left = rect.left - stepBoxWidth - 15;
+                                } else {
+                                    left = rect.right + 15;
+                                }
+                            } else {
+                                if (rect.bottom + stepBoxHeight + 15 < window.innerHeight) {
+                                     top = rect.bottom + 15;
+                                } else {
+                                    top = rect.top - stepBoxHeight - 15;
+                                }
+                                left = rect.left + rect.width / 2 - stepBoxWidth / 2;
+                            }
                             
-                            if (rect.left + rect.width / 2 > window.innerWidth / 2) {
-                                // Panel is on the right side of the screen, so box goes on the left.
-                                left = rect.left - stepBox.offsetWidth - 15;
-                            } else {
-                                // Panel is on the left side of the screen, so box goes on the right.
-                                left = rect.right + 15;
-                            }
-                        } else {
-                            // It's a "normal" element, position above or below.
-                            // Vertical first:
-                            if (rect.bottom + stepBox.offsetHeight + 15 < window.innerHeight) {
-                                 // Prefer to show below if there is space
-                                 top = rect.bottom + 15;
-                            } else {
-                                // Otherwise show above
-                                top = rect.top - stepBox.offsetHeight - 15;
-                            }
-                            // Horizontal next: center it
-                            left = rect.left + rect.width / 2 - stepBox.offsetWidth / 2;
-                        }
+                            // Boundary checks
+                            if (left < 10) left = 10;
+                            else if (left + stepBoxWidth > window.innerWidth - 10) left = window.innerWidth - stepBoxWidth - 10;
 
-                        // --- Universal Boundary Checks ---
-                        // Ensure box is not off-screen horizontally
-                        if (left < 10) {
-                            left = 10;
-                        } else if (left + stepBox.offsetWidth > window.innerWidth - 10) {
-                            left = window.innerWidth - stepBox.offsetWidth - 10;
+                            if (top < 10) top = 10;
+                            else if (top + stepBoxHeight > window.innerHeight - 10) top = window.innerHeight - stepBoxHeight - 10;
+                            
+                            stepBox.style.top = `${top}px`;
+                            stepBox.style.left = `${left}px`;
                         }
-
-                        // Ensure box is not off-screen vertically
-                        if (top < 10) {
-                            top = 10;
-                        } else if (top + stepBox.offsetHeight > window.innerHeight - 10) {
-                            top = window.innerHeight - stepBox.offsetHeight - 10;
-                        }
-
-                        stepBox.style.top = `${top}px`;
-                        stepBox.style.left = `${left}px`;
                     } else {
-                        stepBox.style.top = ''; stepBox.style.left = ''; // Reset desktop positioning for mobile view
+                        // Logic for steps without a target element (centered).
+                        highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
+                        stepBox.classList.remove('mobile-view');
+                        stepBox.style.top = '50%';
+                        stepBox.style.left = '50%';
+                        stepBox.style.transform = 'translate(-50%, -50%)';
                     }
+                };
+
+                // 4. Schedule the positioning logic.
+                const targetEl = step.target ? step.target() : null;
+                // Special handling for the settings panel which animates in.
+                if (targetEl && targetEl === this.elements.settingsPanel) {
+                    // The panel's transition is 300ms. Wait for it to finish.
+                    setTimeout(positionElements, 350);
                 } else {
-                    highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
-                    stepBox.classList.remove('mobile-view');
-                    stepBox.style.top = '50%';
-                    stepBox.style.left = '50%';
-                    stepBox.style.transform = 'translate(-50%, -50%)';
+                    // For all other steps, wait for the next browser frame.
+                    requestAnimationFrame(positionElements);
                 }
             },
             nextTutorialStep: function() {
