@@ -50,6 +50,30 @@
             overflow-x: hidden;
         }
         
+        #startup-video-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10000; /* Higher than preloader */
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        #startup-video-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        #startup-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         #preloader {
             position: fixed;
             top: 0;
@@ -529,6 +553,10 @@
 </head>
 <body class="preloading">
 
+    <div id="startup-video-container">
+        <video id="startup-video" src="startup.mp4" autoplay muted playsinline></video>
+    </div>
+
     <div id="preloader">
         <div class="preloader-container">
             <div class="preloader-dot"></div>
@@ -688,20 +716,15 @@
     <div id="menu-overlay" class="overlay"></div>
 
     <script>
-        window.addEventListener('load', () => {
-            const preloader = document.getElementById('preloader');
-            setTimeout(() => {
-                if (preloader) {
-                    preloader.classList.add('preloader-hidden');
-                }
-                document.body.classList.add('loaded');
-                setTimeout(() => {
-                    document.body.classList.remove('preloading');
-                }, 800);
-            }, 2000);
-        });
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Element Selectors ---
+        const videoContainer = document.getElementById('startup-video-container');
+        const video = document.getElementById('startup-video');
+        const preloader = document.getElementById('preloader');
+        const body = document.body;
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // --- Main App Initialization Logic ---
+        function initializeMainApp() {
             document.getElementById('current-year').textContent = new Date().getFullYear();
 
             const indicator = document.querySelector('.nav-indicator');
@@ -760,12 +783,10 @@
                 animationObserver.observe(section);
             });
 
-            // --- MOBILE MENU SCRIPT ---
             const menuToggle = document.querySelector('.menu-toggle');
             const sideNav = document.getElementById('side-menu');
             const menuOverlay = document.getElementById('menu-overlay');
             const sideNavItems = document.querySelectorAll('.side-nav-item');
-            const body = document.body;
 
             function closeMenu() {
                 body.classList.remove('menu-open');
@@ -786,7 +807,6 @@
             sideNavItems.forEach(item => {
                 item.addEventListener('click', (e) => {
                     if (item.id?.includes('install')) {
-                        // handled by PWA script, just close menu
                         closeMenu();
                         return;
                     }
@@ -802,12 +822,11 @@
                             targetSection.scrollIntoView({ behavior: 'smooth' });
                             const desktopNavItem = document.querySelector(`.nav-item[href="${targetId}"]`);
                             handleIndicator(desktopNavItem);
-                        }, 500); // Wait for menu close animation
+                        }, 500);
                     }
                 });
             });
 
-            // --- PWA INSTALL SCRIPT ---
             let deferredPrompt;
             const installBtnDesktop = document.getElementById('install-btn-desktop');
             const installBtnMobile = document.getElementById('install-btn-mobile');
@@ -815,11 +834,7 @@
             const closeIosModalBtn = document.getElementById('ios-modal-close');
             const allInstallBtns = [installBtnDesktop, installBtnMobile].filter(Boolean);
 
-            const isIos = () => {
-                const userAgent = window.navigator.userAgent.toLowerCase();
-                return /iphone|ipad|ipod/.test(userAgent);
-            };
-
+            const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
             const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
 
             if (isInStandaloneMode()) {
@@ -866,13 +881,59 @@
                 if (e.target === iosInstallModal) closeIosModal();
             });
 
-            // Register service worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js')
                     .then(reg => console.log('Service worker registered.', reg))
                     .catch(err => console.error('Service worker registration failed:', err));
             }
-        });
+        }
+
+        // --- Preloader Logic ---
+        function runPreloader() {
+            setTimeout(() => {
+                if (preloader) {
+                    preloader.classList.add('preloader-hidden');
+                }
+                body.classList.add('loaded');
+                setTimeout(() => {
+                    body.classList.remove('preloading');
+                }, 800);
+            }, 2000);
+        }
+
+        // --- Startup Sequence Controller ---
+        function startApplicationFlow() {
+            if (videoContainer) {
+                videoContainer.classList.add('hidden');
+                videoContainer.addEventListener('transitionend', () => videoContainer.remove());
+            }
+            runPreloader();
+            initializeMainApp();
+        }
+
+        const videoCanPlay = video && !sessionStorage.getItem('startupVideoPlayed');
+
+        if (videoCanPlay) {
+            video.onended = () => {
+                sessionStorage.setItem('startupVideoPlayed', 'true');
+                startApplicationFlow();
+            };
+            video.onerror = () => {
+                console.error("Startup video failed to load or play.");
+                sessionStorage.setItem('startupVideoPlayed', 'true');
+                startApplicationFlow();
+            };
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    console.warn("Video autoplay was blocked by the browser.");
+                    startApplicationFlow();
+                });
+            }
+        } else {
+            startApplicationFlow();
+        }
+    });
     </script>
 </body>
 </html>
