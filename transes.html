@@ -118,11 +118,11 @@
             font-size: 1rem;
             overflow-x: hidden;
         }
-        header { background: var(--header-bg); color: var(--header-text); padding: var(--space-sm) 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); height: 4rem; /* 64px */ display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; transition: background-color 0.3s, transform 0.3s ease-in-out; border-bottom: 1px solid var(--border-color); }
+        header { background: var(--header-bg); color: var(--header-text); padding: var(--space-sm) 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); height: 4rem; /* 64px */ display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; transition: background-color 0.3s, transform 0.3s ease-in-out, filter 0.3s; border-bottom: 1px solid var(--border-color); }
         .header-content { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-lg); display: flex; align-items: center; justify-content: space-between; width: 100%; gap: var(--space-md); }
-        .logo-container { display: flex; align-items: center; gap: var(--space-md); color: inherit; text-decoration: none; }
-        .logo { width: 2.25rem; /* 36px */ height: 2.25rem; /* 36px */ }
-        .header-title { font-size: 1.15rem; font-weight: 600; margin: 0; white-space: nowrap; }
+        .logo-container { display: flex; align-items: center; gap: var(--space-md); color: inherit; text-decoration: none; min-width: 0; /* Allow container to shrink */ }
+        .logo { width: 2.25rem; /* 36px */ height: 2.25rem; /* 36px */ flex-shrink: 0; /* Prevent logo from shrinking */ }
+        .header-title { font-size: 1.15rem; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; /* Truncate long text */ }
         
         .header-actions { display: flex; align-items: center; gap: var(--space-sm); }
         .header-actions button {
@@ -147,7 +147,7 @@
             background-color: rgba(255, 255, 255, 0.1);
         }
 
-        main { flex-grow: 1; padding: var(--space-lg); width: 100%; display: flex; flex-direction: column; align-items: center; }
+        main { flex-grow: 1; padding: var(--space-lg); width: 100%; display: flex; flex-direction: column; align-items: center; transition: filter 0.3s; }
         .page-container { width: 100%; max-width: 1280px; display: none; flex-direction: column; animation: fadeIn 0.5s ease-in-out; }
         .page-container.show { display: flex; }
         .viewer-container {
@@ -273,6 +273,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             flex-shrink: 1;
+            min-width: 0; /* Allow title to shrink and truncate */
         }
         
         #viewer-actions {
@@ -506,11 +507,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            padding: var(--space-sm);
+            margin: calc(var(--space-sm) * -1);
+            border-radius: 8px;
+            transition: background-color 0.2s;
         }
+        .setting-item:hover {
+             background-color: var(--border-color-light);
+        }
+
         .setting-item.column {
             flex-direction: column;
             align-items: flex-start;
             gap: var(--space-sm);
+            cursor: default;
+        }
+        .setting-item.column:hover {
+            background-color: transparent;
         }
         .setting-label-group {
             display: flex;
@@ -563,7 +577,7 @@
         }
 
         /* Custom Toggle Switch */
-        .qol-switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .qol-switch { position: relative; display: inline-block; width: 44px; height: 22px; pointer-events: none; }
         .qol-switch input { opacity: 0; width: 0; height: 0; }
         .qol-slider { position: absolute; cursor: pointer; inset: 0; background-color: var(--border-color); transition: .3s; border-radius: 22px; }
         .qol-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
@@ -698,7 +712,7 @@
 
         #app-error { color: var(--danger); text-align: center; margin-top: var(--space-md); display: none; padding: var(--space-md); border: 1px solid var(--danger); border-radius: 8px; background-color: var(--danger-light); }
         
-        footer { background: #2a2a2a; color: #e0e0e0; padding: var(--space-md) 0; margin-top: auto; text-align: center; font-size: 0.9rem; transition: background-color 0.3s;}
+        footer { background: #2a2a2a; color: #e0e0e0; padding: var(--space-md) 0; margin-top: auto; text-align: center; font-size: 0.9rem; transition: background-color 0.3s, filter 0.3s;}
         html[data-theme='light'] footer {
              background: var(--gradient);
              color: white;
@@ -709,54 +723,53 @@
             position: fixed;
             inset: 0;
             z-index: 2000;
+            /* No background - this is just a container now */
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease;
-            pointer-events: none; /* Let clicks go through to the elements below */
+            pointer-events: none; /* Let clicks pass through children by default */
         }
         #tutorial-overlay.show {
             display: block;
             opacity: 1;
         }
-        #tutorial-highlight-box {
+        .tutorial-highlight {
             position: absolute;
-            border-radius: 8px;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+            border-radius: 8px; /* Set dynamically by JS */
+            /* This is the new spotlight effect */
+            box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.75);
             transition: all 0.4s ease-in-out;
-            pointer-events: none; /* Pass clicks to the element underneath */
+            display: none;
         }
-        #tutorial-overlay.show #tutorial-highlight-box::before {
+        #tutorial-overlay.show .tutorial-highlight {
+            display: block;
+        }
+        #tutorial-overlay.show .tutorial-highlight::before {
             content: '';
             position: absolute;
             inset: 0;
             border-radius: inherit;
-            animation: pulse-highlight 2s infinite ease-in-out;
+            animation: pulse-glow 2s infinite ease-in-out;
         }
         #tutorial-step-box {
-            position: absolute;
-            background-color: var(--bg-secondary);
-            color: var(--text-primary);
-            padding: var(--space-lg);
-            border-radius: var(--border-radius);
-            max-width: 350px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            transition: all 0.4s ease-in-out;
-            z-index: 2001; /* Above the shadow */
-            pointer-events: auto; /* Make the box itself clickable */
-        }
-        #tutorial-step-box.mobile-view {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            width: 100%;
-            max-width: 100vw;
+            margin: 0 auto;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: var(--space-lg);
             border-radius: var(--border-radius) var(--border-radius) 0 0;
+            max-width: 500px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
             transform: translateY(100%);
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 2002; /* Above highlight shadow */
+            pointer-events: auto; /* Make the box itself clickable */
         }
-        #tutorial-overlay.show #tutorial-step-box.mobile-view {
-            transform: translateY(0);
+        #tutorial-overlay.show #tutorial-step-box {
+             transform: translateY(0);
         }
         #tutorial-step-title {
             font-size: 1.2rem;
@@ -814,10 +827,16 @@
         
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulse-highlight {
-            0% { box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.8); }
-            50% { box-shadow: 0 0 0 7px rgba(var(--primary-rgb), 0.2); }
-            100% { box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.8); }
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 5px 2px rgba(var(--primary-rgb), 0.6);
+            }
+            50% {
+                box-shadow: 0 0 15px 8px rgba(var(--primary-rgb), 0.3);
+            }
+            100% {
+                box-shadow: 0 0 5px 2px rgba(var(--primary-rgb), 0.6);
+            }
         }
 
         /* --- Viewer Full-screen mode --- */
@@ -1056,7 +1075,7 @@
                 <button id="close-settings-btn" aria-label="Close Settings"><i class="fas fa-times"></i></button>
             </div>
             <div class="settings-content">
-                <div class="setting-item">
+                <div id="tutorial-setting-item" class="setting-item">
                     <div class="setting-label-group">
                         <i class="fas fa-chalkboard-teacher"></i>
                         <label for="reset-tutorial-btn">Tutorial</label>
@@ -1065,7 +1084,7 @@
                        <button id="reset-tutorial-btn" title="Show Tutorial Again" aria-label="Show Tutorial Again">Show Again</button>
                     </div>
                 </div>
-                <div class="setting-item">
+                <div id="show-tip-setting-item" class="setting-item">
                     <div class="setting-label-group">
                         <i class="fas fa-question-circle"></i>
                         <label for="show-settings-tip-toggle">Show Settings Tip</label>
@@ -1075,7 +1094,7 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
-                <div class="setting-item">
+                <div id="dark-mode-setting-item" class="setting-item">
                     <div class="setting-label-group">
                         <i class="fas fa-moon"></i>
                         <label for="invert-colors-toggle">Dark Mode</label>
@@ -1085,7 +1104,7 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
-                <div class="setting-item" data-text-mode-disabled>
+                <div id="pageless-setting-item" class="setting-item" data-text-mode-disabled>
                     <div class="setting-label-group">
                          <i class="fas fa-stream"></i>
                          <label for="pageless-toggle">Pageless</label>
@@ -1095,7 +1114,7 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
-                <div class="setting-item">
+                <div id="text-mode-setting-item" class="setting-item">
                     <div class="setting-label-group">
                         <i class="fas fa-align-left"></i>
                         <label for="text-mode-toggle">Text Mode</label>
@@ -1186,7 +1205,7 @@
     <footer><p>&copy; <span id="current-year"></span> Olivarez College Tagaytay - Nursing Department</p></footer>
 
     <div id="tutorial-overlay">
-        <div id="tutorial-highlight-box"></div>
+        <div id="tutorial-highlight-box" class="tutorial-highlight"></div>
         <div id="tutorial-step-box">
             <h3 id="tutorial-step-title"></h3>
             <div id="tutorial-step-content"></div>
@@ -1244,6 +1263,7 @@
                 isActive: false,
                 step: 0,
                 steps: [],
+                cleanupListener: null,
             },
             
             // --- Cached Elements ---
@@ -1385,11 +1405,20 @@
                 this.elements.settingsHotspot?.addEventListener('click', () => this.toggleSettingsPanel(true));
                 this.elements.closeSettingsBtn?.addEventListener('click', () => this.toggleSettingsPanel(false));
                 this.elements.settingsOverlay?.addEventListener('click', () => this.toggleSettingsPanel(false));
+                
+                // Settings Item Events
+                document.getElementById('tutorial-setting-item')?.addEventListener('click', () => this.elements.resetTutorialBtn.click());
+                document.getElementById('show-tip-setting-item')?.addEventListener('click', () => this.elements.showSwipeTipToggle.click());
+                document.getElementById('dark-mode-setting-item')?.addEventListener('click', () => this.elements.invertColorsToggle.click());
+                document.getElementById('pageless-setting-item')?.addEventListener('click', () => this.elements.pagelessToggle.click());
+                document.getElementById('text-mode-setting-item')?.addEventListener('click', () => this.elements.textModeToggle.click());
+                
                 this.elements.showSwipeTipToggle?.addEventListener('change', (e) => this.setShowSwipeTip(e.target.checked));
                 this.elements.resetTutorialBtn?.addEventListener('click', () => this.resetTutorial());
                 this.elements.invertColorsToggle?.addEventListener('change', (e) => this.toggleInvertColors(e.target.checked));
                 this.elements.pagelessToggle?.addEventListener('change', (e) => this.togglePagelessMode(e.target.checked));
                 this.elements.textModeToggle?.addEventListener('change', (e) => this.toggleTextMode(e.target.checked));
+                this.elements.scrollLockToggle?.closest('.setting-item').addEventListener('click', () => this.elements.scrollLockToggle.click());
                 this.elements.scrollLockToggle?.addEventListener('change', (e) => this.toggleScrollLock(e.target.checked));
                 this.elements.rotateCwBtn?.addEventListener('click', () => this.rotatePdf(90));
                 this.elements.rotateCcwBtn?.addEventListener('click', () => this.rotatePdf(-90));
@@ -1810,36 +1839,26 @@
                 if (this.elements.showSwipeTipToggle) this.elements.showSwipeTipToggle.checked = showTip;
             },
             toggleSettingsPanel: function(show) {
-                if (this.tutorial.isActive) {
-                    // Find the index of the step that triggers opening the panel
-                    const settingsHotspotStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsHotspot);
-            
-                    // Find the index of the step that displays the panel's contents
-                    const settingsPanelStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsPanel);
-            
-                    if (show && this.tutorial.step === settingsHotspotStepIndex) {
-                        // If we are on the "click the hotspot" step and the panel is being opened, advance the tutorial.
-                        this.nextTutorialStep();
-                    } else if (!show && this.tutorial.step === settingsPanelStepIndex) {
-                        // If we are on the final "here is the panel" step and the user tries to close it,
-                        // just end the tutorial gracefully.
-                        this.endTutorial();
-                    }
+                // During the tutorial, advancement is handled by the tutorial logic itself.
+                if (this.tutorial.isActive && !show) {
+                     this.endTutorial();
                 }
                 this.elements.settingsPanel.classList.toggle('show', show);
                 this.elements.settingsOverlay.classList.toggle('show', show);
             },
-            toggleInvertColors: function(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
+            toggleInvertColors: function(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); this.elements.invertColorsToggle.checked = isActive; },
             togglePagelessMode: function(isActive) {
                  this.elements.pdfRenderArea.classList.toggle('pageless', isActive);
                  localStorage.setItem('viewerPagelessMode', isActive);
+                 this.elements.pagelessToggle.checked = isActive;
             },
             toggleScrollLock: function(isLocked) {
                 this.elements.pdfRenderArea.classList.toggle('scroll-locked-x', isLocked);
                 localStorage.setItem('viewerScrollLock', isLocked);
+                this.elements.scrollLockToggle.checked = isLocked;
             },
             toggleTextMode: function(isActive) {
-                if (this.pdf.isTextMode === isActive) return;
+                if (this.pdf.isTextMode === isActive && !this.tutorial.isActive) return;
                 this.pdf.isTextMode = isActive;
                 
                 this.elements.textModeToggle.checked = isActive;
@@ -1958,10 +1977,6 @@
             // --- Header Controls ---
             showHeader: function() {
                 if (this.tutorial.isActive) {
-                    const stepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.headerHotspot);
-                    if (this.tutorial.step === stepIndex) {
-                        this.nextTutorialStep();
-                    }
                     clearTimeout(this.state.headerHideTimer); // Don't auto-hide during tutorial
                 } else {
                     clearTimeout(this.state.headerHideTimer);
@@ -1994,150 +2009,141 @@
                 this.tutorial.steps = [
                     {
                         title: 'Welcome to the Viewer!',
-                        content: 'This quick tour will show you how to use the new controls. It will only run once, but you can restart it from the settings.',
-                        isActionStep: false,
+                        content: 'This quick tour will guide you through the main controls. We\'ll open the settings panel for you to start.',
+                        target: null, // Centered
+                        onBeforeShow: async () => {
+                            this.toggleSettingsPanel(true);
+                            return new Promise(resolve => setTimeout(resolve, 350)); // Wait for panel animation
+                        },
                     },
                     {
-                        title: 'Text Mode & AI Formatting',
-                        content: 'When you switch to <b>Text Mode</b>, we use AI to format the document for easier reading. If it\'s the first time for a topic, this may take 15-30 seconds. Thanks for your patience!',
-                        isActionStep: false,
+                        title: 'AI-Powered Text Mode',
+                        content: '<b>Text Mode</b> reformats the document for easy reading. <b>Click anywhere on this setting to toggle it on.</b>',
+                        target: () => document.getElementById('text-mode-setting-item'),
+                        advanceOn: 'click',
                     },
                     {
-                        title: 'Show the Header',
-                        content: 'The header is hidden to give you more reading space. <b>Click the highlighted area at the top</b> of the screen to reveal it.',
+                        title: 'Viewing in Text Mode',
+                        content: 'Excellent! The document is now reformatted for readability. The settings panel hides so you can see the full effect.',
+                        target: null,
+                        onBeforeShow: async () => {
+                            this.toggleSettingsPanel(false);
+                            await new Promise(resolve => setTimeout(resolve, 350));
+                        }
+                    },
+                    {
+                        title: 'PDF Dark Mode',
+                        content: 'Let\'s switch back to the PDF. You can also use <b>Dark Mode</b> for night reading. <b>Click this setting to try it.</b>',
+                        target: () => document.getElementById('dark-mode-setting-item'),
+                        onBeforeShow: async () => {
+                            if (this.pdf.isTextMode) this.toggleTextMode(false);
+                            if (!this.elements.settingsPanel.classList.contains('show')) {
+                                this.toggleSettingsPanel(true);
+                                await new Promise(resolve => setTimeout(resolve, 350));
+                            }
+                        },
+                        advanceOn: 'click',
+                    },
+                    {
+                        title: 'Hiding the Controls',
+                        content: 'To maximize your reading space, all controls auto-hide. Let\'s see how to get them back.',
+                        target: null,
+                        onBeforeShow: async () => {
+                            this.toggleSettingsPanel(false);
+                            return new Promise(resolve => setTimeout(resolve, 350)); // Wait for panel to close
+                        },
+                    },
+                    {
+                        title: 'Reveal the Header',
+                        content: 'The header contains the document title and theme controls. <b>Tap the top edge of the screen to show it.</b>',
                         target: () => this.elements.headerHotspot,
-                        isActionStep: true,
+                        advanceOn: 'click',
                     },
                     {
-                        title: 'Viewer Header',
-                        content: 'Great! From here you can see the title and toggle the app\'s theme. Now, <b>click the highlighted area on the right edge</b> to open the settings panel.',
+                        title: 'Responsive Header',
+                        content: 'Notice how long titles are automatically shortened with "..." on smaller screens to keep controls visible. Click "Next" to continue.',
+                        target: () => this.elements.viewerTitle,
+                    },
+                    {
+                        title: 'Reveal Settings',
+                        content: 'Perfect! To access all other view options, <b>tap the right edge of the screen to open the settings panel.</b>',
                         target: () => this.elements.settingsHotspot,
-                        isActionStep: true,
+                        advanceOn: 'click',
                     },
                     {
-                        title: 'View Options',
-                        content: `
-                            <p>This panel gives you powerful tools to customize your view:</p>
-                            <ul>
-                                <li><b><i class="fas fa-moon"></i> Dark Mode:</b> Inverts PDF colors for night reading.</li>
-                                <li><b><i class="fas fa-stream"></i> Pageless:</b> Merges all pages into one continuous scroll.</li>
-                                <li><b><i class="fas fa-align-left"></i> Text Mode:</b> Uses AI to reformat text for an e-reader experience.</li>
-                                <li><b><i class="fas fa-search-plus"></i> Zoom/Text Size:</b> Adjust size for perfect readability.</li>
-                                <li><b><i class="fas fa-download"></i> Download/Fullscreen:</b> Access the file or go fullscreen.</li>
-                            </ul>
-                            <p style="margin-top: var(--space-md);">You're all set! Click <b>Finish</b> to end the tour.</p>
-                        `,
-                        target: () => this.elements.settingsPanel,
-                        isActionStep: false,
+                        title: 'You\'re All Set!',
+                        content: 'You\'ve learned the basics! You can restart this tour anytime from the settings panel. Happy reviewing!',
+                        target: null, // Centered
+                         onBeforeShow: async () => {
+                            if (!this.elements.settingsPanel.classList.contains('show')) {
+                                this.toggleSettingsPanel(true);
+                                await new Promise(resolve => setTimeout(resolve, 350));
+                            }
+                        },
                         isFinalStep: true,
-                    }
+                    },
                 ];
             },
             startTutorial: function() {
-                if (localStorage.getItem('viewerTutorialCompleted_v2') === 'true') return;
+                if (localStorage.getItem('viewerTutorialCompleted_v5') === 'true' || !this.pdf.doc) return;
                 this.tutorial.isActive = true;
                 this.tutorial.step = 0;
                 this.renderTutorialStep();
             },
-            renderTutorialStep: function() {
+            renderTutorialStep: async function() {
+                if (this.tutorial.cleanupListener) {
+                    this.tutorial.cleanupListener();
+                    this.tutorial.cleanupListener = null;
+                }
+
                 const step = this.tutorial.steps[this.tutorial.step];
                 if (!step) { this.endTutorial(); return; }
 
-                // 1. Update content and button state.
+                if (step.onBeforeShow) {
+                    await step.onBeforeShow.call(this);
+                }
+                
                 this.elements.tutorialStepTitle.innerHTML = step.title;
                 this.elements.tutorialStepContent.innerHTML = step.content;
-                this.elements.tutorialNextBtn.style.display = step.isActionStep ? 'none' : 'block';
+                const showNextButton = !step.advanceOn || step.isFinalStep;
+                this.elements.tutorialNextBtn.style.display = showNextButton ? 'block' : 'none';
                 this.elements.tutorialNextBtn.textContent = step.isFinalStep ? 'Finish' : 'Next';
-
-                // 2. Ensure the overlay is visible so dimensions can be calculated.
+                
                 this.elements.tutorialOverlay.classList.add('show');
-
-                // 3. Define the positioning logic in a new function.
-                const positionElements = () => {
-                    const targetEl = step.target ? step.target() : null;
+                
+                requestAnimationFrame(() => {
                     const highlightBox = this.elements.tutorialHighlightBox;
-                    const stepBox = this.elements.tutorialStepBox;
-
-                    // Reset any previous positioning styles
-                    stepBox.style.transform = '';
-                    stepBox.style.top = '';
-                    stepBox.style.left = '';
+                    const targetEl = step.target ? step.target() : null;
 
                     if (targetEl) {
                         const rect = targetEl.getBoundingClientRect();
-                        // Ensure rect has valid dimensions, otherwise, something is wrong with the target.
-                        if (rect.width === 0 && rect.height === 0) {
-                            console.warn("Tutorial target element is not visible.", targetEl);
-                            // Fallback to centered view for this step.
-                            highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
-                            stepBox.classList.remove('mobile-view');
-                            stepBox.style.top = '50%';
-                            stepBox.style.left = '50%';
-                            stepBox.style.transform = 'translate(-50%, -50%)';
-                            return;
-                        }
-
-                        highlightBox.style.cssText = `
-                            width: ${rect.width}px; height: ${rect.height}px;
-                            top: ${rect.top}px; left: ${rect.left}px;
-                            border-radius: ${window.getComputedStyle(targetEl).borderRadius || '8px'};
-                        `;
-                        const isMobile = window.innerWidth <= 600;
-                        stepBox.classList.toggle('mobile-view', isMobile);
-
-                        if (!isMobile) {
-                            // Use the dimensions of the tutorial box itself for calculations.
-                            const stepBoxHeight = stepBox.offsetHeight;
-                            const stepBoxWidth = stepBox.offsetWidth;
-
-                            const isSidePanel = rect.height > window.innerHeight * 0.7;
-                            let top, left;
-
-                            if (isSidePanel) {
-                                top = rect.top + rect.height / 2 - stepBoxHeight / 2;
-                                if (rect.left + rect.width / 2 > window.innerWidth / 2) {
-                                    left = rect.left - stepBoxWidth - 15;
-                                } else {
-                                    left = rect.right + 15;
-                                }
-                            } else {
-                                if (rect.bottom + stepBoxHeight + 15 < window.innerHeight) {
-                                     top = rect.bottom + 15;
-                                } else {
-                                    top = rect.top - stepBoxHeight - 15;
-                                }
-                                left = rect.left + rect.width / 2 - stepBoxWidth / 2;
-                            }
-                            
-                            // Boundary checks
-                            if (left < 10) left = 10;
-                            else if (left + stepBoxWidth > window.innerWidth - 10) left = window.innerWidth - stepBoxWidth - 10;
-
-                            if (top < 10) top = 10;
-                            else if (top + stepBoxHeight > window.innerHeight - 10) top = window.innerHeight - stepBoxHeight - 10;
-                            
-                            stepBox.style.top = `${top}px`;
-                            stepBox.style.left = `${left}px`;
+                        // Only show highlight if element is visible
+                        if (rect.width > 0 && rect.height > 0) {
+                            const targetStyle = window.getComputedStyle(targetEl);
+                            const borderRadius = targetEl.id.includes('hotspot') ? '0' : targetStyle.borderRadius || '8px';
+                            highlightBox.style.cssText = `display: block; width: ${rect.width}px; height: ${rect.height}px; top: ${rect.top}px; left: ${rect.left}px; border-radius: ${borderRadius};`;
+                        } else {
+                            // Target exists but is not visible, treat as centered step
+                            highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 0; left: 0; border-radius: 0;';
                         }
                     } else {
-                        // Logic for steps without a target element (centered).
-                        highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
-                        stepBox.classList.remove('mobile-view');
-                        stepBox.style.top = '50%';
-                        stepBox.style.left = '50%';
-                        stepBox.style.transform = 'translate(-50%, -50%)';
+                        // No target for this step, dim the whole screen by creating a 0x0 hole
+                        highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 0; left: 0; border-radius: 0;';
                     }
-                };
+                });
 
-                // 4. Schedule the positioning logic.
-                const targetEl = step.target ? step.target() : null;
-                // Special handling for the settings panel which animates in.
-                if (targetEl && targetEl === this.elements.settingsPanel) {
-                    // The panel's transition is 300ms. Wait for it to finish.
-                    setTimeout(positionElements, 350);
-                } else {
-                    // For all other steps, wait for the next browser frame.
-                    requestAnimationFrame(positionElements);
+                if (step.advanceOn && !step.isFinalStep) {
+                    const targetEl = step.target ? step.target() : null;
+                    if (targetEl) {
+                        const controller = new AbortController();
+                        const handler = (e) => {
+                             setTimeout(() => this.nextTutorialStep(), 100); // Short delay for UI to react
+                        };
+                        targetEl.addEventListener(step.advanceOn, handler, { signal: controller.signal, once: true });
+                        this.tutorial.cleanupListener = () => controller.abort();
+                    }
+                } else if (step.autoAdvance && !step.isFinalStep) {
+                    setTimeout(() => this.nextTutorialStep(), 3000);
                 }
             },
             nextTutorialStep: function() {
@@ -2149,16 +2155,23 @@
                 }
             },
             endTutorial: function(setCompleted = true) {
+                if (this.tutorial.cleanupListener) {
+                    this.tutorial.cleanupListener();
+                    this.tutorial.cleanupListener = null;
+                }
                 this.tutorial.isActive = false;
                 this.elements.tutorialOverlay.classList.remove('show');
+                this.toggleSettingsPanel(false);
                 if (setCompleted) {
-                    localStorage.setItem('viewerTutorialCompleted_v2', 'true');
+                    localStorage.setItem('viewerTutorialCompleted_v5', 'true');
                 }
             },
             resetTutorial: function() {
-                localStorage.removeItem('viewerTutorialCompleted_v2');
-                alert('Tutorial has been reset. It will show the next time you open a document.');
+                localStorage.removeItem('viewerTutorialCompleted_v5');
                 this.toggleSettingsPanel(false);
+                setTimeout(() => {
+                    this.startTutorial();
+                }, 350);
             }
         };
 
