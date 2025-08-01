@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,6 +26,7 @@
 
         html[data-theme='light'] {
             color-scheme: light;
+            --primary-rgb: 56, 142, 60;
             --bg-primary: #f8f9fa;
             --bg-secondary: #ffffff;
             --bg-tertiary: #fdfdfd;
@@ -41,10 +43,6 @@
             --danger: #e74c3c;
             --danger-light: #fff0f0;
             --success-light: #f0fff0;
-            /* Viewer controls theme */
-            --controls-bg: rgba(248, 249, 250, 0.9);
-            --controls-text: #2C3E50;
-            --controls-border: #ccc;
         }
 
         html[data-theme='dark'] {
@@ -52,6 +50,7 @@
             --primary: #4CAF50;
             --primary-dark: #388E3C;
             --primary-light: #2c4a2d;
+            --primary-rgb: 76, 175, 80;
 
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
@@ -70,10 +69,32 @@
             --danger: #f1948a;
             --danger-light: #4a2a2a;
             --success-light: #224022;
-             /* Viewer controls theme */
-            --controls-bg: rgba(42, 42, 42, 0.9);
-            --controls-text: #e0e0e0;
-            --controls-border: #444;
+        }
+
+        html[data-theme='night'] {
+            color-scheme: dark;
+            --primary: #52c156;
+            --primary-dark: #4CAF50;
+            --primary-light: #223d23;
+            --primary-rgb: 82, 193, 86;
+
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #050505;
+            --text-primary: #e2e2e2;
+            --text-secondary: #c0c0c0;
+            --text-tertiary: #888888;
+            --border-color: #222;
+            --border-color-light: #181818;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --header-bg: #000000;
+            --header-text: #e2e2e2;
+            
+            --info: #5dade2;
+            --info-light: #1f3544;
+            --danger: #f1948a;
+            --danger-light: #442525;
+            --success-light: #1f3a1f;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -84,6 +105,7 @@
             font-family: var(--font-family);
             font-size: 100%; /* Base: 16px */
             -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape on iOS */
+            overflow-x: hidden;
         }
         body {
             background: var(--bg-primary);
@@ -94,48 +116,36 @@
             flex-direction: column;
             transition: background-color 0.3s, color 0.3s;
             font-size: 1rem;
+            overflow-x: hidden;
         }
         header { background: var(--header-bg); color: var(--header-text); padding: var(--space-sm) 0; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); height: 4rem; /* 64px */ display: flex; align-items: center; position: sticky; top: 0; z-index: 1000; transition: background-color 0.3s, transform 0.3s ease-in-out; border-bottom: 1px solid var(--border-color); }
-        .header--hidden { transform: translateY(-100%); }
         .header-content { max-width: 1280px; margin: 0 auto; padding: 0 var(--space-lg); display: flex; align-items: center; justify-content: space-between; width: 100%; gap: var(--space-md); }
         .logo-container { display: flex; align-items: center; gap: var(--space-md); color: inherit; text-decoration: none; }
         .logo { width: 2.25rem; /* 36px */ height: 2.25rem; /* 36px */ }
         .header-title { font-size: 1.15rem; font-weight: 600; margin: 0; white-space: nowrap; }
         
-        /* Theme & Update Actions */
-        .theme-switch-wrapper { display: flex; align-items: center; margin-left: auto; gap: var(--space-md); }
-        #check-updates-btn {
+        .header-actions { display: flex; align-items: center; gap: var(--space-sm); }
+        .header-actions button {
             background: transparent;
             border: none;
             color: var(--header-text);
             font-size: 1.1rem;
-            cursor: pointer;
-            padding: 0.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
             border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.3s, transform 0.3s;
-            line-height: 1;
+            transition: background-color .2s;
         }
-        #check-updates-btn:hover {
+        .header-actions button:hover {
             background-color: rgba(255, 255, 255, 0.15);
-            transform: rotate(90deg);
         }
-        html[data-theme='dark'] #check-updates-btn {
-            color: var(--header-text);
+        html[data-theme='dark'] .header-actions button:hover,
+        html[data-theme='night'] .header-actions button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
-        .theme-switch { display: inline-block; height: 1.375rem; /* 22px */ position: relative; width: 2.75rem; /* 44px */ }
-        .theme-switch input { display: none; }
-        .slider { background-color: rgba(128,128,128,0.4); bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 1.375rem; /* 22px */ }
-        .slider:before { content: ""; height: 1.125rem; /* 18px */ width: 1.125rem; /* 18px */ left: 0.125rem; /* 2px */ bottom: 0.125rem; /* 2px */ position: absolute; transition: .4s; background-color: white; border-radius: 50%; }
-        .slider .fa-moon { position: absolute; left: 0.3125rem; /* 5px */ top: 0.25rem; /* 4px */ color: #f1c40f; font-size: 0.75rem; /* 12px */ opacity: 1; transition: opacity 0.2s; }
-        .slider .fa-sun { position: absolute; right: 0.3125rem; /* 5px */ top: 0.25rem; /* 4px */ color: #f39c12; font-size: 0.75rem; /* 12px */ opacity: 0; transition: opacity 0.2s; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(1.375rem); /* 22px */ }
-        input:checked + .slider .fa-moon { opacity: 0; }
-        input:checked + .slider .fa-sun { opacity: 1; }
-        html[data-theme='light'] .slider { background-color: var(--primary-light); }
 
         main { flex-grow: 1; padding: var(--space-lg); width: 100%; display: flex; flex-direction: column; align-items: center; }
         .page-container { width: 100%; max-width: 1280px; display: none; flex-direction: column; animation: fadeIn 0.5s ease-in-out; }
@@ -235,13 +245,65 @@
 
         .page-title { display: flex; align-items: center; gap: var(--space-sm); font-size: 1.7rem; font-weight: 600; padding-bottom: var(--space-md); border-bottom: 1px solid var(--border-color-light); margin-bottom: var(--space-lg); }
         
-        #viewer-title {
-            transition: transform 0.3s ease-in-out;
+        #viewer-header {
+            display: none; /* Hidden by default, shown by .viewer-active */
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-lg);
+            height: 4rem;
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+            width: 100%;
+            position: fixed; /* Changed from absolute */
+            top: 0;
+            left: 0;
+            z-index: 1011; /* Changed from 1008 to be above header-hotspot */
+            transform: translateY(-100%);
+            transition: transform 0.3s ease-in-out, background-color 0.3s, border-color 0.3s;
         }
-        #viewer-title.viewer-title--hidden {
-            transform: translateY(-120%);
+        #viewer-header.visible {
+            transform: translateY(0);
+        }
+        #viewer-header .page-title {
+            padding: 0;
+            margin: 0;
+            border: none;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 1;
+        }
+        
+        #viewer-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        .viewer-action-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color .2s;
+            flex-shrink: 0;
+        }
+        .viewer-action-btn:hover {
+            background-color: var(--border-color-light);
         }
 
+        #viewer-actions [data-mode="text"] { display: none; }
+
+        .viewer-container.text-mode-active #viewer-actions [data-mode="pdf"] { display: none; }
+        .viewer-container.text-mode-active #viewer-actions [data-mode="text"] { display: flex; }
+        
         .grid-container { display: grid; gap: var(--space-md); }
         .grid-container.hidden { display: none; }
         .year-grid, .semester-grid, .term-grid { grid-template-columns: repeat(auto-fit, minmax(12.5rem, 1fr)); /* 200px */ }
@@ -250,7 +312,10 @@
         .card { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: var(--space-sm) var(--space-md); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1rem; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.05); min-height: 6.875rem; /* 110px */ gap: var(--space-sm); }
         .card:hover { background-color: var(--primary-light); border-color: var(--primary); transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .card i { font-size: 1.8rem; color: var(--primary); margin-bottom: var(--space-sm); }
-        html[data-theme='dark'] .card:hover { color: #fff; }
+        html[data-theme='dark'] .card:hover,
+        html[data-theme='night'] .card:hover { 
+            color: #fff; 
+        }
 
         /* Search Results */
         .search-results-list { list-style: none; }
@@ -266,20 +331,19 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border-radius: var(--border-radius);
-            margin-top: var(--space-lg);
             background-color: var(--bg-tertiary);
             border: 1px solid var(--border-color-light);
+            border-top: none; /* Removed as header has border */
             padding: 0;
             min-height: 0;
         }
 
         #pdf-render-area {
             flex-grow: 1;
-            overflow: auto; /* Allows both vertical and horizontal scrolling */
+            overflow-y: scroll; /* Always show vertical scrollbar to prevent layout shift */
+            overflow-x: auto;   /* Allow horizontal scroll for zoom */
             padding: var(--space-md) 0;
             transition: filter 0.3s;
-            /* Removed flex properties to use margin:auto for centering, which correctly handles overflow for scrolling. */
         }
         #pdf-render-area.pdf-inverted {
              filter: invert(1) hue-rotate(180deg);
@@ -329,80 +393,62 @@
             border-radius: 0;
         }
 
-        #pdf-viewer-controls {
-            position: fixed; /* Changed from sticky to be always on screen */
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1010;
-            background: var(--controls-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid var(--controls-border);
-            border-radius: var(--border-radius);
-            padding: var(--space-sm);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: var(--space-sm);
-            width: max-content;
-            color: var(--controls-text);
-            transition: opacity 0.3s, transform 0.3s, background-color 0.3s, color 0.3s, border-color 0.3s;
+        /* Text Mode Area */
+        #text-mode-area {
+            flex-grow: 1;
+            overflow-y: scroll; /* Changed from auto to prevent layout shift */
+            overflow-x: hidden;
+            display: none; /* Hidden by default */
+            flex-direction: column;
         }
-        #pdf-viewer-controls.hidden {
-            opacity: 0;
-            transform: translate(-50%, 150%);
-            pointer-events: none;
+       
+        #text-mode-content {
+            padding: var(--space-lg) var(--space-xl) 6rem; /* Added bottom padding for floating button */
+            font-family: var(--font-serif); /* Use serif for long-form reading */
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            transition: font-size 0.2s ease-in-out;
         }
 
-        #pdf-viewer-controls button {
-            background: transparent;
-            border: none;
-            color: var(--controls-text);
-            font-size: 1.1rem;
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: 50%;
-            cursor: pointer;
+        #text-mode-content h2 { font-size: 1.5em; margin-top: 1.5em; margin-bottom: 0.5em; line-height: 1.3; }
+        #text-mode-content h3 { font-size: 1.3em; margin-top: 1.2em; margin-bottom: 0.5em; line-height: 1.3; }
+        #text-mode-content p { margin-bottom: 1em; }
+        #text-mode-content ul, #text-mode-content ol { margin-bottom: 1em; padding-left: 1.5em; }
+        #text-mode-content li { margin-bottom: 0.5em; }
+        #text-mode-content a { color: var(--primary); text-decoration: underline; }
+        #text-mode-content pre { background-color: var(--bg-secondary); padding: var(--space-md); border-radius: 8px; overflow-x: auto; margin-bottom: 1em; }
+        
+        .content-wrapper.text-mode-active #pdf-render-area {
+            display: none !important;
+        }
+        .content-wrapper.text-mode-active #text-mode-area {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color .2s;
         }
-        #pdf-viewer-controls button:hover:not(:disabled) {
-            background-color: var(--border-color-light);
-        }
-        #pdf-viewer-controls button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        .page-indicator { display: flex; align-items: center; gap: var(--space-xs); font-weight: 500; }
-        #pdf-page-num {
-            width: 3.5rem;
-            text-align: center;
-            border: 1px solid var(--controls-border);
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border-radius: 4px;
-            padding: 0.3rem;
-            font-weight: 500;
-            -moz-appearance: textfield;
-        }
-        #pdf-page-num::-webkit-outer-spin-button,
-        #pdf-page-num::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        #pdf-zoom-level { font-weight: 500; width: 4rem; text-align: center; display: flex; align-items: center; justify-content: center;}
-        #pdf-viewer-controls .divider {
-            width: 1px;
-            height: 1.5rem;
-            background: var(--border-color);
-            margin: 0 var(--space-sm);
-        }
+        
         body.pdf-fullscreen #pdf-fullscreen i::before { content: "\f066"; } /* fa-compress */
         
-        /* Viewer Settings Panel */
+        /* Viewer Settings Panel & Hotspots */
+        #header-hotspot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* A tappable area at the top */
+            z-index: 1009;
+            cursor: pointer;
+            display: none; /* Shown by body.viewer-active */
+        }
+        #settings-hotspot {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 20px; /* A tappable area */
+            z-index: 1010;
+            cursor: pointer;
+            display: none; /* Shown by body.viewer-active */
+        }
         #settings-panel-overlay {
             position: fixed;
             inset: 0;
@@ -454,6 +500,7 @@
             display: flex;
             flex-direction: column;
             gap: var(--space-xl);
+            overflow-y: auto;
         }
         .setting-item {
             display: flex;
@@ -490,15 +537,29 @@
             background-color: var(--bg-tertiary);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            width: 2.25rem;
             height: 2.25rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all .2s;
+            padding: 0 var(--space-md);
         }
         .setting-item .setting-control-group button:hover {
             background-color: var(--border-color-light);
             border-color: var(--primary);
+        }
+
+        .setting-item.disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+        .setting-item.disabled .qol-slider,
+        .setting-item.disabled input,
+        .setting-item.disabled button {
+            cursor: not-allowed;
+        }
+        
+        .setting-item[data-text-mode-only] {
+             display: none;
         }
 
         /* Custom Toggle Switch */
@@ -525,7 +586,7 @@
             border-radius: 50%; cursor: pointer; border: none;
             transition: background-color 0.2s;
         }
-        #zoom-slider-value {
+        #zoom-slider-value, #text-zoom-slider-value {
             font-weight: 500;
             min-width: 3.5rem; /* Prevents layout shift */
             text-align: right;
@@ -566,8 +627,74 @@
         .loader-text { font-weight: 500; color: var(--text-primary); }
 
         .back-button { display: none; align-self: center; margin-top: var(--space-lg); padding: var(--space-sm) var(--space-lg); background-color: var(--text-primary); color: var(--bg-primary); border: none; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; }
-        .back-button:hover { opacity: 0.8; }
         .back-button.show { display: inline-block; }
+        
+        .back-to-top-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 3rem;
+            height: 3rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1009;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .back-to-top-btn.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .back-to-top-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .swipe-toast {
+            position: fixed;
+            bottom: 6rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: var(--space-md);
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            z-index: 1014;
+            max-width: 420px;
+            margin: 0 auto;
+            opacity: 0;
+            transform: translateY(150%);
+            transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            pointer-events: none;
+        }
+        .swipe-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .swipe-toast i { font-size: 1.5rem; color: var(--primary); flex-shrink: 0; }
+        .swipe-toast span { flex-grow: 1; font-size: 0.95rem; line-height: 1.4; }
+        .swipe-toast button {
+            background: none; border: none; font-size: 1.6rem; color: var(--text-tertiary);
+            cursor: pointer; padding: 0 var(--space-xs); line-height: 1;
+            transition: color 0.2s;
+        }
+        .swipe-toast button:hover { color: var(--text-primary); }
 
         #app-error { color: var(--danger); text-align: center; margin-top: var(--space-md); display: none; padding: var(--space-md); border: 1px solid var(--danger); border-radius: 8px; background-color: var(--danger-light); }
         
@@ -577,36 +704,159 @@
              color: white;
         }
 
-        #back-to-top { position: fixed; bottom: 1.25rem; /* 20px */ right: 1.25rem; /* 20px */ width: 2.8125rem; /* 45px */ height: 2.8125rem; /* 45px */ background-color: var(--primary); color: white; border: none; border-radius: 50%; cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: opacity 0.3s, transform 0.3s; z-index: 999; }
-        #back-to-top:hover { background-color: var(--primary-dark); }
-        #back-to-top.show { display: flex; }
-
+        /* --- Tutorial Styles --- */
+        #tutorial-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Let clicks go through to the elements below */
+        }
+        #tutorial-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+        #tutorial-highlight-box {
+            position: absolute;
+            border-radius: 8px;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7);
+            transition: all 0.4s ease-in-out;
+            pointer-events: none; /* Pass clicks to the element underneath */
+        }
+        #tutorial-overlay.show #tutorial-highlight-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            animation: pulse-highlight 2s infinite ease-in-out;
+        }
+        #tutorial-step-box {
+            position: absolute;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: var(--space-lg);
+            border-radius: var(--border-radius);
+            max-width: 350px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.4s ease-in-out;
+            z-index: 2001; /* Above the shadow */
+            pointer-events: auto; /* Make the box itself clickable */
+        }
+        #tutorial-step-box.mobile-view {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 100vw;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #tutorial-overlay.show #tutorial-step-box.mobile-view {
+            transform: translateY(0);
+        }
+        #tutorial-step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+            color: var(--primary);
+        }
+        #tutorial-step-content {
+            margin-bottom: var(--space-lg);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        #tutorial-step-content ul {
+            text-align: left;
+            padding-left: 1.2em;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9em;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+         #tutorial-step-content li i {
+            width: 1.2em;
+            color: var(--primary);
+            opacity: 0.8;
+         }
+        .tutorial-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tutorial-nav button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .tutorial-nav button:hover {
+            background-color: var(--primary-dark);
+        }
+        .tutorial-nav button#tutorial-end-btn {
+            background-color: transparent;
+            color: var(--text-tertiary);
+        }
+        .tutorial-nav button#tutorial-end-btn:hover {
+            color: var(--danger);
+            background: none;
+        }
+        
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-highlight {
+            0% { box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.8); }
+            50% { box-shadow: 0 0 0 7px rgba(var(--primary-rgb), 0.2); }
+            100% { box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.8); }
+        }
 
         /* --- Viewer Full-screen mode --- */
         body.viewer-active footer,
         body.viewer-active #breadcrumb-nav,
-        body.viewer-active #back-to-top,
         body.viewer-active .selection-container,
-        body.viewer-active .search-results-container {
+        body.viewer-active .search-results-container,
+        body.viewer-active header {
             display: none !important;
         }
 
         body.viewer-active main {
             padding: 0;
-            display: contents;
+            position: fixed; /* Keep main fixed to prevent body scrolling */
+            inset: 0;
         }
         
         body.viewer-active .viewer-container {
             max-width: none;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.viewer-active #viewer-header,
+        body.viewer-active #header-hotspot,
+        body.viewer-active #settings-hotspot {
+            display: flex; /* Use flex for header to align items */
+        }
+        
+        body.viewer-active #header-hotspot,
+        body.viewer-active #settings-hotspot {
+            display: block; /* Use block for hotspots */
         }
         
         body.viewer-active #viewer-title {
-            padding: var(--space-md) var(--space-lg);
+            padding: 0;
             margin: 0;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: none;
             flex-shrink: 0;
         }
         
@@ -630,7 +880,8 @@
                 font-size: 93.75%; /* 15px */
             }
             
-            #pdf-render-area.pageless {
+            #pdf-render-area.pageless,
+            #text-mode-content {
                 padding: var(--space-md);
             }
             
@@ -677,11 +928,6 @@
             footer {
                 padding: var(--space-sm) 0;
             }
-
-            #back-to-top {
-                bottom: 1rem;
-                right: 1rem;
-            }
         }
         
         @media (max-width: 480px) {
@@ -710,28 +956,27 @@
                 min-height: 5.625rem; /* 90px */
             }
             
-            #pdf-viewer-controls {
-                gap: var(--space-xs);
-                padding: var(--space-xs);
-                width: calc(100% - 1rem); /* Add some horizontal margin */
-                justify-content: space-around; /* Distribute items more evenly */
-                bottom: 0.5rem;
-            }
-            #pdf-viewer-controls button {
-                width: 2.5rem; /* 40px, better touch target */
-                height: 2.5rem;
-                font-size: 1rem;
-            }
-            #pdf-page-num {
-                width: 3em;
-            }
-            #pdf-viewer-controls .divider {
-                margin: 0 var(--space-xs);
-            }
              #pdf-settings-panel {
                 width: 280px;
                 max-width: 95vw;
             }
+            .back-to-top-btn {
+                bottom: 1rem;
+                right: 1rem;
+                width: 2.75rem;
+                height: 2.75rem;
+            }
+            .swipe-toast {
+                bottom: 4.5rem;
+                left: 1rem;
+                right: 1rem;
+            }
+             #viewer-header {
+                padding: 0 var(--space-sm);
+            }
+             #viewer-header .page-title {
+                 font-size: 1.1rem;
+             }
         }
     </style>
 </head>
@@ -746,17 +991,9 @@
                 <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png" alt="College Logo" class="logo">
                 <h1 class="header-title">Nursing Reviewers</h1>
             </a>
-            <div class="theme-switch-wrapper">
-                <button id="check-updates-btn" title="Check for Updates" aria-label="Check for new content">
-                    <i class="fas fa-sync-alt"></i>
-                </button>
-                <label class="theme-switch" for="theme-checkbox">
-                    <input type="checkbox" id="theme-checkbox" />
-                    <div class="slider">
-                         <i class="fas fa-moon"></i>
-                         <i class="fas fa-sun"></i>
-                    </div>
-                </label>
+            <div class="header-actions">
+                <button id="header-theme-btn" title="Toggle Theme" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+                <button id="header-update-btn" title="Check for Updates" aria-label="Check for Updates"><i class="fas fa-sync-alt"></i></button>
             </div>
         </div>
     </header>
@@ -781,26 +1018,20 @@
         </div>
 
         <div class="page-container viewer-container" id="viewer-container">
-            <h2 class="page-title" id="viewer-title"></h2>
+            <div id="viewer-header">
+                <h2 class="page-title" id="viewer-title"></h2>
+                <div id="viewer-actions">
+                    <button id="viewer-theme-btn" class="viewer-action-btn" title="Toggle Theme" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
+                    
+                    <!-- Text Mode Controls -->
+                    <button id="viewer-text-mode-back-btn" class="viewer-action-btn" title="Back to PDF View" aria-label="Back to PDF View" data-mode="text"><i class="fas fa-arrow-left"></i></button>
+                </div>
+            </div>
+            <div id="header-hotspot" title="Show Header" aria-label="Show Header"></div>
             <div class="content-wrapper" id="content-wrapper">
                 <div id="pdf-render-area"></div>
-
-                <div id="pdf-viewer-controls" class="hidden">
-                    <button id="pdf-prev" title="Previous Page" aria-label="Previous Page"><i class="fas fa-arrow-left"></i></button>
-                    <div class="page-indicator">
-                        <input type="number" id="pdf-page-num" min="1" aria-label="Current Page">
-                        <span>/</span>
-                        <span id="pdf-page-count">0</span>
-                    </div>
-                    <button id="pdf-next" title="Next Page" aria-label="Next Page"><i class="fas fa-arrow-right"></i></button>
-                    <div class="divider"></div>
-                    <button id="pdf-zoom-out" title="Zoom Out" aria-label="Zoom Out"><i class="fas fa-search-minus"></i></button>
-                    <span id="pdf-zoom-level">100%</span>
-                    <button id="pdf-zoom-in" title="Zoom In" aria-label="Zoom In"><i class="fas fa-search-plus"></i></button>
-                    <div class="divider"></div>
-                    <button id="pdf-download" title="Download PDF" aria-label="Download PDF"><i class="fas fa-download"></i></button>
-                    <button id="pdf-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen"><i class="fas fa-expand"></i></button>
-                    <button id="pdf-settings-btn" title="View Settings" aria-label="View Settings"><i class="fas fa-cog"></i></button>
+                <div id="text-mode-area">
+                    <div id="text-mode-content"></div>
                 </div>
 
                 <div id="pdf-loader" class="viewer-state-overlay">
@@ -809,7 +1040,13 @@
                 </div>
                 <div id="pdf-error" class="viewer-state-overlay"></div>
             </div>
-            <button class="back-button" id="back-button">Back to Selection</button>
+            <div id="settings-hotspot" title="Open Settings" aria-label="Open Settings Panel"></div>
+            <div id="swipe-toast" class="swipe-toast">
+                <i class="fas fa-info-circle"></i>
+                <span><b>Pro Tip:</b> Tap the top edge to show the header, or tap the right edge to open settings.</span>
+                <button id="close-swipe-toast-btn" title="Dismiss" aria-label="Dismiss">&times;</button>
+            </div>
+            <button id="back-to-top-btn" class="back-to-top-btn" title="Scroll to Top" aria-label="Scroll to Top"><i class="fas fa-arrow-up"></i></button>
         </div>
 
         <div id="settings-panel-overlay"></div>
@@ -821,6 +1058,25 @@
             <div class="settings-content">
                 <div class="setting-item">
                     <div class="setting-label-group">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        <label for="reset-tutorial-btn">Tutorial</label>
+                    </div>
+                    <div class="setting-control-group">
+                       <button id="reset-tutorial-btn" title="Show Tutorial Again" aria-label="Show Tutorial Again">Show Again</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <i class="fas fa-question-circle"></i>
+                        <label for="show-settings-tip-toggle">Show Settings Tip</label>
+                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="show-settings-tip-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
                         <i class="fas fa-moon"></i>
                         <label for="invert-colors-toggle">Dark Mode</label>
                     </div>
@@ -829,7 +1085,7 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
-                <div class="setting-item">
+                <div class="setting-item" data-text-mode-disabled>
                     <div class="setting-label-group">
                          <i class="fas fa-stream"></i>
                          <label for="pageless-toggle">Pageless</label>
@@ -841,6 +1097,26 @@
                 </div>
                 <div class="setting-item">
                     <div class="setting-label-group">
+                        <i class="fas fa-align-left"></i>
+                        <label for="text-mode-toggle">Text Mode</label>
+                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="text-mode-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
+                </div>
+                <div class="setting-item column" data-text-mode-only>
+                    <div class="setting-label-group">
+                        <i class="fas fa-search-plus"></i>
+                        <label for="text-zoom-slider">Text Size</label>
+                    </div>
+                    <div class="setting-control-group wide">
+                        <input type="range" id="text-zoom-slider" min="50" max="250" step="10" value="100">
+                        <span id="text-zoom-slider-value">100%</span>
+                    </div>
+                </div>
+                <div class="setting-item" data-text-mode-disabled>
+                    <div class="setting-label-group">
                         <i class="fas fa-arrows-alt-h"></i>
                         <label for="scroll-lock-toggle">Lock Horizontal Scroll</label>
                     </div>
@@ -849,7 +1125,7 @@
                         <span class="qol-slider"></span>
                     </label>
                 </div>
-                 <div class="setting-item column">
+                 <div class="setting-item column" data-text-mode-disabled>
                     <div class="setting-label-group">
                         <i class="fas fa-search-plus"></i>
                         <label for="zoom-slider">Zoom</label>
@@ -859,7 +1135,7 @@
                         <span id="zoom-slider-value">100%</span>
                     </div>
                 </div>
-                <div class="setting-item">
+                <div class="setting-item" data-text-mode-disabled>
                     <div class="setting-label-group">
                         <i class="fas fa-sync-alt"></i>
                         <label>Rotate</label>
@@ -867,6 +1143,33 @@
                     <div class="setting-control-group">
                        <button id="pdf-rotate-ccw" title="Rotate Counter-Clockwise" aria-label="Rotate Counter-Clockwise"><i class="fas fa-undo"></i></button>
                        <button id="pdf-rotate-cw" title="Rotate Clockwise" aria-label="Rotate Clockwise"><i class="fas fa-redo"></i></button>
+                    </div>
+                </div>
+                <div class="setting-item" data-text-mode-disabled>
+                    <div class="setting-label-group">
+                        <i class="fas fa-download"></i>
+                        <label for="settings-download-btn">Download</label>
+                    </div>
+                    <div class="setting-control-group">
+                       <button id="settings-download-btn" title="Download PDF" aria-label="Download PDF">Download File</button>
+                    </div>
+                </div>
+                 <div class="setting-item" data-text-mode-disabled>
+                    <div class="setting-label-group">
+                        <i class="fas fa-expand"></i>
+                        <label for="viewer-fullscreen-btn">Fullscreen</label>
+                    </div>
+                    <div class="setting-control-group">
+                       <button id="viewer-fullscreen-btn" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">Toggle</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div class="setting-label-group">
+                        <i class="fas fa-arrow-left"></i>
+                        <label for="settings-back-btn">Exit Viewer</label>
+                    </div>
+                    <div class="setting-control-group">
+                       <button id="settings-back-btn" title="Back to Selection" aria-label="Back to Selection">Back to Selection</button>
                     </div>
                 </div>
             </div>
@@ -882,7 +1185,18 @@
     </main>
     <footer><p>&copy; <span id="current-year"></span> Olivarez College Tagaytay - Nursing Department</p></footer>
 
-    <button id="back-to-top" title="Go to top" aria-label="Go to top"><i class="fas fa-arrow-up"></i></button>
+    <div id="tutorial-overlay">
+        <div id="tutorial-highlight-box"></div>
+        <div id="tutorial-step-box">
+            <h3 id="tutorial-step-title"></h3>
+            <div id="tutorial-step-content"></div>
+            <div class="tutorial-nav">
+                <button id="tutorial-end-btn">End Tour</button>
+                <button id="tutorial-next-btn">Next</button>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module">
         import * as pdfjsLib from 'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.4.168/build/pdf.mjs';
@@ -890,7 +1204,8 @@
 
         const App = {
             // --- Constants ---
-            GAS_WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbyy_G1vRDF2aZJDcIPS0Q3aQQvCJV0BkQ1U9tM3uAyDbuB83YiyIRB1Y8uqLD2wo77xvQ/exec',
+            GAS_WEB_APP_URL: 'https://script.google.com/macros/s/AKfycby1hmtZcjy7V0PE7crqICqYUXH94JZQyts1DEz3bUFwAUwNLJh9cMWKWweSNDvLoA30Tg/exec',
+            GEMINI_FORMATTER_URL: 'https://script.google.com/macros/s/AKfycbw6KuvCC7B7MtB6CHVbMwYslUlX7GdQMTxz6TeGxPQ4WlQgVs3qT1AunN_wOc6LvDdy/exec',
             CACHE_KEY: 'nursingDataCache',
             CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
 
@@ -903,8 +1218,9 @@
                 error: null,
                 searchTerm: '',
                 lastScrollY: 0,
+                headerHideTimer: null,
             },
-            
+
             pdf: {
                 doc: null,
                 currentPage: 1,
@@ -917,14 +1233,26 @@
                 downloadUrl: null,
                 isZooming: false,
                 lastScrollTop: 0,
+                isTextMode: false,
+                formattedTextCache: {}, // In-memory cache for formatted text by fileId
+                isFormattingText: false,
+                textModeLastScrollTop: 0,
+                textModeZoom: 1.0,
+            },
+
+            tutorial: {
+                isActive: false,
+                step: 0,
+                steps: [],
             },
             
             // --- Cached Elements ---
             elements: {},
 
             // --- Core Methods ---
-            init() {
+            init: function() {
                 this.cacheDOMElements();
+                this.defineTutorialSteps();
                 this.initTheme();
                 this.initViewerSettings();
                 this.bindEvents();
@@ -933,13 +1261,17 @@
                 this.elements.currentYear.textContent = new Date().getFullYear();
             },
 
-            cacheDOMElements() {
+            cacheDOMElements: function() {
                 this.elements = {
                     header: document.querySelector('header'),
                     loaderOverlay: document.getElementById('initial-loader-overlay'),
                     homeLink: document.getElementById('home-link'),
                     currentYear: document.getElementById('current-year'),
                     appError: document.getElementById('app-error'),
+                    // Header Actions
+                    headerThemeBtn: document.getElementById('header-theme-btn'),
+                    headerUpdateBtn: document.getElementById('header-update-btn'),
+                    headerThemeIcon: document.querySelector('#header-theme-btn i'),
                     // Page Containers
                     selectionContainer: document.getElementById('selection-container'),
                     viewerContainer: document.getElementById('viewer-container'),
@@ -956,82 +1288,125 @@
                         topic: document.getElementById('topic-grid'),
                     },
                     // Viewer Page
+                    viewerHeader: document.getElementById('viewer-header'),
+                    headerHotspot: document.getElementById('header-hotspot'),
                     viewerTitle: document.getElementById('viewer-title'),
+                    viewerActions: document.getElementById('viewer-actions'),
                     contentWrapper: document.getElementById('content-wrapper'),
-                    backButton: document.getElementById('back-button'),
+                    backToTopBtn: document.getElementById('back-to-top-btn'),
+                    swipeToast: document.getElementById('swipe-toast'),
+                    closeSwipeToastBtn: document.getElementById('close-swipe-toast-btn'),
                     // Search
                     searchForm: document.getElementById('search-form'),
                     searchInput: document.getElementById('search-input'),
                     clearSearchBtn: document.getElementById('clear-search-btn'),
                     searchResultsList: document.getElementById('search-results-list'),
                     searchResultsTitle: document.getElementById('search-results-title'),
-                    // Back to Top
-                    backToTopButton: document.getElementById('back-to-top'),
-                    // Theme & Updates
-                    themeToggle: document.getElementById('theme-checkbox'),
-                    updatesBtn: document.getElementById('check-updates-btn'),
                     // PDF Viewer
-                    pdfControls: document.getElementById('pdf-viewer-controls'),
                     pdfRenderArea: document.getElementById('pdf-render-area'),
                     pdfLoader: document.getElementById('pdf-loader'),
                     pdfError: document.getElementById('pdf-error'),
-                    pdfPrevBtn: document.getElementById('pdf-prev'),
-                    pdfNextBtn: document.getElementById('pdf-next'),
-                    pdfPageNumInput: document.getElementById('pdf-page-num'),
-                    pdfPageCount: document.getElementById('pdf-page-count'),
-                    pdfZoomInBtn: document.getElementById('pdf-zoom-in'),
-                    pdfZoomOutBtn: document.getElementById('pdf-zoom-out'),
-                    pdfZoomLevel: document.getElementById('pdf-zoom-level'),
-                    pdfDownloadBtn: document.getElementById('pdf-download'),
-                    pdfFullscreenBtn: document.getElementById('pdf-fullscreen'),
-                    pdfSettingsBtn: document.getElementById('pdf-settings-btn'),
+                    // Viewer Actions
+                    viewerThemeBtn: document.getElementById('viewer-theme-btn'),
+                    viewerThemeIcon: document.querySelector('#viewer-theme-btn i'),
+                    viewerTextModeBackBtn: document.getElementById('viewer-text-mode-back-btn'),
+                    // Text Mode
+                    textModeArea: document.getElementById('text-mode-area'),
+                    textModeContent: document.getElementById('text-mode-content'),
+                    textZoomSlider: document.getElementById('text-zoom-slider'),
+                    textZoomSliderValue: document.getElementById('text-zoom-slider-value'),
                     // PDF Settings Panel
+                    settingsHotspot: document.getElementById('settings-hotspot'),
                     settingsPanel: document.getElementById('pdf-settings-panel'),
                     settingsOverlay: document.getElementById('settings-panel-overlay'),
                     closeSettingsBtn: document.getElementById('close-settings-btn'),
+                    showSwipeTipToggle: document.getElementById('show-settings-tip-toggle'),
+                    resetTutorialBtn: document.getElementById('reset-tutorial-btn'),
                     invertColorsToggle: document.getElementById('invert-colors-toggle'),
                     pagelessToggle: document.getElementById('pageless-toggle'),
+                    textModeToggle: document.getElementById('text-mode-toggle'),
                     scrollLockToggle: document.getElementById('scroll-lock-toggle'),
                     rotateCwBtn: document.getElementById('pdf-rotate-cw'),
                     rotateCcwBtn: document.getElementById('pdf-rotate-ccw'),
                     zoomSlider: document.getElementById('zoom-slider'),
                     zoomSliderValue: document.getElementById('zoom-slider-value'),
+                    viewerFullscreenBtn: document.getElementById('viewer-fullscreen-btn'),
+                    settingsDownloadBtn: document.getElementById('settings-download-btn'),
+                    settingsBackBtn: document.getElementById('settings-back-btn'),
+                    // Tutorial Elements
+                    tutorialOverlay: document.getElementById('tutorial-overlay'),
+                    tutorialHighlightBox: document.getElementById('tutorial-highlight-box'),
+                    tutorialStepBox: document.getElementById('tutorial-step-box'),
+                    tutorialStepTitle: document.getElementById('tutorial-step-title'),
+                    tutorialStepContent: document.getElementById('tutorial-step-content'),
+                    tutorialNextBtn: document.getElementById('tutorial-next-btn'),
+                    tutorialEndBtn: document.getElementById('tutorial-end-btn'),
                 };
             },
 
-            bindEvents() {
+            bindEvents: function() {
+                const themeHandler = () => {
+                    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                    let nextTheme;
+                    if (currentTheme === 'light') nextTheme = 'dark';
+                    else if (currentTheme === 'dark') nextTheme = 'night';
+                    else nextTheme = 'light';
+                    this.setTheme(nextTheme);
+                };
+
                 this.elements.homeLink?.addEventListener('click', (e) => { e.preventDefault(); this.resetToHome(); });
-                this.elements.backButton?.addEventListener('click', () => this.navigateBack());
                 this.elements.searchForm?.addEventListener('submit', (e) => { e.preventDefault(); this.handleSearch(this.elements.searchInput.value); });
                 this.elements.clearSearchBtn?.addEventListener('click', () => { this.elements.searchInput.value = ''; this.handleSearch(''); this.elements.searchInput?.focus(); });
-                window.addEventListener('scroll', () => this.handleScroll(), { passive: true });
-                this.elements.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-                this.elements.themeToggle?.addEventListener('change', (e) => this.setTheme(e.target.checked ? 'dark' : 'light'));
-                this.elements.updatesBtn?.addEventListener('click', () => { localStorage.removeItem(this.CACHE_KEY); location.reload(true); });
-
-                // PDF Viewer Events
-                this.elements.pdfRenderArea?.addEventListener('scroll', () => this.handlePdfScroll(), { passive: true });
-                this.elements.pdfPrevBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage - 1));
-                this.elements.pdfNextBtn?.addEventListener('click', () => this.changePdfPage(this.pdf.currentPage + 1));
-                this.elements.pdfZoomInBtn?.addEventListener('click', () => this.changePdfZoom(0.2));
-                this.elements.pdfZoomOutBtn?.addEventListener('click', () => this.changePdfZoom(-0.2));
-                this.elements.pdfDownloadBtn?.addEventListener('click', () => window.open(this.pdf.downloadUrl, '_blank'));
-                this.elements.pdfFullscreenBtn?.addEventListener('click', () => this.togglePdfFullscreen());
-                this.elements.pdfPageNumInput?.addEventListener('change', (e) => this.changePdfPage(parseInt(e.target.value, 10)));
                 
+                // Header Events
+                this.elements.headerUpdateBtn?.addEventListener('click', () => { localStorage.removeItem(this.CACHE_KEY); location.reload(true); });
+                this.elements.headerThemeBtn?.addEventListener('click', themeHandler);
+                this.elements.viewerThemeBtn?.addEventListener('click', themeHandler);
+
+                // Viewer Events
+                this.elements.backToTopBtn?.addEventListener('click', () => this.scrollToTop());
+                this.elements.pdfRenderArea?.addEventListener('scroll', () => this.handlePdfScroll());
+                this.elements.textModeArea?.addEventListener('scroll', () => this.handleTextModeScroll());
+                
+                // Viewer Actions
+                this.elements.viewerTextModeBackBtn?.addEventListener('click', () => this.toggleTextMode(false));
+                
+                // Header Controls
+                this.elements.headerHotspot?.addEventListener('click', () => this.showHeader());
+                this.elements.viewerHeader?.addEventListener('click', (e) => {
+                    if (this.tutorial.isActive) return;
+                    clearTimeout(this.state.headerHideTimer);
+                    this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000);
+                });
+                this.elements.viewerHeader?.addEventListener('mouseenter', () => { if (this.tutorial.isActive) return; clearTimeout(this.state.headerHideTimer); });
+                this.elements.viewerHeader?.addEventListener('mouseleave', () => { if (this.tutorial.isActive) return; this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000); });
+
                 // Settings Panel Events
-                this.elements.pdfSettingsBtn?.addEventListener('click', () => this.toggleSettingsPanel(true));
+                this.elements.settingsHotspot?.addEventListener('click', () => this.toggleSettingsPanel(true));
                 this.elements.closeSettingsBtn?.addEventListener('click', () => this.toggleSettingsPanel(false));
                 this.elements.settingsOverlay?.addEventListener('click', () => this.toggleSettingsPanel(false));
+                this.elements.showSwipeTipToggle?.addEventListener('change', (e) => this.setShowSwipeTip(e.target.checked));
+                this.elements.resetTutorialBtn?.addEventListener('click', () => this.resetTutorial());
                 this.elements.invertColorsToggle?.addEventListener('change', (e) => this.toggleInvertColors(e.target.checked));
                 this.elements.pagelessToggle?.addEventListener('change', (e) => this.togglePagelessMode(e.target.checked));
+                this.elements.textModeToggle?.addEventListener('change', (e) => this.toggleTextMode(e.target.checked));
                 this.elements.scrollLockToggle?.addEventListener('change', (e) => this.toggleScrollLock(e.target.checked));
                 this.elements.rotateCwBtn?.addEventListener('click', () => this.rotatePdf(90));
                 this.elements.rotateCcwBtn?.addEventListener('click', () => this.rotatePdf(-90));
                 this.elements.zoomSlider?.addEventListener('input', (e) => this.changePdfZoom(parseFloat(e.target.value) / 100, true));
+                this.elements.textZoomSlider?.addEventListener('input', (e) => this.changeTextModeZoom(parseFloat(e.target.value)));
+                this.elements.viewerFullscreenBtn?.addEventListener('click', () => this.togglePdfFullscreen());
+                this.elements.settingsDownloadBtn?.addEventListener('click', () => window.open(this.pdf.downloadUrl, '_blank'));
+                this.elements.settingsBackBtn?.addEventListener('click', () => this.navigateBack());
+
+                // Tip & Tutorial Events
+                this.elements.closeSwipeToastBtn?.addEventListener('click', () => this.hideSwipeTip());
+                this.elements.tutorialNextBtn?.addEventListener('click', () => this.nextTutorialStep());
+                this.elements.tutorialEndBtn?.addEventListener('click', () => this.endTutorial());
+
             },
 
-            fetchData() {
+            fetchData: function() {
                 const cached = this.getCache();
                 if (cached) {
                     this.state.transesData = cached;
@@ -1044,7 +1419,7 @@
                 }
             },
 
-            fetchAndCache() {
+            fetchAndCache: function() {
                 if (this.GAS_WEB_APP_URL.includes('REPLACE_WITH')) {
                     this.state.isLoading = false;
                     this.state.error = 'Configuration needed: `GAS_WEB_APP_URL` is not set.';
@@ -1057,39 +1432,69 @@
                     .catch(error => { this.state.isLoading = false; this.state.error = `Failed to load reviewer data. Please check your internet connection. Details: ${error.message}`; this.state.currentView = 'error'; this.render(); });
             },
             
-            fetchAndCacheInBackground() {
+            fetchAndCacheInBackground: function() {
                  if (this.GAS_WEB_APP_URL.includes('REPLACE_WITH')) return;
                  fetch(this.GAS_WEB_APP_URL).then(res => res.json()).then(data => { if (data && !data.error) this.setCache(data); }).catch(console.error);
             },
 
-            setCache(data) { localStorage.setItem(this.CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data })); },
-            getCache() { const c = localStorage.getItem(this.CACHE_KEY); if (!c) return null; const { timestamp, data } = JSON.parse(c); if (Date.now() - timestamp > this.CACHE_DURATION_MS) { localStorage.removeItem(this.CACHE_KEY); return null; } return data; },
+            setCache: function(data) { localStorage.setItem(this.CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data })); },
+            getCache: function() { const c = localStorage.getItem(this.CACHE_KEY); if (!c) return null; const { timestamp, data } = JSON.parse(c); if (Date.now() - timestamp > this.CACHE_DURATION_MS) { localStorage.removeItem(this.CACHE_KEY); return null; } return data; },
 
-            initTheme() { const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); this.setTheme(savedTheme); },
-            setTheme(theme) {
+            initTheme: function() { 
+                const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); 
+                this.setTheme(savedTheme); 
+            },
+            setTheme: function(theme) {
                 document.documentElement.setAttribute('data-theme', theme);
                 localStorage.setItem('theme', theme);
-                if (this.elements.themeToggle) this.elements.themeToggle.checked = theme === 'dark';
+                
+                let nextIcon = 'moon'; // Default for light theme
+                if (theme === 'dark') nextIcon = 'star'; // For night theme
+                if (theme === 'night') nextIcon = 'sun'; // For light theme
+                
+                if (this.elements.headerThemeIcon) {
+                    this.elements.headerThemeIcon.className = `fas fa-${nextIcon}`;
+                }
+                if (this.elements.viewerThemeIcon) {
+                    this.elements.viewerThemeIcon.className = `fas fa-${nextIcon}`;
+                }
 
                 // Sync PDF viewer's dark mode setting with the app's theme
-                const isDark = theme === 'dark';
+                const isDark = theme === 'dark' || theme === 'night';
                 if (this.elements.invertColorsToggle) {
                     this.elements.invertColorsToggle.checked = isDark;
                     this.toggleInvertColors(isDark);
                 }
             },
 
-            resetToHome() { this.cleanupPdfViewer(); this.state.selection = { year: null, semester: null, term: null, subject: null, topic: null }; this.state.currentView = 'selection'; if (this.elements.searchInput) this.elements.searchInput.value = ''; this.state.searchTerm = ''; this.render(); },
-            navigateTo(level, item) { this.state.selection[level] = item; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const i = levels.indexOf(level); for (let j = i + 1; j < levels.length; j++) { this.state.selection[levels[j]] = null; } this.state.currentView = 'selection'; this.render(); },
-            navigateBack() { this.cleanupPdfViewer(); if (this.state.currentView === 'viewer') { this.state.currentView = 'selection'; this.render(); return; } const levels = ['topic', 'subject', 'term', 'semester', 'year']; for (const level of levels) { if (this.state.selection[level]) { this.state.selection[level] = null; this.state.currentView = 'selection'; this.render(); return; } } this.resetToHome(); },
-            displayTopic(path) { this.state.selection = path; this.state.currentView = 'viewer'; this.render(); },
-            handleSearch(term) { this.state.searchTerm = term.trim(); if (this.elements.clearSearchBtn) this.elements.clearSearchBtn.style.display = this.state.searchTerm ? 'block' : 'none'; this.state.currentView = this.state.searchTerm ? 'search' : 'selection'; this.render(); },
+            resetToHome: function() { this.cleanupPdfViewer(); this.state.selection = { year: null, semester: null, term: null, subject: null, topic: null }; this.state.currentView = 'selection'; if (this.elements.searchInput) this.elements.searchInput.value = ''; this.state.searchTerm = ''; this.render(); },
+            navigateTo: function(level, item) { this.state.selection[level] = item; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const i = levels.indexOf(level); for (let j = i + 1; j < levels.length; j++) { this.state.selection[levels[j]] = null; } this.state.currentView = 'selection'; this.render(); },
+            navigateBack: function() {
+                this.cleanupPdfViewer();
+                if (this.state.currentView === 'viewer') {
+                    this.state.selection.topic = null; // Fix: Go back to the topic selection list
+                    this.state.currentView = 'selection';
+                    this.render();
+                    return;
+                }
+                const levels = ['topic', 'subject', 'term', 'semester', 'year'];
+                for (const level of levels) {
+                    if (this.state.selection[level]) {
+                        this.state.selection[level] = null;
+                        this.state.currentView = 'selection';
+                        this.render();
+                        return;
+                    }
+                }
+                this.resetToHome();
+            },
+            displayTopic: function(path) { this.state.selection = path; this.state.currentView = 'viewer'; this.render(); },
+            handleSearch: function(term) { this.state.searchTerm = term.trim(); if (this.elements.clearSearchBtn) this.elements.clearSearchBtn.style.display = this.state.searchTerm ? 'block' : 'none'; this.state.currentView = this.state.searchTerm ? 'search' : 'selection'; this.render(); },
             
-            render() {
+            render: function() {
                 const { currentView, isLoading, error } = this.state;
                 document.body.classList.toggle('viewer-active', currentView === 'viewer');
-                if(currentView !== 'viewer') this.elements.header?.classList.remove('header--hidden');
-
+                
                 if (isLoading) { this.elements.loaderOverlay.style.display = 'flex'; return; }
                 if (this.elements.loaderOverlay.style.opacity !== '0') { this.elements.loaderOverlay.style.opacity = '0'; setTimeout(() => { this.elements.loaderOverlay.style.display = 'none'; }, 500); }
                 
@@ -1106,17 +1511,59 @@
                     else if (currentView === 'search') { this.elements.searchResultsContainer?.classList.add('show'); this.renderSearchResults(); }
                 }
             },
-            renderBreadcrumbs() { const { selection } = this.state; let html = '<a href="#" data-level="home">Home</a>'; const levels = ['year', 'semester', 'term', 'subject']; levels.forEach(level => { if (selection[level]) html += `<span>/</span><a href="#" data-level="${level}">${selection[level]}</a>`; }); if (selection.topic && this.state.currentView === 'viewer') { html += `<span>/</span>${selection.topic}`; } this.elements.breadcrumbNav.innerHTML = html; this.elements.breadcrumbNav.querySelectorAll('a').forEach(link => link.addEventListener('click', e => { e.preventDefault(); const level = e.target.dataset.level; if (level === 'home') return this.resetToHome(); const tempSelection = {}; for (const l of levels) { if (this.state.selection[l]) tempSelection[l] = this.state.selection[l]; if (l === level) break; } this.state.selection = tempSelection; this.state.currentView = 'selection'; this.render(); })); },
-            renderSelectionPage() { const { selection, transesData } = this.state; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const icons = { year: 'fa-calendar-days', semester: 'fa-layer-group', term: 'fa-tasks', subject: 'fa-book-open', topic: 'fa-file-alt' }; let currentLevel = 'year'; let currentData = transesData; let title = '<i class="fas fa-school"></i> Select Year Level'; for (const level of levels) { if (selection[level]) { currentData = currentData[selection[level]]; currentLevel = levels[levels.indexOf(level) + 1]; } else break; } const titleMap = { semester: `<i class="fas fa-layer-group"></i> Select Semester`, term: `<i class="fas fa-tasks"></i> Select Term`, subject: `<i class="fas fa-book-open"></i> Select Subject`, topic: `<i class="fas fa-file-alt"></i> Select Topic` }; if(currentLevel !== 'year' && titleMap[currentLevel]) title = titleMap[currentLevel]; this.elements.selectionTitle.innerHTML = title; Object.values(this.elements.grids).forEach(grid => grid.classList.add('hidden')); const currentGrid = this.elements.grids[currentLevel]; if (!currentGrid) return; currentGrid.innerHTML = ''; currentGrid.classList.remove('hidden'); if (!currentData || Object.keys(currentData).length === 0) { currentGrid.innerHTML = `<p>No items found for this selection.</p>`; return; } Object.keys(currentData).sort().forEach(item => { const card = document.createElement('button'); card.className = 'card'; card.innerHTML = `<i class="fas ${icons[currentLevel]}"></i><span>${item}</span>`; card.onclick = () => { if (currentLevel === 'topic') this.displayTopic({ ...selection, topic: item }); else this.navigateTo(currentLevel, item); }; currentGrid.appendChild(card); }); },
-            renderViewerPage() { this.elements.viewerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${this.state.selection.topic}`; this.elements.backButton?.classList.add('show'); this.loadPdf(); },
-            renderSearchResults() { const term = this.state.searchTerm.toLowerCase(); this.elements.searchResultsTitle.innerHTML = `<i class="fas fa-search"></i> Results for "${this.state.searchTerm}"`; if (!this.elements.searchResultsList) return; this.elements.searchResultsList.innerHTML = ''; const results = []; const data = this.state.transesData; for (const year in data) for (const semester in data[year]) for (const t in data[year][semester]) for (const subject in data[year][semester][t]) for (const topic in data[year][semester][t][subject]) if (topic.toLowerCase().includes(term) || subject.toLowerCase().includes(term)) results.push({ path: { year, semester, term: t, subject, topic } }); if(results.length === 0) { this.elements.searchResultsList.innerHTML = `<li>No topics found matching your search.</li>`; return; } results.forEach(result => { const li = document.createElement('li'); li.className = 'search-result-item'; const { year, semester, term, subject, topic } = result.path; const pathString = `${year} &gt; ${semester} &gt; ${term} &gt; ${subject}`; li.innerHTML = `<a href="#"><div class="search-result-topic">${topic}</div><div class="search-result-path">${pathString}</div></a>`; li.querySelector('a')?.addEventListener('click', (e) => { e.preventDefault(); this.displayTopic(result.path); }); this.elements.searchResultsList.appendChild(li); }); },
+            renderBreadcrumbs: function() { const { selection } = this.state; let html = '<a href="#" data-level="home">Home</a>'; const levels = ['year', 'semester', 'term', 'subject']; levels.forEach(level => { if (selection[level]) html += `<span>/</span><a href="#" data-level="${level}">${selection[level]}</a>`; }); if (selection.topic && this.state.currentView === 'viewer') { html += `<span>/</span>${selection.topic}`; } this.elements.breadcrumbNav.innerHTML = html; this.elements.breadcrumbNav.querySelectorAll('a').forEach(link => link.addEventListener('click', e => { e.preventDefault(); const level = e.target.dataset.level; if (level === 'home') return this.resetToHome(); const tempSelection = {}; for (const l of levels) { if (this.state.selection[l]) tempSelection[l] = this.state.selection[l]; if (l === level) break; } this.state.selection = tempSelection; this.state.currentView = 'selection'; this.render(); })); },
+            renderSelectionPage: function() { const { selection, transesData } = this.state; const levels = ['year', 'semester', 'term', 'subject', 'topic']; const icons = { year: 'fa-calendar-days', semester: 'fa-layer-group', term: 'fa-tasks', subject: 'fa-book-open', topic: 'fa-file-alt' }; let currentLevel = 'year'; let currentData = transesData; let title = '<i class="fas fa-school"></i> Select Year Level'; for (const level of levels) { if (selection[level]) { if (currentData[selection[level]]) { currentData = currentData[selection[level]]; currentLevel = levels[levels.indexOf(level) + 1]; } else { break; } } else break; } const titleMap = { semester: `<i class="fas fa-layer-group"></i> Select Semester`, term: `<i class="fas fa-tasks"></i> Select Term`, subject: `<i class="fas fa-book-open"></i> Select Subject`, topic: `<i class="fas fa-file-alt"></i> Select Topic` }; if(currentLevel !== 'year' && titleMap[currentLevel]) title = titleMap[currentLevel]; this.elements.selectionTitle.innerHTML = title; Object.values(this.elements.grids).forEach(grid => grid.classList.add('hidden')); const currentGrid = this.elements.grids[currentLevel]; if (!currentGrid) return; currentGrid.innerHTML = ''; currentGrid.classList.remove('hidden'); if (!currentData || Object.keys(currentData).length === 0) { currentGrid.innerHTML = `<p>No items found for this selection.</p>`; return; } Object.keys(currentData).sort().forEach(item => { const card = document.createElement('button'); card.className = 'card'; card.innerHTML = `<i class="fas ${icons[currentLevel]}"></i><span>${item}</span>`; card.onclick = () => { if (currentLevel === 'topic') this.displayTopic({ ...selection, topic: item }); else this.navigateTo(currentLevel, item); }; currentGrid.appendChild(card); }); },
+            renderViewerPage: function() {
+                 this.elements.viewerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${this.state.selection.topic}`;
+                 this.loadPdf();
+                 this.showSwipeTip();
+                 this.startTutorial(); // Start the tutorial if it hasn't been completed
+            },
+            renderSearchResults: function() { const term = this.state.searchTerm.toLowerCase(); this.elements.searchResultsTitle.innerHTML = `<i class="fas fa-search"></i> Results for "${this.state.searchTerm}"`; if (!this.elements.searchResultsList) return; this.elements.searchResultsList.innerHTML = ''; const results = []; const data = this.state.transesData; for (const year in data) for (const semester in data[year]) for (const t in data[year][semester]) for (const subject in data[year][semester][t]) for (const topic in data[year][semester][t][subject]) if (topic.toLowerCase().includes(term) || subject.toLowerCase().includes(term)) results.push({ path: { year, semester, term: t, subject, topic } }); if(results.length === 0) { this.elements.searchResultsList.innerHTML = `<li>No topics found matching your search.</li>`; return; } results.forEach(result => { const li = document.createElement('li'); li.className = 'search-result-item'; const { year, semester, term, subject, topic } = result.path; const pathString = `${year} &gt; ${semester} &gt; ${term} &gt; ${subject}`; li.innerHTML = `<a href="#"><div class="search-result-topic">${topic}</div><div class="search-result-path">${pathString}</div></a>`; li.querySelector('a')?.addEventListener('click', (e) => { e.preventDefault(); this.displayTopic(result.path); }); this.elements.searchResultsList.appendChild(li); }); },
+
+            // --- Scroll Handlers ---
+            handlePdfScroll: function() {
+                const scrollTop = this.elements.pdfRenderArea.scrollTop;
+                this.elements.backToTopBtn.classList.toggle('show', scrollTop > 500);
+            },
+            handleTextModeScroll: function() {
+                const scrollTop = this.elements.textModeArea.scrollTop;
+                this.elements.backToTopBtn.classList.toggle('show', scrollTop > 500);
+            },
 
             // --- PDF Viewer Methods ---
-            getDirectDriveUrl: (url) => (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url),
-            showViewerState(state, message = '') { this.elements.pdfLoader.classList.remove('show'); this.elements.pdfError.classList.remove('show'); this.elements.pdfControls.classList.add('hidden'); if (state === 'loader') this.elements.pdfLoader.classList.add('show'); else if (state === 'error') { this.elements.pdfError.innerHTML = message; this.elements.pdfError.classList.add('show'); } else if (state === 'content') this.elements.pdfControls.classList.remove('hidden'); },
-            cleanupPdfViewer() { if (this.pdf.doc) { this.pdf.doc.destroy(); } if (this.pdf.observer) { this.pdf.observer.disconnect(); } this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null, isZooming: false, lastScrollTop: 0 }; this.elements.pdfRenderArea.innerHTML = ''; this.elements.pdfControls.classList.add('hidden'); document.body.classList.remove('pdf-fullscreen'); this.elements.viewerTitle?.classList.remove('viewer-title--hidden'); this.toggleSettingsPanel(false); },
+            getDirectDriveUrl: function(url) { return (url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)?.[1] ? `https://drive.google.com/uc?export=download&id=${url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/)[1]}` : url) },
+            showViewerState: function(state, message = '') {
+                this.elements.pdfLoader.classList.remove('show');
+                this.elements.pdfError.classList.remove('show');
+                if (state === 'loader') {
+                    this.elements.pdfLoader.classList.add('show');
+                } else if (state === 'error') {
+                    this.elements.pdfError.innerHTML = message;
+                    this.elements.pdfError.classList.add('show');
+                }
+            },
+            cleanupPdfViewer: function() {
+                if (this.pdf.doc) { this.pdf.doc.destroy(); }
+                if (this.pdf.observer) { this.pdf.observer.disconnect(); }
+                this.pdf = { doc: null, currentPage: 1, totalPages: 0, zoom: 1.0, rotation: 0, baseViewport: null, isRenderingPage: new Set(), observer: null, downloadUrl: null, isZooming: false, lastScrollTop: 0, isTextMode: false, formattedTextCache: {}, isFormattingText: false, textModeLastScrollTop: 0, textModeZoom: 1.0 };
+                this.elements.pdfRenderArea.innerHTML = '';
+                this.elements.textModeContent.innerHTML = '';
+                this.elements.contentWrapper.classList.remove('text-mode-active');
+                this.elements.viewerContainer.classList.remove('text-mode-active');
+                document.body.classList.remove('pdf-fullscreen');
+                this.elements.viewerHeader?.classList.remove('visible');
+                this.elements.backToTopBtn?.classList.remove('show');
+                this.toggleSettingsPanel(false);
+                this.elements.textModeToggle.checked = false;
+                this.elements.textModeContent.style.fontSize = '';
+                this.elements.textZoomSlider.value = 100;
+                this.elements.textZoomSliderValue.textContent = '100%';
+                this.elements.settingsPanel.querySelectorAll('.setting-item').forEach(item => item.style.display = '');
+                this.endTutorial(false); // Force end tutorial on cleanup
+            },
 
-            async _finishPdfSetup(pdfDoc) {
+            _finishPdfSetup: async function(pdfDoc) {
                 this.pdf.doc = pdfDoc;
                 this.pdf.totalPages = pdfDoc.numPages;
 
@@ -1139,7 +1586,7 @@
                 this.updatePdfControls();
             },
 
-            async loadPdf() {
+            loadPdf: async function() {
                 const { year, semester, term, subject, topic } = this.state.selection;
                 const topicData = this.state.transesData?.[year]?.[semester]?.[term]?.[subject]?.[topic];
                 this.cleanupPdfViewer();
@@ -1189,7 +1636,7 @@
             },
             
             // Creates the page containers and placeholders without fetching page data
-            setupPdfPageContainers() {
+            setupPdfPageContainers: function() {
                 this.elements.pdfRenderArea.innerHTML = ''; 
                 const fragment = document.createDocumentFragment();
                 for (let i = 1; i <= this.pdf.totalPages; i++) {
@@ -1207,7 +1654,7 @@
             },
             
             // Instantly resizes all page placeholders and clears old canvases
-            updatePageDimensions() {
+            updatePageDimensions: function() {
                 if (!this.pdf.baseViewport) return;
 
                 const { rotation, zoom, baseViewport } = this.pdf;
@@ -1235,7 +1682,7 @@
                 }
             },
 
-            setupIntersectionObserver() {
+            setupIntersectionObserver: function() {
                 if (this.pdf.observer) this.pdf.observer.disconnect();
                 this.pdf.observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => { 
@@ -1248,7 +1695,7 @@
                 this.elements.pdfRenderArea.querySelectorAll('.pdf-page-container').forEach(el => this.pdf.observer.observe(el));
             },
 
-            updateCurrentPageIndicator(entries) { 
+            updateCurrentPageIndicator: function(entries) { 
                 const visiblePages = entries
                     .filter(e => e.isIntersecting)
                     .map(e => ({ 
@@ -1262,7 +1709,7 @@
                 } 
             },
 
-            async renderPdfPage(pageNum) {
+            renderPdfPage: async function(pageNum) {
                 if (this.pdf.isRenderingPage.has(pageNum) || !this.pdf.doc) return;
                 try {
                     this.pdf.isRenderingPage.add(pageNum);
@@ -1286,10 +1733,6 @@
                     canvas.height = viewport.height; 
                     canvas.width = viewport.width;
                     
-                    // The existing CSS makes the canvas's display size fit its container.
-                    // The container is sized correctly in `updatePageDimensions` based on the unscaled zoom level.
-                    // This effectively scales down the high-res canvas bitmap to the display size, making it sharp.
-                    
                     await page.render({ 
                         canvasContext: context, 
                         viewport: viewport 
@@ -1310,48 +1753,21 @@
                     this.pdf.isRenderingPage.delete(pageNum); 
                 }
             },
-            updatePdfControls() {
+            updatePdfControls: function() {
                 if(!this.pdf.doc) return;
-                this.elements.pdfPageNumInput.value = this.pdf.currentPage;
-                this.elements.pdfPageNumInput.max = this.pdf.totalPages;
-                this.elements.pdfPageCount.textContent = this.pdf.totalPages;
-                this.elements.pdfPrevBtn.disabled = this.pdf.currentPage <= 1;
-                this.elements.pdfNextBtn.disabled = this.pdf.currentPage >= this.pdf.totalPages;
-
                 const zoomPercent = Math.round(this.pdf.zoom * 100);
 
-                if (!this.pdf.isZooming) {
-                    this.elements.pdfZoomLevel.textContent = `${zoomPercent}%`;
-                }
-                
                 if(this.elements.zoomSlider) {
                     this.elements.zoomSlider.value = zoomPercent;
                     this.elements.zoomSlider.disabled = this.pdf.isZooming;
                 }
                 if(this.elements.zoomSliderValue) this.elements.zoomSliderValue.textContent = `${zoomPercent}%`;
-
-                this.elements.pdfZoomOutBtn.disabled = this.pdf.isZooming || this.pdf.zoom <= 0.25;
-                this.elements.pdfZoomInBtn.disabled = this.pdf.isZooming || this.pdf.zoom >= 5;
             },
-            changePdfPage(pageNum) { 
-                const num = Math.max(1, Math.min(pageNum || 1, this.pdf.totalPages)); 
-                const targetPage = this.elements.pdfRenderArea.querySelector(`#page-container-${num}`); 
-                if (targetPage) {
-                    const scrollParent = this.elements.pdfRenderArea;
-                    const parentRect = scrollParent.getBoundingClientRect();
-                    const targetRect = targetPage.getBoundingClientRect();
-                    const targetOffsetTop = targetRect.top - parentRect.top + scrollParent.scrollTop;
-                    scrollParent.scrollTo({ top: targetOffsetTop, behavior: 'smooth' });
-                }
-            },
-            changePdfZoom(value, isAbsolute = false) {
+            changePdfZoom: function(value, isAbsolute = false) {
                 if (!this.pdf.doc || this.pdf.isZooming) return;
                 
                 this.pdf.isZooming = true;
-                
-                // Show a mini-loader in the zoom display and disable controls
-                this.elements.pdfZoomLevel.innerHTML = `<div class="loader" style="width: 1.25rem; height: 1.25rem; border-width: 3px; margin: auto;"></div>`;
-                this.updatePdfControls(); // Disables buttons via the isZooming flag
+                this.updatePdfControls(); // Disables slider via the isZooming flag
 
                 const newZoom = isAbsolute ? value : this.pdf.zoom + value;
                 this.pdf.zoom = Math.max(0.25, Math.min(5, newZoom)); // Clamp between 25% and 500%
@@ -1360,24 +1776,26 @@
                 this.setupIntersectionObserver();
                 this.updatePdfControls(); // Update slider value
 
-                // User-requested 3-second cooldown to prevent spamming
+                // Let rendering catch up before re-enabling zoom
                 setTimeout(() => {
                     this.pdf.isZooming = false;
-                    this.updatePdfControls(); // Restore text and re-evaluate button states
-                }, 3000);
+                    this.updatePdfControls(); // Re-evaluate slider state
+                }, 1000);
             },
-            rotatePdf(degrees) {
+            rotatePdf: function(degrees) {
                 if (!this.pdf.doc) return;
                 this.pdf.rotation = (this.pdf.rotation + degrees + 360) % 360; // Ensure positive result
                 this.updatePageDimensions();
                 this.setupIntersectionObserver();
             },
-            togglePdfFullscreen() { if (!document.fullscreenElement) { this.elements.viewerContainer.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); document.body.classList.add('pdf-fullscreen'); } else { document.exitFullscreen(); document.body.classList.remove('pdf-fullscreen'); } },
+            togglePdfFullscreen: function() { if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err => alert(`Fullscreen error: ${err.message}`)); document.body.classList.add('pdf-fullscreen'); } else { document.exitFullscreen(); document.body.classList.remove('pdf-fullscreen'); } },
+            scrollToTop: function() {
+                const activeScrollArea = this.pdf.isTextMode ? this.elements.textModeArea : this.elements.pdfRenderArea;
+                activeScrollArea?.scrollTo({ top: 0, behavior: 'smooth' });
+            },
 
             // --- Viewer Settings Methods ---
-            initViewerSettings() {
-                // Now, the viewer's dark mode is primarily driven by the app's theme.
-                // We'll still check localStorage for pageless mode and scroll lock.
+            initViewerSettings: function() {
                 const pageless = localStorage.getItem('viewerPagelessMode') === 'true';
                 this.elements.pagelessToggle.checked = pageless;
                 this.elements.pdfRenderArea.classList.toggle('pageless', pageless);
@@ -1386,41 +1804,358 @@
                 this.elements.scrollLockToggle.checked = scrollLock;
                 this.elements.pdfRenderArea.classList.toggle('scroll-locked-x', scrollLock);
 
-                // The theme will be set by initTheme -> setTheme, which now handles the viewer's dark mode.
+                this.elements.textModeToggle.checked = false;
+
+                const showTip = localStorage.getItem('viewerShowSwipeTip') !== 'false';
+                if (this.elements.showSwipeTipToggle) this.elements.showSwipeTipToggle.checked = showTip;
             },
-            toggleSettingsPanel(show) { this.elements.settingsPanel.classList.toggle('show', show); this.elements.settingsOverlay.classList.toggle('show', show); },
-            toggleInvertColors(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
-            togglePagelessMode(isActive) {
+            toggleSettingsPanel: function(show) {
+                if (this.tutorial.isActive) {
+                    // Find the index of the step that triggers opening the panel
+                    const settingsHotspotStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsHotspot);
+                    // Find the index of the step that displays the panel's contents
+                    const settingsPanelStepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.settingsPanel);
+            
+                    if (show && this.tutorial.step === settingsHotspotStepIndex) {
+                        // If we are on the "click the hotspot" step and the panel is being opened, advance the tutorial.
+                        this.nextTutorialStep();
+                    } else if (!show && this.tutorial.step === settingsPanelStepIndex) {
+                        // If we are on the final "here is the panel" step and the user tries to close it,
+                        // just end the tutorial gracefully.
+                        this.endTutorial();
+                    }
+                }
+                this.elements.settingsPanel.classList.toggle('show', show);
+                this.elements.settingsOverlay.classList.toggle('show', show);
+            },
+            toggleInvertColors: function(isActive) { this.elements.pdfRenderArea.classList.toggle('pdf-inverted', isActive); localStorage.setItem('viewerInvertColors', isActive); },
+            togglePagelessMode: function(isActive) {
                  this.elements.pdfRenderArea.classList.toggle('pageless', isActive);
                  localStorage.setItem('viewerPagelessMode', isActive);
             },
-            toggleScrollLock(isLocked) {
+            toggleScrollLock: function(isLocked) {
                 this.elements.pdfRenderArea.classList.toggle('scroll-locked-x', isLocked);
                 localStorage.setItem('viewerScrollLock', isLocked);
             },
-
-            // --- Utilities ---
-            handleScroll() { const y = window.scrollY; this.elements.backToTopButton?.classList.toggle('show', y > 100); if(y > this.state.lastScrollY && y > 100) { this.elements.header?.classList.add('header--hidden'); } else { this.elements.header?.classList.remove('header--hidden'); } this.state.lastScrollY = y <= 0 ? 0 : y; },
-            handlePdfScroll() {
-                if (!this.elements.viewerTitle || !this.elements.pdfRenderArea) return;
-                const scrollTop = this.elements.pdfRenderArea.scrollTop;
-
-                // Prevent toggling on minor scrolls or bounces
-                if (Math.abs(scrollTop - this.pdf.lastScrollTop) <= 10) return;
-
-                if (scrollTop > this.pdf.lastScrollTop && scrollTop > 50) {
-                    // Scrolling Down
-                    this.elements.viewerTitle.classList.add('viewer-title--hidden');
-                } else if (scrollTop < this.pdf.lastScrollTop) {
-                    // Scrolling Up
-                    this.elements.viewerTitle.classList.remove('viewer-title--hidden');
-                }
+            toggleTextMode: function(isActive) {
+                if (this.pdf.isTextMode === isActive) return;
+                this.pdf.isTextMode = isActive;
                 
-                this.pdf.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+                this.elements.textModeToggle.checked = isActive;
+                this.elements.contentWrapper.classList.toggle('text-mode-active', isActive);
+                this.elements.viewerContainer.classList.toggle('text-mode-active', isActive);
+
+                const disabledInTextMode = this.elements.settingsPanel.querySelectorAll('[data-text-mode-disabled]');
+                disabledInTextMode.forEach(item => {
+                    item.style.display = isActive ? 'none' : '';
+                });
+
+                const onlyInTextMode = this.elements.settingsPanel.querySelectorAll('[data-text-mode-only]');
+                onlyInTextMode.forEach(item => {
+                    item.style.display = isActive ? 'flex' : 'none';
+                });
+
+                if (isActive) {
+                    this.renderFormattedText();
+                    this.elements.textModeArea.scrollTop = 0;
+                    this.handleTextModeScroll(); // Update UI for scroll position 0
+                    // Reset zoom on entering text mode
+                    this.pdf.textModeZoom = 1.0;
+                    this.changeTextModeZoom(100);
+                } else {
+                    this.handlePdfScroll(); // Update UI for current PDF scroll position
+                }
             },
+            changeTextModeZoom: function(value) { // value from slider: 50 to 250
+                const newZoom = value / 100;
+                this.pdf.textModeZoom = Math.max(0.5, Math.min(2.5, newZoom)); // Clamp zoom
+                
+                this.elements.textModeContent.style.fontSize = `${1.1 * this.pdf.textModeZoom}rem`;
+                this.elements.textZoomSliderValue.textContent = `${Math.round(this.pdf.textModeZoom * 100)}%`;
+                
+                const sliderValue = Math.round(this.pdf.textModeZoom * 100);
+                if (parseInt(this.elements.textZoomSlider.value) !== sliderValue) {
+                    this.elements.textZoomSlider.value = sliderValue;
+                }
+            },
+            renderFormattedText: async function() {
+                if (!this.pdf.doc) return;
+
+                const { year, semester, term, subject, topic } = this.state.selection;
+                const topicData = this.state.transesData?.[year]?.[semester]?.[term]?.[subject]?.[topic];
+                const fileIdMatch = topicData?.pdfUrl?.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+                const fileId = fileIdMatch ? fileIdMatch[1] : null;
+
+                if (fileId && this.pdf.formattedTextCache[fileId]) {
+                    this.elements.textModeContent.innerHTML = this.pdf.formattedTextCache[fileId];
+                    return;
+                }
+                if (this.pdf.isFormattingText) return;
+
+                let rawText = '';
+                try {
+                    this.pdf.isFormattingText = true;
+                    this.elements.textModeContent.innerHTML = `<div class="viewer-state-overlay show" style="position: relative; background: transparent;"><div class="loader"></div><p class="loader-text">Extracting text from PDF...</p></div>`;
+                    
+                    rawText = await this.extractAllText();
+                    if (!rawText.trim()) {
+                        this.elements.textModeContent.innerHTML = `<p>No text could be extracted from this document.</p>`;
+                        return;
+                    }
+                    
+                    if (!fileId || this.GEMINI_FORMATTER_URL.includes('REPLACE_WITH')) {
+                        throw new Error('AI formatter is not configured. Displaying raw text.');
+                    }
+                    
+                    this.elements.textModeContent.innerHTML = `<div class="viewer-state-overlay show" style="position: relative; background: transparent;"><div class="loader"></div><p class="loader-text">Checking cache & formatting with AI...</p></div>`;
+
+                    const response = await fetch(this.GEMINI_FORMATTER_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        cache: 'no-cache',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify({ fileId: fileId, text: rawText })
+                    });
+
+                    if (!response.ok) throw new Error(`Network error: ${response.statusText}`);
+                    const data = await response.json();
+
+                    if (data.success && data.html) {
+                        this.pdf.formattedTextCache[fileId] = data.html;
+                        this.elements.textModeContent.innerHTML = data.html;
+                    } else {
+                        throw new Error(data.message || 'AI formatting failed. Displaying raw text.');
+                    }
+                } catch (error) {
+                    console.error("Failed to format text:", error);
+                    const fallbackHtml = '<p>' + rawText.trim().replace(/\n\s*\n/g, '</p><p>').replace(/\n/g, '<br>') + '</p>';
+                    this.elements.textModeContent.innerHTML = `
+                        <div style="padding: 1rem; background-color: var(--danger-light); border-radius: 8px; border: 1px solid var(--danger);">
+                            <strong>AI Formatting Failed</strong><br>
+                            <small>${error.message}</small><br><br>
+                            <p>Showing raw, unformatted text below.</p>
+                        </div>
+                        <hr style="margin: 1rem 0;">
+                        ${fallbackHtml}`;
+                } finally {
+                    this.pdf.isFormattingText = false;
+                }
+            },
+            extractAllText: async function() {
+                if (!this.pdf.doc) return '';
+                let allText = '';
+                for (let i = 1; i <= this.pdf.totalPages; i++) {
+                    const page = await this.pdf.doc.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
+                    allText += pageText + '\n\n';
+                    page.cleanup();
+                }
+                return allText;
+            },
+            
+            // --- Header Controls ---
+            showHeader: function() {
+                if (this.tutorial.isActive) {
+                    const stepIndex = this.tutorial.steps.findIndex(s => s.target && s.target() === this.elements.headerHotspot);
+                    if (this.tutorial.step === stepIndex) {
+                        this.nextTutorialStep();
+                    }
+                    clearTimeout(this.state.headerHideTimer); // Don't auto-hide during tutorial
+                } else {
+                    clearTimeout(this.state.headerHideTimer);
+                    this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000);
+                    // Disable hotspot when header is visible to prevent re-triggering
+                    this.elements.headerHotspot.style.pointerEvents = 'none';
+                }
+                this.elements.viewerHeader.classList.add('visible');
+            },
+            hideHeader: function() {
+                if (this.tutorial.isActive) return;
+                this.elements.viewerHeader.classList.remove('visible');
+                // Re-enable hotspot
+                this.elements.headerHotspot.style.pointerEvents = 'auto';
+            },
+
+            // --- UI Tips & Tutorial ---
+            showSwipeTip: function() {
+                if (localStorage.getItem('viewerShowSwipeTip') === 'false') return;
+                setTimeout(() => this.elements.swipeToast?.classList.add('show'), 1500);
+            },
+            hideSwipeTip: function() {
+                this.elements.swipeToast?.classList.remove('show');
+            },
+            setShowSwipeTip: function(show) {
+                localStorage.setItem('viewerShowSwipeTip', show);
+                if (!show) this.hideSwipeTip();
+            },
+            defineTutorialSteps: function() {
+                this.tutorial.steps = [
+                    {
+                        title: 'Welcome to the Viewer!',
+                        content: 'This quick tour will show you how to use the new controls. It will only run once, but you can restart it from the settings.',
+                        isActionStep: false,
+                    },
+                    {
+                        title: 'Text Mode & AI Formatting',
+                        content: 'When you switch to <b>Text Mode</b>, we use AI to format the document for easier reading. If it\'s the first time for a topic, this may take 15-30 seconds. Thanks for your patience!',
+                        isActionStep: false,
+                    },
+                    {
+                        title: 'Show the Header',
+                        content: 'The header is hidden to give you more reading space. <b>Click the highlighted area at the top</b> of the screen to reveal it.',
+                        target: () => this.elements.headerHotspot,
+                        isActionStep: true,
+                    },
+                    {
+                        title: 'Viewer Header',
+                        content: 'Great! From here you can see the title and toggle the app\'s theme. Now, <b>click the highlighted area on the right edge</b> to open the settings panel.',
+                        target: () => this.elements.settingsHotspot,
+                        isActionStep: true,
+                    },
+                    {
+                        title: 'View Options',
+                        content: `
+                            <p>This panel gives you powerful tools to customize your view:</p>
+                            <ul>
+                                <li><b><i class="fas fa-moon"></i> Dark Mode:</b> Inverts PDF colors for night reading.</li>
+                                <li><b><i class="fas fa-stream"></i> Pageless:</b> Merges all pages into one continuous scroll.</li>
+                                <li><b><i class="fas fa-align-left"></i> Text Mode:</b> Uses AI to reformat text for an e-reader experience.</li>
+                                <li><b><i class="fas fa-search-plus"></i> Zoom/Text Size:</b> Adjust size for perfect readability.</li>
+                                <li><b><i class="fas fa-download"></i> Download/Fullscreen:</b> Access the file or go fullscreen.</li>
+                            </ul>
+                            <p style="margin-top: var(--space-md);">You're all set! Click <b>Finish</b> to end the tour.</p>
+                        `,
+                        target: () => this.elements.settingsPanel,
+                        isActionStep: false,
+                        isFinalStep: true,
+                    }
+                ];
+            },
+            startTutorial: function() {
+                if (localStorage.getItem('viewerTutorialCompleted_v2') === 'true') return;
+                this.tutorial.isActive = true;
+                this.tutorial.step = 0;
+                this.renderTutorialStep();
+            },
+            renderTutorialStep: function() {
+                const step = this.tutorial.steps[this.tutorial.step];
+                if (!step) { this.endTutorial(); return; }
+
+                this.elements.tutorialStepTitle.innerHTML = step.title;
+                this.elements.tutorialStepContent.innerHTML = step.content;
+                this.elements.tutorialOverlay.classList.add('show');
+                
+                this.elements.tutorialNextBtn.style.display = step.isActionStep ? 'none' : 'block';
+                this.elements.tutorialNextBtn.textContent = step.isFinalStep ? 'Finish' : 'Next';
+
+                const targetEl = step.target ? step.target() : null;
+                const highlightBox = this.elements.tutorialHighlightBox;
+                const stepBox = this.elements.tutorialStepBox;
+
+                stepBox.style.transform = ''; // Reset transform before recalculating position
+
+                if (targetEl) {
+                    const rect = targetEl.getBoundingClientRect();
+                    highlightBox.style.cssText = `
+                        width: ${rect.width}px; height: ${rect.height}px;
+                        top: ${rect.top}px; left: ${rect.left}px;
+                        border-radius: ${window.getComputedStyle(targetEl).borderRadius || '8px'};
+                    `;
+                    // Position step box relative to target
+                    const isMobile = window.innerWidth <= 600;
+                    stepBox.classList.toggle('mobile-view', isMobile);
+
+                    if (!isMobile) {
+                        const space = 15;
+                        const viewportW = window.innerWidth;
+                        const viewportH = window.innerHeight;
+                        const boxW = stepBox.offsetWidth;
+                        const boxH = stepBox.offsetHeight;
+                        let top, left;
+
+                        // Default to bottom-centered
+                        let position = 'bottom';
+
+                        // Decide on a better position if the default doesn't fit well.
+                        // 1. If target is on the right side, try to place box to its left.
+                        if (rect.left + rect.width / 2 > viewportW / 2 && rect.left - boxW - space > 10) {
+                            position = 'left';
+                        } 
+                        // 2. If target is on the left side, try to place box to its right.
+                        else if (rect.right - rect.width / 2 < viewportW / 2 && rect.right + boxW + space < viewportW - 10) {
+                            position = 'right';
+                        }
+                        // 3. If side positions are not chosen, check if top is better than bottom.
+                        // Top is better if bottom is off-screen AND top is on-screen.
+                        else if (rect.bottom + boxH + space > viewportH && rect.top - boxH - space > 10) {
+                            position = 'top';
+                        }
+
+                        // Calculate initial coordinates based on chosen position.
+                        switch (position) {
+                            case 'left':
+                                left = rect.left - boxW - space;
+                                top = rect.top + rect.height / 2 - boxH / 2;
+                                break;
+                            case 'right':
+                                left = rect.right + space;
+                                top = rect.top + rect.height / 2 - boxH / 2;
+                                break;
+                            case 'top':
+                                left = rect.left + rect.width / 2 - boxW / 2;
+                                top = rect.top - boxH - space;
+                                break;
+                            case 'bottom':
+                            default:
+                                left = rect.left + rect.width / 2 - boxW / 2;
+                                top = rect.bottom + space;
+                                break;
+                        }
+
+                        // Final boundary checks to guarantee the box is in view.
+                        if (left < 10) left = 10;
+                        if (left + boxW > viewportW - 10) left = viewportW - boxW - 10;
+                        if (top < 10) top = 10;
+                        if (top + boxH > viewportH - 10) top = viewportH - boxH - 10;
+
+                        stepBox.style.top = `${top}px`;
+                        stepBox.style.left = `${left}px`;
+                    } else {
+                        stepBox.style.top = ''; stepBox.style.left = ''; // Reset desktop positioning
+                    }
+                } else {
+                    highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
+                    stepBox.classList.remove('mobile-view');
+                    stepBox.style.top = '50%';
+                    stepBox.style.left = '50%';
+                    stepBox.style.transform = 'translate(-50%, -50%)';
+                }
+            },
+            nextTutorialStep: function() {
+                this.tutorial.step++;
+                if (this.tutorial.step >= this.tutorial.steps.length) {
+                    this.endTutorial();
+                } else {
+                    this.renderTutorialStep();
+                }
+            },
+            endTutorial: function(setCompleted = true) {
+                this.tutorial.isActive = false;
+                this.elements.tutorialOverlay.classList.remove('show');
+                if (setCompleted) {
+                    localStorage.setItem('viewerTutorialCompleted_v2', 'true');
+                }
+            },
+            resetTutorial: function() {
+                localStorage.removeItem('viewerTutorialCompleted_v2');
+                alert('Tutorial has been reset. It will show the next time you open a document.');
+                this.toggleSettingsPanel(false);
+            }
         };
 
-        document.addEventListener('DOMContentLoaded', () => App.init());
+        App.init();
+        window.App = App; // For debugging
     </script>
 </body>
 </html>
