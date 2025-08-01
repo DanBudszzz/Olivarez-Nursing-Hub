@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Nursing Resource Hub - Digital library and learning resources for nursing students at Olivarez College.">
+    
+    <!-- PWA & Themeing -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#388E3C">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Nursing Hub">
+    <link rel="apple-touch-icon" href="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png">
+    
     <title>Nursing Resource Hub - Olivarez College</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
@@ -139,6 +148,7 @@
           font-weight: 500;
           position: relative;
           white-space: nowrap;
+          cursor: pointer;
         }
         .nav-item:before {
           content: "";
@@ -412,6 +422,7 @@
         body.menu-open .side-nav-item:nth-child(2) { transition-delay: 0.11s; }
         body.menu-open .side-nav-item:nth-child(3) { transition-delay: 0.14s; }
         body.menu-open .side-nav-item:nth-child(4) { transition-delay: 0.17s; }
+        body.menu-open .side-nav-item:nth-child(5) { transition-delay: 0.20s; }
 
 
         /* --- Media Queries for Responsive Design --- */
@@ -443,6 +454,77 @@
             .card-description { max-width: 100%; }
             footer { padding: 2rem 1.5rem; }
         }
+
+        /* --- iOS Install Modal --- */
+        .ios-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .ios-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .ios-modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .ios-modal-overlay.visible .ios-modal-content {
+            transform: scale(1);
+        }
+        .ios-modal-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .ios-modal-content h3 {
+            font-family: var(--font-heading);
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        .ios-modal-content p {
+            margin-bottom: 1.5rem;
+        }
+        .ios-instructions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .ios-instructions span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ios-instructions img {
+            width: 24px;
+            height: 24px;
+        }
     </style>
 </head>
 <body class="preloading">
@@ -470,6 +552,7 @@
           <a href="#library" class="nav-item" active-color="#2196F3">Library</a>
           <a href="#practice-section" class="nav-item" active-color="#FF9800">Practice</a>
           <a href="#reviewers" class="nav-item" active-color="#E91E63">Reviewers</a>
+          <a id="install-btn-desktop" class="nav-item" active-color="#8BC34A" style="display: none;">Install App</a>
           <span class="nav-indicator"></span>
         </nav>
 
@@ -558,6 +641,17 @@
         </div>
     </main>
 
+    <div id="ios-install-modal" class="ios-modal-overlay">
+        <div class="ios-modal-content">
+            <button id="ios-modal-close" class="ios-modal-close-btn" aria-label="Close">&times;</button>
+            <h3>Install Nursing Hub</h3>
+            <div class="ios-instructions">
+                <span>1. Tap the Share button <img src="data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 5L12 16M12 5L8 9M12 5L16 9' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5 12V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V12' stroke='%23000000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" alt="Share Icon"/> in your browser menu.</span>
+                <span>2. Scroll down and tap <strong>'Add to Home Screen'</strong>.</span>
+            </div>
+        </div>
+    </div>
+    
     <footer>
       <div class="footer-content">
         <img src="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png"
@@ -585,6 +679,10 @@
         <a href="#reviewers" class="side-nav-item">
             <i class="fa-solid fa-file-lines"></i>
             <span>Reviewers</span>
+        </a>
+        <a href="#" id="install-btn-mobile" class="side-nav-item" style="display: none;">
+            <i class="fa-solid fa-download"></i>
+            <span>Install App</span>
         </a>
     </div>
     <div id="menu-overlay" class="overlay"></div>
@@ -627,7 +725,9 @@
             
             items.forEach(item => {
               item.addEventListener('click', (e) => {
-                handleIndicator(e.target);
+                if (!e.target.id?.includes('install')) {
+                    handleIndicator(e.target);
+                }
               });
             });
 
@@ -637,7 +737,9 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const navItem = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
-                        handleIndicator(navItem);
+                        if (navItem) {
+                            handleIndicator(navItem);
+                        }
                     }
                 });
             }, { 
@@ -683,6 +785,12 @@
 
             sideNavItems.forEach(item => {
                 item.addEventListener('click', (e) => {
+                    if (item.id?.includes('install')) {
+                        // handled by PWA script, just close menu
+                        closeMenu();
+                        return;
+                    }
+
                     e.preventDefault();
                     const targetId = item.getAttribute('href');
                     const targetSection = document.querySelector(targetId);
@@ -698,6 +806,72 @@
                     }
                 });
             });
+
+            // --- PWA INSTALL SCRIPT ---
+            let deferredPrompt;
+            const installBtnDesktop = document.getElementById('install-btn-desktop');
+            const installBtnMobile = document.getElementById('install-btn-mobile');
+            const iosInstallModal = document.getElementById('ios-install-modal');
+            const closeIosModalBtn = document.getElementById('ios-modal-close');
+            const allInstallBtns = [installBtnDesktop, installBtnMobile].filter(Boolean);
+
+            const isIos = () => {
+                const userAgent = window.navigator.userAgent.toLowerCase();
+                return /iphone|ipad|ipod/.test(userAgent);
+            };
+
+            const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+            if (isInStandaloneMode()) {
+                allInstallBtns.forEach(btn => btn.style.display = 'none');
+            } else {
+                 window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
+                });
+
+                if (isIos()) {
+                    allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
+                    if (installBtnMobile) installBtnMobile.style.display = 'flex';
+                }
+            }
+            
+            async function installApp(e) {
+                e.preventDefault();
+                if (isIos() && !isInStandaloneMode()) {
+                    iosInstallModal.style.display = 'flex';
+                    setTimeout(() => iosInstallModal.classList.add('visible'), 10);
+                    return;
+                }
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        allInstallBtns.forEach(btn => btn.style.display = 'none');
+                    }
+                    deferredPrompt = null;
+                }
+            }
+
+            allInstallBtns.forEach(btn => btn.addEventListener('click', installApp));
+
+            const closeIosModal = () => {
+                iosInstallModal.classList.remove('visible');
+                setTimeout(() => iosInstallModal.style.display = 'none', 300);
+            };
+
+            closeIosModalBtn.addEventListener('click', closeIosModal);
+            iosInstallModal.addEventListener('click', (e) => {
+                if (e.target === iosInstallModal) closeIosModal();
+            });
+
+            // Register service worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service worker registered.', reg))
+                    .catch(err => console.error('Service worker registration failed:', err));
+            }
         });
     </script>
 </body>
