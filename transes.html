@@ -1076,14 +1076,15 @@
                 <button id="close-settings-btn" aria-label="Close Settings"><i class="fas fa-times"></i></button>
             </div>
             <div class="settings-content">
-                <div id="tutorial-setting-item" class="setting-item">
+                <div id="show-tutorial-setting-item" class="setting-item">
                     <div class="setting-label-group">
                         <i class="fas fa-chalkboard-teacher"></i>
-                        <label for="reset-tutorial-btn">Tutorial</label>
+                        <label for="show-tutorial-toggle">Show Tutorial on Visit</label>
                     </div>
-                    <div class="setting-control-group">
-                       <button id="reset-tutorial-btn" title="Show Tutorial Again" aria-label="Show Tutorial Again">Show Again</button>
-                    </div>
+                    <label class="qol-switch">
+                        <input type="checkbox" id="show-tutorial-toggle">
+                        <span class="qol-slider"></span>
+                    </label>
                 </div>
                 <div id="show-tip-setting-item" class="setting-item">
                     <div class="setting-label-group">
@@ -1227,7 +1228,6 @@
             GEMINI_FORMATTER_URL: 'https://script.google.com/macros/s/AKfycbw6KuvCC7B7MtB6CHVbMwYslUlX7GdQMTxz6TeGxPQ4WlQgVs3qT1AunN_wOc6LvDdy/exec',
             CACHE_KEY: 'nursingDataCache',
             CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
-            TUTORIAL_VERSION_KEY: 'viewerTutorialCompleted_v8',
 
             // --- State ---
             state: {
@@ -1342,8 +1342,8 @@
                     settingsPanel: document.getElementById('pdf-settings-panel'),
                     settingsOverlay: document.getElementById('settings-panel-overlay'),
                     closeSettingsBtn: document.getElementById('close-settings-btn'),
+                    showTutorialToggle: document.getElementById('show-tutorial-toggle'),
                     showSwipeTipToggle: document.getElementById('show-settings-tip-toggle'),
-                    resetTutorialBtn: document.getElementById('reset-tutorial-btn'),
                     invertColorsToggle: document.getElementById('invert-colors-toggle'),
                     pagelessToggle: document.getElementById('pageless-toggle'),
                     textModeToggle: document.getElementById('text-mode-toggle'),
@@ -1414,14 +1414,14 @@
                 this.elements.settingsOverlay?.addEventListener('click', () => this.toggleSettingsPanel(false));
                 
                 // Settings Item Events
-                document.getElementById('tutorial-setting-item')?.addEventListener('click', () => this.elements.resetTutorialBtn.click());
+                document.getElementById('show-tutorial-setting-item')?.addEventListener('click', () => this.elements.showTutorialToggle.click());
                 document.getElementById('show-tip-setting-item')?.addEventListener('click', () => this.elements.showSwipeTipToggle.click());
                 document.getElementById('dark-mode-setting-item')?.addEventListener('click', () => this.elements.invertColorsToggle.click());
                 document.getElementById('pageless-setting-item')?.addEventListener('click', () => this.elements.pagelessToggle.click());
                 document.getElementById('text-mode-setting-item')?.addEventListener('click', () => this.elements.textModeToggle.click());
                 
+                this.elements.showTutorialToggle?.addEventListener('change', (e) => this.setShowTutorial(e.target.checked));
                 this.elements.showSwipeTipToggle?.addEventListener('change', (e) => this.setShowSwipeTip(e.target.checked));
-                this.elements.resetTutorialBtn?.addEventListener('click', () => this.resetTutorial());
                 this.elements.invertColorsToggle?.addEventListener('change', (e) => this.toggleInvertColors(e.target.checked));
                 this.elements.pagelessToggle?.addEventListener('change', (e) => this.togglePagelessMode(e.target.checked));
                 this.elements.textModeToggle?.addEventListener('change', (e) => this.toggleTextMode(e.target.checked));
@@ -1551,7 +1551,6 @@
                  this.elements.viewerTitle.innerHTML = `<i class="fas fa-file-alt"></i> ${this.state.selection.topic}`;
                  this.loadPdf();
                  this.showSwipeTip();
-                 this.startTutorial(); // Start the tutorial if it hasn't been completed
             },
             renderSearchResults: function() { const term = this.state.searchTerm.toLowerCase(); this.elements.searchResultsTitle.innerHTML = `<i class="fas fa-search"></i> Results for "${this.state.searchTerm}"`; if (!this.elements.searchResultsList) return; this.elements.searchResultsList.innerHTML = ''; const results = []; const data = this.state.transesData; for (const year in data) for (const semester in data[year]) for (const t in data[year][semester]) for (const subject in data[year][semester][t]) for (const topic in data[year][semester][t][subject]) if (topic.toLowerCase().includes(term) || subject.toLowerCase().includes(term)) results.push({ path: { year, semester, term: t, subject, topic } }); if(results.length === 0) { this.elements.searchResultsList.innerHTML = `<li>No topics found matching your search.</li>`; return; } results.forEach(result => { const li = document.createElement('li'); li.className = 'search-result-item'; const { year, semester, term, subject, topic } = result.path; const pathString = `${year} &gt; ${semester} &gt; ${term} &gt; ${subject}`; li.innerHTML = `<a href="#"><div class="search-result-topic">${topic}</div><div class="search-result-path">${pathString}</div></a>`; li.querySelector('a')?.addEventListener('click', (e) => { e.preventDefault(); this.displayTopic(result.path); }); this.elements.searchResultsList.appendChild(li); }); },
 
@@ -1618,6 +1617,7 @@
                 this.showViewerState('content');
                 this.setupIntersectionObserver();
                 this.updatePdfControls();
+                this.startTutorial();
             },
 
             loadPdf: async function() {
@@ -1842,6 +1842,10 @@
 
                 const showTip = localStorage.getItem('viewerShowSwipeTip') !== 'false';
                 if (this.elements.showSwipeTipToggle) this.elements.showSwipeTipToggle.checked = showTip;
+
+                // Default to 'true' (show tutorial) if the setting isn't stored yet.
+                const showTutorial = localStorage.getItem('viewerShowTutorial') !== 'false';
+                if (this.elements.showTutorialToggle) this.elements.showTutorialToggle.checked = showTutorial;
             },
             toggleSettingsPanel: function(show, force = false) {
                 // If tutorial is active and user tries to close the panel, do not allow it.
@@ -2006,6 +2010,11 @@
                 localStorage.setItem('viewerShowSwipeTip', show);
                 if (!show) this.hideSwipeTip();
             },
+            setShowTutorial: function(show) {
+                // Persist the user's choice.
+                localStorage.setItem('viewerShowTutorial', show);
+                if(this.elements.showTutorialToggle) this.elements.showTutorialToggle.checked = show;
+            },
             defineTutorialSteps: function() {
                 this.tutorial.steps = [
                     {
@@ -2103,6 +2112,7 @@
                         content: 'To access all other view options, <b>tap the right edge of the screen to open the settings panel.</b>',
                         target: () => this.elements.settingsHotspot,
                         advanceOn: 'click',
+                        advanceDelay: 400, // Wait for panel animation to finish
                         onBeforeShow: async () => {
                              if (this.elements.viewerHeader.classList.contains('visible')) {
                                 this.hideHeader();
@@ -2111,8 +2121,24 @@
                         }
                     },
                     {
+                        title: 'Disable This Tutorial',
+                        content: 'To prevent this tutorial from automatically showing up on future visits, <b>click this setting to turn it OFF.</b> You can re-enable it here anytime you need a refresher.',
+                        target: () => document.getElementById('show-tutorial-setting-item'),
+                        advanceOn: 'click',
+                        onBeforeShow: async () => {
+                            if (!this.elements.settingsPanel.classList.contains('show')) {
+                                this.toggleSettingsPanel(true, true);
+                                await new Promise(resolve => setTimeout(resolve, 350));
+                            }
+                            // Ensure the toggle is ON for this step to make sense.
+                            if (!this.elements.showTutorialToggle.checked) {
+                               this.setShowTutorial(true);
+                            }
+                        },
+                    },
+                    {
                         title: 'You\'re All Set!',
-                        content: 'You\'ve learned the basics! You can restart this tour anytime from the settings panel. Happy reviewing!',
+                        content: 'You\'ve learned the basics! Remember, you can always re-enable this guide from the settings panel. Happy reviewing!',
                         target: null,
                          onBeforeShow: async () => {
                             if (!this.elements.settingsPanel.classList.contains('show')) {
@@ -2125,7 +2151,9 @@
                 ];
             },
             startTutorial: function() {
-                if (localStorage.getItem(this.TUTORIAL_VERSION_KEY) === 'true' || !this.pdf.doc) return;
+                // Start tutorial based on the toggle setting, not one-time completion.
+                const shouldShow = localStorage.getItem('viewerShowTutorial') !== 'false';
+                if (!shouldShow || !this.pdf.doc) return;
 
                 // Save original state to restore later
                 this.tutorial.originalSettings = {
@@ -2202,7 +2230,20 @@
                             } else if (targetEl.id.includes('hotspot')) {
                                 borderRadius = '0';
                             }
-                            highlightBox.style.cssText = `display: block; width: ${rect.width}px; height: ${rect.height}px; top: ${rect.top}px; left: ${rect.left}px; border-radius: ${borderRadius};`;
+                            
+                            const padding = 4; // Add 4px padding around the element for a better visual effect.
+                            const newWidth = rect.width + padding * 2;
+                            const newHeight = rect.height + padding * 2;
+                            const newTop = rect.top - padding;
+                            const newLeft = rect.left - padding;
+                            
+                            let newBorderRadius = borderRadius;
+                            if (borderRadius.endsWith('px')) {
+                                const brValue = parseFloat(borderRadius);
+                                newBorderRadius = `${brValue + padding}px`;
+                            }
+
+                            highlightBox.style.cssText = `display: block; width: ${newWidth}px; height: ${newHeight}px; top: ${newTop}px; left: ${newLeft}px; border-radius: ${newBorderRadius};`;
                         } else {
                             // Target exists but is not visible, treat as centered step
                             highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 50%; left: 50%; border-radius: 50%;';
@@ -2218,7 +2259,8 @@
                     if (targetEl) {
                         const controller = new AbortController();
                         const handler = (e) => {
-                             setTimeout(() => this.nextTutorialStep(), 100); // Short delay for UI to react
+                             const delay = step.advanceDelay || 100; // Use custom delay or default of 100ms
+                             setTimeout(() => this.nextTutorialStep(), delay);
                         };
                         targetEl.addEventListener(step.advanceOn, handler, { signal: controller.signal, once: true });
                         this.tutorial.cleanupListener = () => controller.abort();
@@ -2274,17 +2316,11 @@
 
                 this.tutorial.originalSettings = {}; // Always clear after use
 
-                if (setComplesetCompletedted) {
-                    localStorage.setItem(this.TUTORIAL_VERSION_KEY, 'true');
+                if (setCompleted) {
+                    // The logic for whether to show the tutorial again is now fully controlled
+                    // by the toggle switch. The user sets its state during the tutorial.
                 }
             },
-            resetTutorial: function() {
-                localStorage.removeItem(this.TUTORIAL_VERSION_KEY);
-                this.toggleSettingsPanel(false, true);
-                setTimeout(() => {
-                    this.startTutorial();
-                }, 350);
-            }
         };
 
         App.init();
