@@ -2061,67 +2061,58 @@
                         top: ${rect.top}px; left: ${rect.left}px;
                         border-radius: ${window.getComputedStyle(targetEl).borderRadius || '8px'};
                     `;
-                    // Position step box relative to target
                     const isMobile = window.innerWidth <= 600;
                     stepBox.classList.toggle('mobile-view', isMobile);
 
                     if (!isMobile) {
-                        const space = 15;
-                        const viewportW = window.innerWidth;
-                        const viewportH = window.innerHeight;
-                        const boxW = stepBox.offsetWidth;
-                        const boxH = stepBox.offsetHeight;
+                        // --- ROBUST POSITIONING LOGIC ---
+                        const isSidePanel = rect.height > window.innerHeight * 0.7;
                         let top, left;
 
-                        // Default to bottom-centered
-                        let position = 'bottom';
-
-                        // Decide on a better position if the default doesn't fit well.
-                        // 1. If target is on the right side, try to place box to its left.
-                        if (rect.left + rect.width / 2 > viewportW / 2 && rect.left - boxW - space > 10) {
-                            position = 'left';
-                        } 
-                        // 2. If target is on the left side, try to place box to its right.
-                        else if (rect.right - rect.width / 2 < viewportW / 2 && rect.right + boxW + space < viewportW - 10) {
-                            position = 'right';
-                        }
-                        // 3. If side positions are not chosen, check if top is better than bottom.
-                        // Top is better if bottom is off-screen AND top is on-screen.
-                        else if (rect.bottom + boxH + space > viewportH && rect.top - boxH - space > 10) {
-                            position = 'top';
-                        }
-
-                        // Calculate initial coordinates based on chosen position.
-                        switch (position) {
-                            case 'left':
-                                left = rect.left - boxW - space;
-                                top = rect.top + rect.height / 2 - boxH / 2;
-                                break;
-                            case 'right':
-                                left = rect.right + space;
-                                top = rect.top + rect.height / 2 - boxH / 2;
-                                break;
-                            case 'top':
-                                left = rect.left + rect.width / 2 - boxW / 2;
-                                top = rect.top - boxH - space;
-                                break;
-                            case 'bottom':
-                            default:
-                                left = rect.left + rect.width / 2 - boxW / 2;
-                                top = rect.bottom + space;
-                                break;
+                        if (isSidePanel) {
+                            // It's a tall panel on the side, position the box next to it.
+                            top = rect.top + rect.height / 2 - stepBox.offsetHeight / 2;
+                            
+                            if (rect.left + rect.width / 2 > window.innerWidth / 2) {
+                                // Panel is on the right side of the screen, so box goes on the left.
+                                left = rect.left - stepBox.offsetWidth - 15;
+                            } else {
+                                // Panel is on the left side of the screen, so box goes on the right.
+                                left = rect.right + 15;
+                            }
+                        } else {
+                            // It's a "normal" element, position above or below.
+                            // Vertical first:
+                            if (rect.bottom + stepBox.offsetHeight + 15 < window.innerHeight) {
+                                 // Prefer to show below if there is space
+                                 top = rect.bottom + 15;
+                            } else {
+                                // Otherwise show above
+                                top = rect.top - stepBox.offsetHeight - 15;
+                            }
+                            // Horizontal next: center it
+                            left = rect.left + rect.width / 2 - stepBox.offsetWidth / 2;
                         }
 
-                        // Final boundary checks to guarantee the box is in view.
-                        if (left < 10) left = 10;
-                        if (left + boxW > viewportW - 10) left = viewportW - boxW - 10;
-                        if (top < 10) top = 10;
-                        if (top + boxH > viewportH - 10) top = viewportH - boxH - 10;
+                        // --- Universal Boundary Checks ---
+                        // Ensure box is not off-screen horizontally
+                        if (left < 10) {
+                            left = 10;
+                        } else if (left + stepBox.offsetWidth > window.innerWidth - 10) {
+                            left = window.innerWidth - stepBox.offsetWidth - 10;
+                        }
+
+                        // Ensure box is not off-screen vertically
+                        if (top < 10) {
+                            top = 10;
+                        } else if (top + stepBox.offsetHeight > window.innerHeight - 10) {
+                            top = window.innerHeight - stepBox.offsetHeight - 10;
+                        }
 
                         stepBox.style.top = `${top}px`;
                         stepBox.style.left = `${left}px`;
                     } else {
-                        stepBox.style.top = ''; stepBox.style.left = ''; // Reset desktop positioning
+                        stepBox.style.top = ''; stepBox.style.left = ''; // Reset desktop positioning for mobile view
                     }
                 } else {
                     highlightBox.style.cssText = 'width: 0; height: 0; top: 50%; left: 50%;';
