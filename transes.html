@@ -247,7 +247,6 @@
         
         #viewer-header {
             display: none; /* Hidden by default, shown by .viewer-active */
-            justify-content: space-between;
             align-items: center;
             padding: 0 var(--space-lg);
             height: 4rem;
@@ -261,6 +260,7 @@
             z-index: 1011; /* Changed from 1008 to be above header-hotspot */
             transform: translateY(-100%);
             transition: transform 0.3s ease-in-out, background-color 0.3s, border-color 0.3s;
+            gap: var(--space-sm);
         }
         #viewer-header.visible {
             transform: translateY(0);
@@ -274,12 +274,20 @@
             text-overflow: ellipsis;
             flex-shrink: 1;
             min-width: 0; /* Allow title to shrink and truncate */
+            max-width: 0; /* Hidden by default */
+            opacity: 0;
+            transition: max-width 0.4s ease, opacity 0.3s ease;
+        }
+        #viewer-header.title-visible .page-title {
+            max-width: 1000px; /* Reveal by expanding */
+            opacity: 1;
         }
         
         #viewer-actions {
             display: flex;
             align-items: center;
             gap: var(--space-sm);
+            margin-left: auto; /* Pushes actions to the right */
         }
         .viewer-action-btn {
             background: transparent;
@@ -1038,6 +1046,7 @@
 
         <div class="page-container viewer-container" id="viewer-container">
             <div id="viewer-header">
+                <button id="viewer-toggle-title-btn" class="viewer-action-btn" title="Show/Hide Title" aria-label="Show/Hide Title"><i class="fas fa-info-circle"></i></button>
                 <h2 class="page-title" id="viewer-title"></h2>
                 <div id="viewer-actions">
                     <button id="viewer-theme-btn" class="viewer-action-btn" title="Toggle Theme" aria-label="Toggle Theme"><i class="fas fa-moon"></i></button>
@@ -1227,6 +1236,7 @@
             GEMINI_FORMATTER_URL: 'https://script.google.com/macros/s/AKfycbw6KuvCC7B7MtB6CHVbMwYslUlX7GdQMTxz6TeGxPQ4WlQgVs3qT1AunN_wOc6LvDdy/exec',
             CACHE_KEY: 'nursingDataCache',
             CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
+            TUTORIAL_VERSION_KEY: 'viewerTutorialCompleted_v8',
 
             // --- State ---
             state: {
@@ -1237,7 +1247,6 @@
                 error: null,
                 searchTerm: '',
                 lastScrollY: 0,
-                headerHideTimer: null,
             },
 
             pdf: {
@@ -1264,6 +1273,7 @@
                 step: 0,
                 steps: [],
                 cleanupListener: null,
+                originalSettings: {},
             },
             
             // --- Cached Elements ---
@@ -1327,6 +1337,7 @@
                     pdfLoader: document.getElementById('pdf-loader'),
                     pdfError: document.getElementById('pdf-error'),
                     // Viewer Actions
+                    viewerToggleTitleBtn: document.getElementById('viewer-toggle-title-btn'),
                     viewerThemeBtn: document.getElementById('viewer-theme-btn'),
                     viewerThemeIcon: document.querySelector('#viewer-theme-btn i'),
                     viewerTextModeBackBtn: document.getElementById('viewer-text-mode-back-btn'),
@@ -1389,17 +1400,23 @@
                 this.elements.textModeArea?.addEventListener('scroll', () => this.handleTextModeScroll());
                 
                 // Viewer Actions
+                this.elements.viewerToggleTitleBtn?.addEventListener('click', () => this.elements.viewerHeader.classList.toggle('title-visible'));
                 this.elements.viewerTextModeBackBtn?.addEventListener('click', () => this.toggleTextMode(false));
                 
-                // Header Controls
+                // Header Controls: Use more robust event listeners for hiding
                 this.elements.headerHotspot?.addEventListener('click', () => this.showHeader());
-                this.elements.viewerHeader?.addEventListener('click', (e) => {
-                    if (this.tutorial.isActive) return;
-                    clearTimeout(this.state.headerHideTimer);
-                    this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000);
+                this.elements.contentWrapper?.addEventListener('click', (e) => {
+                    if (this.elements.viewerHeader.classList.contains('visible') && !this.elements.viewerHeader.contains(e.target)) {
+                        this.hideHeader();
+                    }
                 });
-                this.elements.viewerHeader?.addEventListener('mouseenter', () => { if (this.tutorial.isActive) return; clearTimeout(this.state.headerHideTimer); });
-                this.elements.viewerHeader?.addEventListener('mouseleave', () => { if (this.tutorial.isActive) return; this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000); });
+                const scrollHandler = () => {
+                    if (this.elements.viewerHeader.classList.contains('visible')) {
+                        this.hideHeader();
+                    }
+                };
+                this.elements.pdfRenderArea?.addEventListener('scroll', scrollHandler);
+                this.elements.textModeArea?.addEventListener('scroll', scrollHandler);
 
                 // Settings Panel Events
                 this.elements.settingsHotspot?.addEventListener('click', () => this.toggleSettingsPanel(true));
@@ -1431,7 +1448,7 @@
                 // Tip & Tutorial Events
                 this.elements.closeSwipeToastBtn?.addEventListener('click', () => this.hideSwipeTip());
                 this.elements.tutorialNextBtn?.addEventListener('click', () => this.nextTutorialStep());
-                this.elements.tutorialEndBtn?.addEventListener('click', () => this.endTutorial());
+                this.elements.tutorialEndBtn?.addEventListener('click', () => this.endTutorial(false)); // Pass false to indicate user aborted
 
             },
 
@@ -1581,7 +1598,7 @@
                 this.elements.contentWrapper.classList.remove('text-mode-active');
                 this.elements.viewerContainer.classList.remove('text-mode-active');
                 document.body.classList.remove('pdf-fullscreen');
-                this.elements.viewerHeader?.classList.remove('visible');
+                this.elements.viewerHeader?.classList.remove('visible', 'title-visible');
                 this.elements.backToTopBtn?.classList.remove('show');
                 this.toggleSettingsPanel(false);
                 this.elements.textModeToggle.checked = false;
@@ -1589,7 +1606,7 @@
                 this.elements.textZoomSlider.value = 100;
                 this.elements.textZoomSliderValue.textContent = '100%';
                 this.elements.settingsPanel.querySelectorAll('.setting-item').forEach(item => item.style.display = '');
-                this.endTutorial(false); // Force end tutorial on cleanup
+                this.endTutorial(false, true); // Force end tutorial on cleanup without saving
             },
 
             _finishPdfSetup: async function(pdfDoc) {
@@ -1838,10 +1855,12 @@
                 const showTip = localStorage.getItem('viewerShowSwipeTip') !== 'false';
                 if (this.elements.showSwipeTipToggle) this.elements.showSwipeTipToggle.checked = showTip;
             },
-            toggleSettingsPanel: function(show) {
-                // During the tutorial, advancement is handled by the tutorial logic itself.
-                if (this.tutorial.isActive && !show) {
-                     this.endTutorial();
+            toggleSettingsPanel: function(show, force = false) {
+                // If tutorial is active and user tries to close the panel, end the tour.
+                // The 'force' flag bypasses this for programmatic calls from the tutorial itself.
+                if (!force && this.tutorial.isActive && !show) {
+                     this.endTutorial(false); // End the tour because user closed the panel.
+                     return; // IMPORTANT: Prevent the panel from closing twice. endTutorial handles it.
                 }
                 this.elements.settingsPanel.classList.toggle('show', show);
                 this.elements.settingsOverlay.classList.toggle('show', show);
@@ -1976,21 +1995,16 @@
             
             // --- Header Controls ---
             showHeader: function() {
-                if (this.tutorial.isActive) {
-                    clearTimeout(this.state.headerHideTimer); // Don't auto-hide during tutorial
-                } else {
-                    clearTimeout(this.state.headerHideTimer);
-                    this.state.headerHideTimer = setTimeout(() => this.hideHeader(), 4000);
-                    // Disable hotspot when header is visible to prevent re-triggering
-                    this.elements.headerHotspot.style.pointerEvents = 'none';
-                }
+                if (this.elements.viewerHeader.classList.contains('visible')) return;
                 this.elements.viewerHeader.classList.add('visible');
+                this.elements.headerHotspot.style.pointerEvents = 'none';
             },
             hideHeader: function() {
                 if (this.tutorial.isActive) return;
-                this.elements.viewerHeader.classList.remove('visible');
-                // Re-enable hotspot
-                this.elements.headerHotspot.style.pointerEvents = 'auto';
+                this.elements.viewerHeader.classList.remove('visible', 'title-visible');
+                if (this.elements.headerHotspot) {
+                   this.elements.headerHotspot.style.pointerEvents = 'auto';
+                }
             },
 
             // --- UI Tips & Tutorial ---
@@ -2010,10 +2024,10 @@
                     {
                         title: 'Welcome to the Viewer!',
                         content: 'This quick tour will guide you through the main controls. We\'ll open the settings panel for you to start.',
-                        target: null, // Centered
+                        target: null,
                         onBeforeShow: async () => {
-                            this.toggleSettingsPanel(true);
-                            return new Promise(resolve => setTimeout(resolve, 350)); // Wait for panel animation
+                            this.toggleSettingsPanel(true, true);
+                            return new Promise(resolve => setTimeout(resolve, 350));
                         },
                     },
                     {
@@ -2024,59 +2038,98 @@
                     },
                     {
                         title: 'Viewing in Text Mode',
-                        content: 'Excellent! The document is now reformatted for readability. The settings panel hides so you can see the full effect.',
+                        content: 'Excellent! The document is now reformatted. The settings panel hides so you can see the full effect.',
                         target: null,
                         onBeforeShow: async () => {
-                            this.toggleSettingsPanel(false);
+                            this.toggleSettingsPanel(false, true);
                             await new Promise(resolve => setTimeout(resolve, 350));
                         }
-                    },
-                    {
-                        title: 'PDF Dark Mode',
-                        content: 'Let\'s switch back to the PDF. You can also use <b>Dark Mode</b> for night reading. <b>Click this setting to try it.</b>',
-                        target: () => document.getElementById('dark-mode-setting-item'),
-                        onBeforeShow: async () => {
-                            if (this.pdf.isTextMode) this.toggleTextMode(false);
-                            if (!this.elements.settingsPanel.classList.contains('show')) {
-                                this.toggleSettingsPanel(true);
-                                await new Promise(resolve => setTimeout(resolve, 350));
-                            }
-                        },
-                        advanceOn: 'click',
                     },
                     {
                         title: 'Hiding the Controls',
                         content: 'To maximize your reading space, all controls auto-hide. Let\'s see how to get them back.',
                         target: null,
                         onBeforeShow: async () => {
-                            this.toggleSettingsPanel(false);
-                            return new Promise(resolve => setTimeout(resolve, 350)); // Wait for panel to close
+                            if (this.pdf.isTextMode) this.toggleTextMode(false);
+                            if (this.elements.settingsPanel.classList.contains('show')) {
+                                this.toggleSettingsPanel(false, true);
+                                await new Promise(resolve => setTimeout(resolve, 350));
+                            }
                         },
                     },
                     {
                         title: 'Reveal the Header',
-                        content: 'The header contains the document title and theme controls. <b>Tap the top edge of the screen to show it.</b>',
+                        content: 'The header contains key controls. <b>Tap the top edge of the screen to show it.</b>',
                         target: () => this.elements.headerHotspot,
                         advanceOn: 'click',
                     },
                     {
-                        title: 'Responsive Header',
-                        content: 'Notice how long titles are automatically shortened with "..." on smaller screens to keep controls visible. Click "Next" to continue.',
-                        target: () => this.elements.viewerTitle,
+                        title: 'Show Topic Title',
+                        content: 'The topic title is hidden by default for a clean view. <b>Click this icon to reveal it.</b>',
+                        target: () => this.elements.viewerToggleTitleBtn,
+                        advanceOn: 'click',
+                        onBeforeShow: async () => {
+                            if (!this.elements.viewerHeader.classList.contains('visible')) {
+                                this.showHeader();
+                            }
+                            return new Promise(resolve => setTimeout(resolve, 350));
+                        }
+                    },
+                    {
+                        title: 'Hide Topic Title',
+                        content: 'Great! <b>Click it again to hide it.</b> You can toggle this anytime the header is visible.',
+                        target: () => this.elements.viewerToggleTitleBtn,
+                        advanceOn: 'click'
+                    },
+                    {
+                        title: 'Change Themes',
+                        content: 'This button cycles through Light, Dark, and Night modes. <b>Click it to switch to Dark Mode.</b>',
+                        target: () => this.elements.viewerThemeBtn,
+                        advanceOn: 'click',
+                        onBeforeShow: async () => {
+                            // First, ensure the header is visible.
+                            if (!this.elements.viewerHeader.classList.contains('visible')) {
+                                this.showHeader();
+                            }
+                            // Next, ensure the title is hidden so it doesn't cause layout shifts.
+                            if (this.elements.viewerHeader.classList.contains('title-visible')) {
+                                 this.elements.viewerHeader.classList.remove('title-visible');
+                            }
+                            // Finally, wait for any potential CSS transitions to complete.
+                            await new Promise(resolve => setTimeout(resolve, 350));
+                        }
+                    },
+                    {
+                        title: 'Night Mode',
+                        content: 'Great! For even less eye strain, <b>click again for Night Mode.</b>',
+                        target: () => this.elements.viewerThemeBtn,
+                        advanceOn: 'click',
+                    },
+                    {
+                        title: 'Back to Light',
+                        content: 'Perfect. One more click returns to the default Light Mode. <b>Click it now.</b>',
+                        target: () => this.elements.viewerThemeBtn,
+                        advanceOn: 'click',
                     },
                     {
                         title: 'Reveal Settings',
-                        content: 'Perfect! To access all other view options, <b>tap the right edge of the screen to open the settings panel.</b>',
+                        content: 'To access all other view options, <b>tap the right edge of the screen to open the settings panel.</b>',
                         target: () => this.elements.settingsHotspot,
                         advanceOn: 'click',
+                        onBeforeShow: async () => {
+                             if (this.elements.viewerHeader.classList.contains('visible')) {
+                                this.hideHeader();
+                                await new Promise(resolve => setTimeout(resolve, 350));
+                             }
+                        }
                     },
                     {
                         title: 'You\'re All Set!',
                         content: 'You\'ve learned the basics! You can restart this tour anytime from the settings panel. Happy reviewing!',
-                        target: null, // Centered
+                        target: null,
                          onBeforeShow: async () => {
                             if (!this.elements.settingsPanel.classList.contains('show')) {
-                                this.toggleSettingsPanel(true);
+                                this.toggleSettingsPanel(true, true);
                                 await new Promise(resolve => setTimeout(resolve, 350));
                             }
                         },
@@ -2085,7 +2138,22 @@
                 ];
             },
             startTutorial: function() {
-                if (localStorage.getItem('viewerTutorialCompleted_v5') === 'true' || !this.pdf.doc) return;
+                if (localStorage.getItem(this.TUTORIAL_VERSION_KEY) === 'true' || !this.pdf.doc) return;
+
+                // Save original state to restore later
+                this.tutorial.originalSettings = {
+                    theme: document.documentElement.getAttribute('data-theme') || 'light',
+                    isTextMode: this.pdf.isTextMode,
+                };
+                
+                // Set a clean, default state for the tutorial
+                this.setTheme('light');
+                if (this.pdf.isTextMode) {
+                    this.toggleTextMode(false);
+                }
+                this.hideHeader();
+                this.toggleSettingsPanel(false, true);
+
                 this.tutorial.isActive = true;
                 this.tutorial.step = 0;
                 this.renderTutorialStep();
@@ -2097,7 +2165,7 @@
                 }
 
                 const step = this.tutorial.steps[this.tutorial.step];
-                if (!step) { this.endTutorial(); return; }
+                if (!step) { this.endTutorial(true); return; }
 
                 if (step.onBeforeShow) {
                     await step.onBeforeShow.call(this);
@@ -2120,15 +2188,20 @@
                         // Only show highlight if element is visible
                         if (rect.width > 0 && rect.height > 0) {
                             const targetStyle = window.getComputedStyle(targetEl);
-                            const borderRadius = targetEl.id.includes('hotspot') ? '0' : targetStyle.borderRadius || '8px';
+                            let borderRadius = targetStyle.borderRadius || '8px';
+                            if (targetEl.classList.contains('viewer-action-btn')) {
+                                borderRadius = '50%'; // Action buttons are circular
+                            } else if (targetEl.id.includes('hotspot')) {
+                                borderRadius = '0';
+                            }
                             highlightBox.style.cssText = `display: block; width: ${rect.width}px; height: ${rect.height}px; top: ${rect.top}px; left: ${rect.left}px; border-radius: ${borderRadius};`;
                         } else {
                             // Target exists but is not visible, treat as centered step
-                            highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 0; left: 0; border-radius: 0;';
+                            highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 50%; left: 50%; border-radius: 50%;';
                         }
                     } else {
                         // No target for this step, dim the whole screen by creating a 0x0 hole
-                        highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 0; left: 0; border-radius: 0;';
+                        highlightBox.style.cssText = 'display: block; width: 0; height: 0; top: 50%; left: 50%; border-radius: 50%;';
                     }
                 });
 
@@ -2142,33 +2215,59 @@
                         targetEl.addEventListener(step.advanceOn, handler, { signal: controller.signal, once: true });
                         this.tutorial.cleanupListener = () => controller.abort();
                     }
-                } else if (step.autoAdvance && !step.isFinalStep) {
-                    setTimeout(() => this.nextTutorialStep(), 3000);
                 }
             },
             nextTutorialStep: function() {
+                if (!this.tutorial.isActive) return;
                 this.tutorial.step++;
                 if (this.tutorial.step >= this.tutorial.steps.length) {
-                    this.endTutorial();
+                    this.endTutorial(true); // Pass true for completion
                 } else {
                     this.renderTutorialStep();
                 }
             },
-            endTutorial: function(setCompleted = true) {
+            endTutorial: function(setCompleted = false, isCleanup = false) {
+                if (!this.tutorial.isActive) return;
+
+                // Set isActive to false FIRST to prevent any potential recursive calls
+                this.tutorial.isActive = false;
+
                 if (this.tutorial.cleanupListener) {
                     this.tutorial.cleanupListener();
                     this.tutorial.cleanupListener = null;
                 }
-                this.tutorial.isActive = false;
+                
                 this.elements.tutorialOverlay.classList.remove('show');
-                this.toggleSettingsPanel(false);
+                
+                // Don't change state if just cleaning up (e.g., leaving viewer)
+                if (isCleanup) return;
+                
+                // Decoupled: Hide panel directly to prevent recursive loops
+                this.elements.settingsPanel.classList.remove('show');
+                this.elements.settingsOverlay.classList.remove('show');
+                
+                const original = this.tutorial.originalSettings;
+
+                if (!setCompleted && original && Object.keys(original).length > 0) {
+                    // Aborted: restore original state
+                    this.setTheme(original.theme);
+                    if (this.pdf.isTextMode !== original.isTextMode) {
+                        this.toggleTextMode(original.isTextMode);
+                    }
+                } else if (setCompleted) {
+                    // Finished: leave in a clean, default state.
+                    this.setTheme('light');
+                }
+
+                this.tutorial.originalSettings = {}; // Always clear after use
+
                 if (setCompleted) {
-                    localStorage.setItem('viewerTutorialCompleted_v5', 'true');
+                    localStorage.setItem(this.TUTORIAL_VERSION_KEY, 'true');
                 }
             },
             resetTutorial: function() {
-                localStorage.removeItem('viewerTutorialCompleted_v5');
-                this.toggleSettingsPanel(false);
+                localStorage.removeItem(this.TUTORIAL_VERSION_KEY);
+                this.toggleSettingsPanel(false, true);
                 setTimeout(() => {
                     this.startTutorial();
                 }, 350);
