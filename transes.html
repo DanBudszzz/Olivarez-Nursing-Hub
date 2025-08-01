@@ -808,7 +808,7 @@
          }
         .tutorial-nav {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
         }
         .tutorial-nav button {
@@ -823,14 +823,6 @@
         }
         .tutorial-nav button:hover {
             background-color: var(--primary-dark);
-        }
-        .tutorial-nav button#tutorial-end-btn {
-            background-color: transparent;
-            color: var(--text-tertiary);
-        }
-        .tutorial-nav button#tutorial-end-btn:hover {
-            color: var(--danger);
-            background: none;
         }
         
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -1219,7 +1211,6 @@
             <h3 id="tutorial-step-title"></h3>
             <div id="tutorial-step-content"></div>
             <div class="tutorial-nav">
-                <button id="tutorial-end-btn">End Tour</button>
                 <button id="tutorial-next-btn">Next</button>
             </div>
         </div>
@@ -1371,7 +1362,6 @@
                     tutorialStepTitle: document.getElementById('tutorial-step-title'),
                     tutorialStepContent: document.getElementById('tutorial-step-content'),
                     tutorialNextBtn: document.getElementById('tutorial-next-btn'),
-                    tutorialEndBtn: document.getElementById('tutorial-end-btn'),
                 };
             },
 
@@ -1448,8 +1438,6 @@
                 // Tip & Tutorial Events
                 this.elements.closeSwipeToastBtn?.addEventListener('click', () => this.hideSwipeTip());
                 this.elements.tutorialNextBtn?.addEventListener('click', () => this.nextTutorialStep());
-                this.elements.tutorialEndBtn?.addEventListener('click', () => this.endTutorial(false)); // Pass false to indicate user aborted
-
             },
 
             fetchData: function() {
@@ -1856,11 +1844,10 @@
                 if (this.elements.showSwipeTipToggle) this.elements.showSwipeTipToggle.checked = showTip;
             },
             toggleSettingsPanel: function(show, force = false) {
-                // If tutorial is active and user tries to close the panel, end the tour.
+                // If tutorial is active and user tries to close the panel, do not allow it.
                 // The 'force' flag bypasses this for programmatic calls from the tutorial itself.
                 if (!force && this.tutorial.isActive && !show) {
-                     this.endTutorial(false); // End the tour because user closed the panel.
-                     return; // IMPORTANT: Prevent the panel from closing twice. endTutorial handles it.
+                    return; // PREVENT closing settings panel during mandatory tutorial
                 }
                 this.elements.settingsPanel.classList.toggle('show', show);
                 this.elements.settingsOverlay.classList.toggle('show', show);
@@ -2179,6 +2166,27 @@
                 
                 this.elements.tutorialOverlay.classList.add('show');
                 
+                const allSettings = this.elements.settingsPanel.querySelectorAll('.setting-item');
+                const targetEl = step.target ? step.target() : null;
+                const isSettingsPanelVisible = this.elements.settingsPanel.classList.contains('show');
+
+                // First, enable all settings to reset state from previous step.
+                allSettings.forEach(item => item.classList.remove('disabled'));
+
+                // If the tutorial is active and the settings panel is shown for a step,
+                // disable all settings except the one being highlighted.
+                if (this.tutorial.isActive && isSettingsPanelVisible) {
+                    const targetSettingItem = targetEl ? targetEl.closest('.setting-item') : null;
+                    
+                    allSettings.forEach(item => {
+                        // Disable the item if it's not the target's parent item.
+                        // If there's no target inside settings, disable everything.
+                        if (item !== targetSettingItem) {
+                            item.classList.add('disabled');
+                        }
+                    });
+                }
+
                 requestAnimationFrame(() => {
                     const highlightBox = this.elements.tutorialHighlightBox;
                     const targetEl = step.target ? step.target() : null;
@@ -2229,6 +2237,11 @@
             endTutorial: function(setCompleted = false, isCleanup = false) {
                 if (!this.tutorial.isActive) return;
 
+                // Make sure all settings items are re-enabled when the tutorial ends.
+                this.elements.settingsPanel.querySelectorAll('.setting-item').forEach(item => {
+                    item.classList.remove('disabled');
+                });
+
                 // Set isActive to false FIRST to prevent any potential recursive calls
                 this.tutorial.isActive = false;
 
@@ -2261,7 +2274,7 @@
 
                 this.tutorial.originalSettings = {}; // Always clear after use
 
-                if (setCompleted) {
+                if (setComplesetCompletedted) {
                     localStorage.setItem(this.TUTORIAL_VERSION_KEY, 'true');
                 }
             },
