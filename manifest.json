@@ -1,0 +1,23 @@
+{
+  "name": "Nursing Resource Hub",
+  "short_name": "Nursing Hub",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#388E3C",
+  "theme_color": "#388E3C",
+  "description": "Digital library and learning resources for nursing students at Olivarez College.",
+  "icons": [
+    {
+      "src": "https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
