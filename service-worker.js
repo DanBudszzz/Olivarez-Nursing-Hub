@@ -1,9 +1,16 @@
 // A simple service worker for caching main assets for offline use.
-const CACHE_NAME = 'nursing-hub-cache-v1';
+const CACHE_NAME = 'nursing-hub-cache-v3'; // Bumped cache version
 const urlsToCache = [
   './',
   'index.html',
+  'library.html',
+  'practicequiz.html',
+  'transes.html',
+  'manifest.json',
   'logo.png',
+  'startup.mp4',
+  'books.json',
+  'cover.jpg',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
