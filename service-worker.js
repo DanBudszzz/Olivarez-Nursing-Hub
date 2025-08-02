@@ -40,12 +40,32 @@ self.addEventListener('install', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => {
-      // If the request is in the cache, return it. Otherwise, fetch from the network.
-      return response || fetch(e.request);
-    })
-  );
+    // For navigation requests, use a Stale-While-Revalidate strategy.
+    if (e.request.mode === 'navigate') {
+        e.respondWith(
+            caches.open(CACHE_NAME).then(async (cache) => {
+                const cachedResponse = await cache.match(e.request);
+                const fetchPromise = fetch(e.request).then((networkResponse) => {
+                    if (networkResponse.ok) {
+                       cache.put(e.request, networkResponse.clone());
+                    }
+                    return networkResponse;
+                }).catch(err => {
+                    console.warn(`[Service Worker] Fetch failed for ${e.request.url}:`, err);
+                });
+
+                // Return cached response immediately if available, otherwise wait for fetch to complete.
+                return cachedResponse || fetchPromise;
+            })
+        );
+    } else {
+        // For other assets, use a cache-first strategy.
+        e.respondWith(
+            caches.match(e.request).then((response) => {
+                return response || fetch(e.request);
+            })
+        );
+    }
 });
 
 self.addEventListener('activate', (event) => {
@@ -76,5 +96,12 @@ self.addEventListener('sync', (event) => {
   if (event.tag === 'data-sync-request') {
     console.log('[Service Worker] Firing Background Sync for data-sync-request.');
     event.waitUntil(updateCache());
+  }
+});
+
+// Listen for message from client to activate new service worker
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    self.skipWaiting();
   }
 });
