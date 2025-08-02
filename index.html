@@ -573,6 +573,11 @@
 </head>
 <body class="preloading">
 
+    <div id="update-notification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2C3E50; color: white; padding: 15px 25px; border-radius: 50px; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">
+        <span>A new version is available!</span>
+        <button id="reload-button" style="background: #388E3C; color: white; border: none; border-radius: 20px; padding: 8px 18px; margin-left: 15px; cursor: pointer; font-weight: 600; font-size: 14px;">Refresh</button>
+    </div>
+
     <div id="startup-video-container">
         <video id="startup-video" src="startup.mp4" autoplay muted playsinline></video>
     </div>
@@ -848,6 +853,20 @@
             if (e.target === iosInstallModal) closeIosModal();
         });
 
+        let newWorker;
+
+        function showUpdateNotification() {
+            const notification = document.getElementById('update-notification');
+            if (notification) {
+                notification.style.display = 'flex';
+                notification.style.alignItems = 'center';
+                const reloadButton = document.getElementById('reload-button');
+                reloadButton.addEventListener('click', () => {
+                    newWorker.postMessage({ action: 'skipWaiting' });
+                });
+            }
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -856,8 +875,27 @@
                         if (reg.active) {
                             setupPwaFeatures(reg);
                         }
+
+                        reg.addEventListener('updatefound', () => {
+                            console.log('New service worker found.');
+                            newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('New service worker installed. Ready for activation.');
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
                     })
                     .catch(err => console.error('Service worker registration failed:', err));
+            });
+
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                console.log('Controller changed. Reloading page.');
+                window.location.reload();
+                refreshing = true;
             });
         }
         
