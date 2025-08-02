@@ -11,7 +11,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Nursing Hub">
-    <link rel="apple-touch-icon" href="https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="logo.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="logo.png">
     
     <title>Nursing Resource Hub - Olivarez College</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -526,28 +529,45 @@
         .ios-modal-content h3 {
             font-family: var(--font-heading);
             color: var(--secondary);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         .ios-modal-content p {
             margin-bottom: 1.5rem;
+            color: #555;
+            font-size: 0.95rem;
         }
-        .ios-instructions {
+        .ios-instructions-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            font-size: 1rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            padding: 1rem;
-            background: #f0f0f0;
-            border-radius: 10px;
-            text-align: left;
+            gap: 0.75rem;
         }
-        .ios-instructions span {
+        .ios-instructions-list li {
+            background-color: #f3f4f6;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
+            font-weight: 500;
         }
-        .ios-instructions img {
-            width: 24px;
-            height: 24px;
+        .ios-icon-wrapper {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background-color: #e5e7eb;
+            border-radius: 7px;
+            margin-left: 1rem;
+        }
+        .ios-icon-wrapper svg {
+            width: 20px;
+            height: 20px;
         }
     </style>
 </head>
@@ -673,10 +693,21 @@
         <div class="ios-modal-content">
             <button id="ios-modal-close" class="ios-modal-close-btn" aria-label="Close">&times;</button>
             <h3>Install Nursing Hub</h3>
-            <div class="ios-instructions">
-                <span>1. Tap the Share button <img src="data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 5L12 16M12 5L8 9M12 5L16 9' stroke='%23000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5 12V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V12' stroke='%23000000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" alt="Share Icon"/> in your browser menu.</span>
-                <span>2. Scroll down and tap <strong>'Add to Home Screen'</strong>.</span>
-            </div>
+            <p>To install the app on your iOS device, follow these two simple steps.</p>
+            <ol class="ios-instructions-list">
+                <li>
+                    <span>1. Tap the <strong>Share</strong> button</span>
+                    <span class="ios-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5L12 16M12 5L8 9M12 5L16 9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5 12V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V12" stroke="#000000" stroke-width="2" stroke-linecap="round"></path></svg>
+                    </span>
+                </li>
+                <li>
+                   <span>2. Tap <strong>'Add to Home Screen'</strong></span>
+                   <span class="ios-icon-wrapper">
+                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19M5 12H19" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path></svg>
+                   </span>
+                </li>
+            </ol>
         </div>
     </div>
     
@@ -717,11 +748,73 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const body = document.body;
+
+        // --- PWA Installation Logic (runs immediately) ---
+        let deferredPrompt;
+        const installBtnDesktop = document.getElementById('install-btn-desktop');
+        const installBtnMobile = document.getElementById('install-btn-mobile');
+        const iosInstallModal = document.getElementById('ios-install-modal');
+        const closeIosModalBtn = document.getElementById('ios-modal-close');
+        const allInstallBtns = [installBtnDesktop, installBtnMobile].filter(Boolean);
+
+        const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+        
+        if (isInStandaloneMode()) {
+            allInstallBtns.forEach(btn => btn.style.display = 'none');
+        } else {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
+                if (installBtnMobile) installBtnMobile.style.display = 'flex';
+            });
+            if (isIos()) {
+                allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
+                if (installBtnMobile) installBtnMobile.style.display = 'flex';
+            }
+        }
+
+        async function installApp(e) {
+            e.preventDefault();
+            if (isIos() && !isInStandaloneMode()) {
+                iosInstallModal.style.display = 'flex';
+                setTimeout(() => iosInstallModal.classList.add('visible'), 10);
+                return;
+            }
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    allInstallBtns.forEach(btn => btn.style.display = 'none');
+                }
+                deferredPrompt = null;
+            }
+        }
+
+        allInstallBtns.forEach(btn => btn.addEventListener('click', installApp));
+
+        const closeIosModal = () => {
+            iosInstallModal.classList.remove('visible');
+            setTimeout(() => iosInstallModal.style.display = 'none', 300);
+        };
+
+        closeIosModalBtn.addEventListener('click', closeIosModal);
+        iosInstallModal.addEventListener('click', (e) => {
+            if (e.target === iosInstallModal) closeIosModal();
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('Service worker registered.', reg))
+                .catch(err => console.error('Service worker registration failed:', err));
+        }
+
         // --- Element Selectors ---
         const videoContainer = document.getElementById('startup-video-container');
         const video = document.getElementById('startup-video');
         const preloader = document.getElementById('preloader');
-        const body = document.body;
 
         // --- Main App Initialization Logic ---
         function initializeMainApp() {
@@ -826,66 +919,6 @@
                     }
                 });
             });
-
-            let deferredPrompt;
-            const installBtnDesktop = document.getElementById('install-btn-desktop');
-            const installBtnMobile = document.getElementById('install-btn-mobile');
-            const iosInstallModal = document.getElementById('ios-install-modal');
-            const closeIosModalBtn = document.getElementById('ios-modal-close');
-            const allInstallBtns = [installBtnDesktop, installBtnMobile].filter(Boolean);
-
-            const isIos = () => /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
-            const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
-
-            if (isInStandaloneMode()) {
-                allInstallBtns.forEach(btn => btn.style.display = 'none');
-            } else {
-                 window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
-                });
-
-                if (isIos()) {
-                    allInstallBtns.forEach(btn => btn.style.display = 'inline-flex');
-                    if (installBtnMobile) installBtnMobile.style.display = 'flex';
-                }
-            }
-            
-            async function installApp(e) {
-                e.preventDefault();
-                if (isIos() && !isInStandaloneMode()) {
-                    iosInstallModal.style.display = 'flex';
-                    setTimeout(() => iosInstallModal.classList.add('visible'), 10);
-                    return;
-                }
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        allInstallBtns.forEach(btn => btn.style.display = 'none');
-                    }
-                    deferredPrompt = null;
-                }
-            }
-
-            allInstallBtns.forEach(btn => btn.addEventListener('click', installApp));
-
-            const closeIosModal = () => {
-                iosInstallModal.classList.remove('visible');
-                setTimeout(() => iosInstallModal.style.display = 'none', 300);
-            };
-
-            closeIosModalBtn.addEventListener('click', closeIosModal);
-            iosInstallModal.addEventListener('click', (e) => {
-                if (e.target === iosInstallModal) closeIosModal();
-            });
-
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('Service worker registered.', reg))
-                    .catch(err => console.error('Service worker registration failed:', err));
-            }
         }
 
         // --- Preloader Logic ---
