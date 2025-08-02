@@ -14,6 +14,21 @@ const urlsToCache = [
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
+// Function to fetch and update the cache.
+const updateCache = async () => {
+    console.log('[Service Worker] Updating cache...');
+    try {
+        const cache = await caches.open(CACHE_NAME);
+        await cache.addAll(urlsToCache);
+        console.log('[Service Worker] Cache updated successfully.');
+        return true;
+    } catch (error) {
+        console.error('[Service Worker] Failed to update cache:', error);
+        return false;
+    }
+};
+
+
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -46,4 +61,20 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+});
+
+// Periodic Background Sync listener: Keeps content fresh.
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'content-update') {
+    console.log('[Service Worker] Firing Periodic Sync for content-update.');
+    event.waitUntil(updateCache());
+  }
+});
+
+// Background Sync listener: For deferred actions until connectivity is restored.
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'data-sync-request') {
+    console.log('[Service Worker] Firing Background Sync for data-sync-request.');
+    event.waitUntil(updateCache());
+  }
 });
