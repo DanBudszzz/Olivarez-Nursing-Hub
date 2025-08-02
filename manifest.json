@@ -2,7 +2,7 @@
   "name": "Nursing Resource Hub",
   "short_name": "Nursing Hub",
   "start_url": ".",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#FFFFFF",
   "theme_color": "#388E3C",
   "description": "Digital library and learning resources for nursing students at Olivarez College.",
