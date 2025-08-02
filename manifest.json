@@ -8,15 +8,15 @@
   "description": "Digital library and learning resources for nursing students at Olivarez College.",
   "icons": [
     {
-      "src": "logoicon.png",
+      "src": "logoicon.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpg",
       "purpose": "any maskable"
     },
     {
       "src": "logoicon.png",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpg",
       "purpose": "any maskable"
     }
   ]
