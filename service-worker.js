@@ -3,7 +3,7 @@ const CACHE_NAME = 'nursing-hub-cache-v1';
 const urlsToCache = [
   './',
   'index.html',
-  'https://olivarezcollegetagaytay.edu.ph/img/olivarez-college-tagaytay-logo.png',
+  'logo.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
