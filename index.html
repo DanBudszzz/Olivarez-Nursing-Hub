@@ -718,6 +718,7 @@
         <div class="footer-text">
           <p>© <span id="current-year"></span> Olivarez College Nursing Department</p>
           <p>Contact: nursing@olivarezcollege.edu.ph</p>
+          <p id="pwa-status" style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;"></p>
         </div>
       </div>
     </footer>
@@ -750,7 +751,49 @@
     document.addEventListener('DOMContentLoaded', () => {
         const body = document.body;
 
-        // --- PWA Installation Logic (runs immediately) ---
+        // --- PWA Feature Setup ---
+        async function setupPwaFeatures(registration) {
+            const statusEl = document.getElementById('pwa-status');
+            if (!statusEl) return;
+            
+            let statusMessages = [];
+
+            // 1. Periodic Background Sync - For keeping content fresh
+            if ('periodicSync' in registration) {
+                try {
+                    const status = await navigator.permissions.query({ name: 'periodic-background-sync' });
+                    if (status.state === 'granted') {
+                        await registration.periodicSync.register('content-update', {
+                            minInterval: 24 * 60 * 60 * 1000, // 1 day
+                        });
+                        console.log('Periodic Sync registered.');
+                        statusMessages.push('Auto-updates enabled.');
+                    } else {
+                        console.log('Periodic Sync permission not granted.');
+                    }
+                } catch (error) {
+                    console.error('Periodic Sync registration failed:', error);
+                }
+            }
+
+            // 2. Background Sync - For one-off background tasks
+            if ('sync' in registration) {
+                try {
+                    await registration.sync.register('data-sync-request');
+                    console.log('Background Sync registered.');
+                    statusMessages.push('Offline-sync ready.');
+                } catch (error) {
+                    console.error('Background Sync registration failed:', error);
+                }
+            }
+            
+            if(statusMessages.length > 0) {
+                 statusEl.textContent = `PWA Status: ${statusMessages.join(' ')}`;
+            }
+        }
+
+
+        // --- PWA Installation Logic & Service Worker Registration ---
         let deferredPrompt;
         const installBtnDesktop = document.getElementById('install-btn-desktop');
         const installBtnMobile = document.getElementById('install-btn-mobile');
@@ -806,11 +849,18 @@
         });
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then(reg => console.log('Service worker registered.', reg))
-                .catch(err => console.error('Service worker registration failed:', err));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => {
+                        console.log('Service worker registered.', reg);
+                        if (reg.active) {
+                            setupPwaFeatures(reg);
+                        }
+                    })
+                    .catch(err => console.error('Service worker registration failed:', err));
+            });
         }
-
+        
         // --- Element Selectors ---
         const videoContainer = document.getElementById('startup-video-container');
         const video = document.getElementById('startup-video');
