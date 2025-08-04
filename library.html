@@ -377,11 +377,6 @@
       </form>
     </div>
 
-    <button id="show-admin-button" class="button-base button-primary">
-        <i class="fas fa-upload"></i>
-        <span>Upload New Book</span>
-    </button>
-
     <section class="admin-panel">
       <h2 class="panel-header"><i class="fas fa-cloud-upload-alt"></i>Upload New Book</h2>
       <form id="book-form">
@@ -432,7 +427,6 @@
     const App = {
         // --- Configuration ---
         API_URL: 'https://script.google.com/macros/s/AKfycbyc9tD9oEkmg3IgzORMhFWRsh9Z5o9oWabDdRCIlVAnV0zTwOiIrkD-eq2tpIXsw_g/exec',
-        CORRECT_PASSWORD: "211C-2986",
 
         // --- State ---
         state: {
@@ -449,13 +443,6 @@
             this.initTheme();
             this.bindEvents();
             this.loadBooks();
-            const styleSheet = document.createElement("style");
-            styleSheet.type = "text/css";
-            styleSheet.innerText = `@keyframes shake {
-                10%, 90% { transform: translateX(-1px); } 20%, 80% { transform: translateX(2px); }
-                30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); }
-            }`;
-            document.head.appendChild(styleSheet);
         },
 
         cacheDOMElements() {
@@ -465,23 +452,12 @@
                 yearFilter: document.getElementById('year-filter'),
                 subjectFilter: document.getElementById('subject-filter'),
                 searchFilter: document.getElementById('search'),
-                bookForm: document.getElementById('book-form'),
-                passwordModal: document.getElementById('password-modal'),
-                passwordForm: document.getElementById('password-form'),
-                passwordInput: document.getElementById('password-input'),
-                errorMessage: document.getElementById('error-message'),
-                adminPanel: document.querySelector('.admin-panel'),
-                showAdminButton: document.getElementById('show-admin-button'),
                 themeToggle: document.getElementById('theme-checkbox'),
             };
         },
 
         bindEvents() {
             this.elements.themeToggle.addEventListener('change', (e) => this.setTheme(e.target.checked ? 'dark' : 'light'));
-            this.elements.showAdminButton.addEventListener('click', () => this.showPasswordModal());
-            this.elements.passwordModal.addEventListener('click', (e) => (e.target === this.elements.passwordModal) && this.closePasswordModal());
-            this.elements.passwordForm.addEventListener('submit', (e) => this.checkPassword(e));
-            this.elements.bookForm.addEventListener('submit', (e) => this.submitBook(e));
             this.elements.yearFilter.addEventListener('change', () => this.updateFilters());
             this.elements.subjectFilter.addEventListener('change', () => this.filterBooks());
             this.elements.searchFilter.addEventListener('input', () => this.filterBooks());
@@ -520,50 +496,6 @@
                 this.state.isLoading = false;
                 this.elements.loaderOverlay.style.opacity = '0';
                 setTimeout(() => { this.elements.loaderOverlay.style.display = 'none'; }, 500);
-            }
-        },
-
-        async submitBook(e) {
-            e.preventDefault();
-            const submitButton = e.target.querySelector('button[type="submit"]');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Uploading...';
-
-            const newBook = {
-                title: document.getElementById("book-title").value.trim(),
-                year: document.getElementById("book-year").value.trim(),
-                subject: document.getElementById("book-subject").value.trim(),
-                image: document.getElementById("book-image-url").value.trim(),
-                pdf: document.getElementById("book-pdf-url").value.trim()
-            };
-
-            if (Object.values(newBook).some(value => !value)) {
-                alert("Please fill all fields.");
-                submitButton.disabled = false;
-                submitButton.textContent = 'Add Book';
-                return;
-            }
-
-            try {
-                const response = await fetch(this.API_URL, {
-                    method: "POST",
-                    body: JSON.stringify(newBook),
-                    headers: { 'Content-Type': 'application/json' },
-                });
-                 if (!response.ok) { // Check if response is ok (status in the range 200-299)
-                    const errorData = await response.text();
-                    throw new Error(`Upload failed on server: ${errorData}`);
-                }
-                alert("✅ Book added successfully! The library will now reload.");
-                this.elements.bookForm.reset();
-                this.closeAdminPanel();
-                await this.loadBooks();
-            } catch (error) {
-                console.error("❌ Upload failed:", error);
-                alert(`Upload failed. Please check the console for details.`);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Add Book';
             }
         },
 
@@ -629,43 +561,6 @@
 
             this.renderBooks(filteredBooks);
         },
-
-        // --- Admin & Password Modal ---
-        showAdminPanel() {
-            this.elements.adminPanel.style.display = 'block';
-            this.elements.showAdminButton.style.display = 'none';
-            this.closePasswordModal();
-        },
-
-        closeAdminPanel() {
-             this.elements.adminPanel.style.display = 'none';
-             this.elements.showAdminButton.style.display = 'block';
-        },
-
-        showPasswordModal() {
-            this.elements.passwordModal.classList.add('show');
-            this.elements.passwordInput.focus();
-        },
-
-        closePasswordModal() {
-            this.elements.passwordModal.classList.remove('show');
-            this.elements.passwordInput.value = '';
-            this.elements.errorMessage.style.display = 'none';
-        },
-
-        checkPassword(event) {
-            event.preventDefault();
-            this.elements.errorMessage.style.display = 'none';
-            if (this.elements.passwordInput.value === this.CORRECT_PASSWORD) {
-                this.showAdminPanel();
-            } else {
-                this.elements.errorMessage.textContent = "Incorrect password. Please try again.";
-                this.elements.errorMessage.style.display = 'block';
-                this.elements.passwordInput.value = '';
-                this.elements.passwordForm.style.animation = 'shake 0.5s ease';
-                setTimeout(() => { this.elements.passwordForm.style.animation = '' }, 500);
-            }
-        }
     };
 
     document.addEventListener('DOMContentLoaded', () => App.init());
