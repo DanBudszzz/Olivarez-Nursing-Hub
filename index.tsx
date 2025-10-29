@@ -1,11 +1,4 @@
-// Add a type declaration for netlifyIdentity on the window object
-declare global {
-  interface Window {
-    netlifyIdentity: any;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const body = document.body;
     
     // --- Element Selectors ---
@@ -14,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app-container');
 
     let appInitialized = false;
-    let identityInitialized = false; // Flag to track Netlify init
 
     // --- Main App Initialization Logic (runs only once per session) ---
     function initializeMainApp() {
@@ -98,10 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sideNavItems.forEach(item => {
             item.addEventListener('click', (e) => {
-                // Don't close for logout button, let Netlify handle it
-                if(item.hasAttribute('data-netlify-identity-button')) {
-                    return;
-                }
                 closeMenu();
                 
                 const href = item.getAttribute('href');
@@ -141,45 +129,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (appContainer) appContainer.style.display = 'none';
     }
 
-    // --- Fallback Timer for Netlify Identity ---
-    // If the init event doesn't fire, we don't want to be stuck on the preloader.
-    setTimeout(() => {
-        if (!identityInitialized) {
-            console.warn("Netlify Identity failed to initialize in a timely manner. Showing login as a fallback.");
+    // --- Auth0 Integration via Netlify ---
+    async function checkAuthStatus() {
+        try {
+            const response = await fetch('/.netlify/identity/user');
+            // A 401 response is expected for logged-out users, which is not 'ok'
+            if (response.ok) {
+                const user = await response.json();
+                // Verify we have actual user data
+                if (user && user.user_metadata) { 
+                    showApp();
+                    initializeMainApp();
+                    return;
+                }
+            }
+            // If response is not ok, or doesn't contain user data, show the login gate
+            showLogin();
+        } catch (error) {
+            console.error("Error checking authentication status:", error);
             showLogin();
         }
-    }, 4000); // 4-second timeout
-
-
-    // --- Netlify Identity Integration ---
-    if (window.netlifyIdentity) {
-        window.netlifyIdentity.on('init', user => {
-            identityInitialized = true; // Mark as initialized
-            if (user) {
-                showApp();
-                initializeMainApp();
-            } else {
-                showLogin();
-            }
-        });
-
-        window.netlifyIdentity.on('login', user => {
-            showApp();
-            initializeMainApp();
-            window.netlifyIdentity.close();
-        });
-
-        window.netlifyIdentity.on('logout', () => {
-            appInitialized = false; // Reset init flag on logout
-            showLogin();
-        });
-    } else {
-        identityInitialized = true; // Mark as "initialized" as there's nothing to wait for
-        // Fallback if script fails to load
-        console.error("Netlify Identity widget not found.");
-        showLogin();
     }
+
+    // Check user status on initial load
+    await checkAuthStatus();
 });
 
-// FIX: Export an empty object to treat this file as a module. This allows global augmentation.
+// FIX: Export an empty object to treat this file as a module.
 export {};
