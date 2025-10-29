@@ -644,7 +644,6 @@
             background-color: #c82333 !important;
         }
     </style>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="preloading">
 
@@ -652,7 +651,7 @@
         <div class="auth-card">
             <img src="logo.png" alt="Olivarez College Logo">
             <h1>Welcome to the Nursing Resource Hub</h1>
-            <p>This is a private resource for authorized students and faculty of Olivarez College. Please log in or sign up to request access. Message Daniel Beltran on Messenger for Access.</p>
+            <p>This is a private resource for authorized students and faculty of Olivarez College. Please log in or sign up to request access.</p>
             <button id="login-btn" class="auth-btn">Login / Sign Up</button>
         </div>
     </div>
@@ -1116,8 +1115,8 @@
         const updateUserState = (user) => {
             if (user) {
                 // To enable approval, go to your Netlify site dashboard -> Identity -> Settings -> Registration, 
-                // and set Registration preferences to "Invite only" or "Require approval". 
-                // Then, you can assign a role (e.g., 'approved') to users you want to grant access to.
+                // and set Registration preferences to "Invite only". Then, you can assign a role (e.g., 'approved') 
+                // to users you want to grant access to from the Identity tab.
                 const isApproved = user.app_metadata.roles && user.app_metadata.roles.length > 0;
                 if (isApproved) {
                     showApp();
@@ -1131,6 +1130,7 @@
         
         // Initialize Netlify Identity and Bind Events
         if (window.netlifyIdentity) {
+            netlifyIdentity.init();
             netlifyIdentity.on('init', user => {
                 updateUserState(user);
             });
@@ -1156,6 +1156,5 @@
         }
     });
     </script>
-<script type="module" src="/index.tsx"></script>
 </body>
 </html>
