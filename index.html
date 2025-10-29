@@ -17,10 +17,13 @@
     <link rel="apple-touch-icon" sizes="167x167" href="logo.png">
     
     <title>Nursing Resource Hub - Olivarez College</title>
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=DM+Sans:500,700&display=swap" rel="stylesheet">
+    
+    <!-- Netlify Identity Widget -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <style>
         :root {
             --primary: #388E3C;
@@ -52,6 +55,30 @@
             line-height: 1.7;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
+        }
+        
+        #startup-video-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 10000; /* Higher than preloader */
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        #startup-video-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        #startup-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         #preloader {
@@ -96,19 +123,65 @@
             30% { transform: translateY(-25px); }
         }
 
-        body.preloading #app-container {
-            display: none;
+        body.preloading {
+            overflow: hidden;
         }
-
+        
+        /* Hide content until loaded and authenticated */
         header, .hero-container, main, footer {
+            display: none;
             opacity: 0;
         }
         
-        body.loaded header,
-        body.loaded .hero-container,
-        body.loaded main,
-        body.loaded footer {
+        body.loaded.authenticated header,
+        body.loaded.authenticated .hero-container,
+        body.loaded.authenticated main,
+        body.loaded.authenticated footer {
+            display: block; /* Or flex, etc., as appropriate */
             opacity: 1;
+        }
+        body.loaded.authenticated header { display: flex; }
+        body.loaded.authenticated main { display: flex; }
+
+        /* Login Wall */
+        #login-wall {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--gradient);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        body.loaded.unauthenticated #login-wall {
+            display: flex;
+            opacity: 1;
+        }
+        .login-box {
+            background: white;
+            padding: 3rem 4rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 90%;
+        }
+        .login-box img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+        .login-box h1 {
+            font-family: var(--font-heading);
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        .login-box p {
+            margin-bottom: 2rem;
+            color: #6c757d;
         }
 
         /* Header */
@@ -117,7 +190,7 @@
             width: 100%;
             z-index: 900;
             padding: 0.5rem 2rem;
-            display: flex; align-items: center; justify-content: space-between;
+            align-items: center; justify-content: space-between;
             background: var(--gradient);
             color: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -140,6 +213,7 @@
           position: relative;
           overflow: hidden;
           max-width: 100%;
+          align-items: center;
         }
         .nav-item {
           color: rgba(255, 255, 255, 0.75);
@@ -170,7 +244,7 @@
           opacity: 1;
           bottom: 0;
         }
-        .nav-item:not(.is-active):not(.logout-btn):hover {
+        .nav-item:not(.is-active):hover {
           color: #fff;
         }
         .nav-indicator {
@@ -272,7 +346,6 @@
         main {
             background-color: var(--light);
             padding: 5rem 1.5rem;
-            display: flex;
             flex-direction: column;
             gap: 2rem;
             position: relative;
@@ -427,7 +500,6 @@
         body.menu-open .side-nav-item:nth-child(3) { transition-delay: 0.14s; }
         body.menu-open .side-nav-item:nth-child(4) { transition-delay: 0.17s; }
         body.menu-open .side-nav-item:nth-child(5) { transition-delay: 0.20s; }
-        body.menu-open .side-nav-item:nth-child(6) { transition-delay: 0.23s; }
 
 
         /* --- Media Queries for Responsive Design --- */
@@ -458,370 +530,409 @@
             .section-title { font-size: 1.6rem; }
             .card-description { max-width: 100%; }
             footer { padding: 2rem 1.5rem; }
-        }
-
-        /* --- iOS Install Modal --- */
-        .ios-modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            display: none; /* Changed from flex */
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-        }
-        .ios-modal-overlay.visible {
-            display: flex; /* Changed from opacity/visibility */
-            opacity: 1;
-            visibility: visible;
-        }
-        .ios-modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: var(--radius);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transform: scale(0.9);
-            transition: transform 0.3s;
-        }
-        .ios-modal-overlay.visible .ios-modal-content {
-            transform: scale(1);
-        }
-        .ios-modal-close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            color: #aaa;
-            cursor: pointer;
-            line-height: 1;
-        }
-        .ios-modal-content h3 {
-            font-family: var(--font-heading);
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-        .ios-modal-content p {
-            margin-bottom: 1.5rem;
-            color: #555;
-            font-size: 0.95rem;
-        }
-        .ios-instructions-list {
-            list-style: none;
-            padding: 0;
-            text-align: left;
-            font-size: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .ios-instructions-list li {
-            background-color: #f3f4f6;
-            padding: 0.8rem 1rem;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 500;
-        }
-        .ios-icon-wrapper {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            width: 32px;
-            height: 32px;
-            background-color: #e5e7eb;
-            border-radius: 7px;
-            margin-left: 1rem;
-        }
-        .ios-icon-wrapper svg {
-            width: 20px;
-            height: 20px;
-        }
-        
-        /* --- Authentication Styles --- */
-        .auth-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            width: 100%;
-            background: var(--gradient);
-            font-family: var(--font-body);
-            color: var(--secondary);
-            text-align: center;
-            padding: 2rem;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 10001;
-        }
-        .auth-card {
-            background: white;
-            padding: 2.5rem 3rem;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.2);
-            max-width: 500px;
-            width: 100%;
-            animation: auth-fade-in 0.5s ease-out;
-        }
-        @keyframes auth-fade-in {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .auth-card img {
-            width: 70px;
-            height: 70px;
-            margin-bottom: 1rem;
-        }
-        .auth-card h1 {
-            font-family: var(--font-heading);
-            font-size: 1.6rem;
-            margin-bottom: 0.5rem;
-        }
-        .auth-card p {
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            color: #555;
-            font-size: 0.95rem;
-        }
-        .auth-btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--primary);
-            color: white;
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: var(--transition);
-            box-shadow: 0 5px 20px rgba(56, 142, 60, 0.3);
-            border: none;
-            cursor: pointer;
-        }
-        .auth-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-3px);
-        }
-        .logout-btn:not(.is-active):hover {
-            color: #F44336 !important;
-        }
-        .logout-btn:hover {
-            background-color: #c82333 !important;
+            .login-box { padding: 2.5rem 1.5rem; }
         }
     </style>
 </head>
 <body class="preloading">
 
-    <div id="auth-container" class="auth-wrapper">
-        <div class="auth-card">
-            <img src="logo.png" alt="Olivarez College Logo">
-            <h1>Welcome to the Nursing Resource Hub</h1>
-            <p>This is a private resource for authorized students and faculty of Olivarez College. Please log in or sign up to request access.</p>
-            <button id="login-btn" class="auth-btn">Login / Sign Up</button>
+    <div id="update-notification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2C3E50; color: white; padding: 15px 25px; border-radius: 50px; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">
+        <span>A new version is available!</span>
+        <button id="reload-button" style="background: #388E3C; color: white; border: none; border-radius: 20px; padding: 8px 18px; margin-left: 15px; cursor: pointer; font-weight: 600; font-size: 14px;">Refresh</button>
+    </div>
+
+    <div id="startup-video-container">
+        <video id="startup-video" src="startup.mp4" autoplay muted playsinline></video>
+    </div>
+
+    <div id="preloader">
+        <div class="preloader-container">
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+            <div class="preloader-dot"></div>
+        </div>
+    </div>
+    
+    <div id="login-wall">
+        <div class="login-box">
+            <img src="logo.png" alt="Logo" width="80" height="80">
+            <h1>Access Restricted</h1>
+            <p>Please log in to access the Nursing Resource Hub.</p>
+            <button id="login-wall-button" class="cta-btn card-btn">Login / Sign Up</button>
         </div>
     </div>
 
-    <div id="pending-approval-container" class="auth-wrapper" style="display: none;">
-        <div class="auth-card">
-            <img src="logo.png" alt="Olivarez College Logo">
-            <h1>Registration Complete</h1>
-            <p>Your account is awaiting administrator approval. You will be notified via email once access has been granted. Thank you for your patience.</p>
-            <button id="pending-logout-btn" class="auth-btn">Logout</button>
+    <header>
+        <div class="logo-container">
+            <a href="index.html" aria-label="Homepage">
+                <img src="logo.png"
+                 alt="Olivarez College Logo" class="logo" width="40" height="40">
+            </a>
+            <span class="site-title">Nursing Resource Hub</span>
         </div>
-    </div>
-
-    <div id="app-container" style="display: none;">
-        <div id="update-notification" style="display: none; position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2C3E50; color: white; padding: 15px 25px; border-radius: 50px; z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Poppins', sans-serif;">
-            <span>A new version is available!</span>
-            <button id="reload-button" style="background: #388E3C; color: white; border: none; border-radius: 20px; padding: 8px 18px; margin-left: 15px; cursor: pointer; font-weight: 600; font-size: 14px;">Refresh</button>
-        </div>
-
-        <div id="preloader">
-            <div class="preloader-container">
-                <div class="preloader-dot"></div>
-                <div class="preloader-dot"></div>
-                <div class="preloader-dot"></div>
-                <div class="preloader-dot"></div>
-            </div>
-        </div>
-
-        <header>
-            <div class="logo-container">
-                <a href="index.html" aria-label="Homepage">
-                    <img src="logo.png" alt="Olivarez College Logo" class="logo" width="40" height="40">
-                </a>
-                <span class="site-title">Nursing Resource Hub</span>
-            </div>
-            
-            <nav class="nav">
-              <a href="#info" class="nav-item is-active" active-color="#4CAF50">Information</a>
-              <a href="#library" class="nav-item" active-color="#2196F3">Library</a>
-              <a href="#practice-section" class="nav-item" active-color="#FF9800">Practice</a>
-              <a href="#reviewers" class="nav-item" active-color="#E91E63">Reviewers</a>
-              <a id="install-btn-desktop" class="nav-item" active-color="#8BC34A" style="display: none;">Install App</a>
-              <a href="#" class="nav-item logout-btn" active-color="#F44336">Logout</a>
-              <span class="nav-indicator"></span>
-            </nav>
-
-            <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-        </header>
         
-        <div class="hero-container">
-            <section class="hero" aria-labelledby="hero-heading">
-               <img src="" class="hero-bg-image">
-               <div class="hero-content">
-                    <h1 id="hero-heading" class="hero-title">Advance Your Nursing Journey</h1>
-                    <p class="hero-subtitle">Your central hub for essential e-books, practice quizzes, and curated reviewers to empower the next generation of Olivarian nurses.</p>
-                    <a href="#main-content" class="cta-btn">Start Exploring <i class="fa-solid fa-arrow-right" style="margin-left: 8px; font-size: 0.9em;"></i></a>
-               </div>
+        <nav class="nav">
+          <a href="#info" class="nav-item is-active" active-color="#4CAF50">Information</a>
+          <a href="#library" class="nav-item" active-color="#2196F3">Library</a>
+          <a href="#practice-section" class="nav-item" active-color="#FF9800">Practice</a>
+          <a href="#reviewers" class="nav-item" active-color="#E91E63">Reviewers</a>
+          <a href="#" id="user-status-desktop" class="nav-item" active-color="#8BC34A">Login / Sign Up</a>
+          <span class="nav-indicator"></span>
+        </nav>
+
+        <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </header>
+    
+    <div class="hero-container">
+        <section class="hero" aria-labelledby="hero-heading">
+           <img src="" class="hero-bg-image">
+           <div class="hero-content">
+                <h1 id="hero-heading" class="hero-title">Advance Your Nursing Journey</h1>
+                <p class="hero-subtitle">Your central hub for essential e-books, practice quizzes, and curated reviewers to empower the next generation of Olivarian nurses.</p>
+                <a href="#main-content" class="cta-btn">Start Exploring <i class="fa-solid fa-arrow-right" style="margin-left: 8px; font-size: 0.9em;"></i></a>
+           </div>
+        </section>
+        <div class="wave-divider">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(248,249,250,0.7)" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(248,249,250,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(248,249,250,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#f8f9fa" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <div class="section-wrapper" id="info">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Latest Updates</h2>
+                    <p class="card-description">Stay informed with the latest news, schedules, and important announcements directly from the Nursing Department.</p>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-bullhorn"></i>
+                </div>
             </section>
-            <div class="wave-divider">
-                <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
-                    <defs>
-                        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
-                    </defs>
-                    <g class="parallax">
-                        <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(248,249,250,0.7)" />
-                        <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(248,249,250,0.5)" />
-                        <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(248,249,250,0.3)" />
-                        <use xlink:href="#gentle-wave" x="48" y="7" fill="#f8f9fa" />
-                    </g>
-                </svg>
-            </div>
-        </div>
-
-        <main id="main-content">
-            <div class="section-wrapper" id="info">
-                <section class="feature-section">
-                    <div class="feature-text">
-                        <h2 class="section-title">Latest Updates</h2>
-                        <p class="card-description">Stay informed with the latest news, schedules, and important announcements directly from the Nursing Department.</p>
-                    </div>
-                    <div class="feature-graphic">
-                        <i class="section-icon fa-solid fa-bullhorn"></i>
-                    </div>
-                </section>
-            </div>
-            
-            <div class="section-wrapper" id="library">
-                <section class="feature-section">
-                    <div class="feature-text">
-                        <h2 class="section-title">Digital Library</h2>
-                        <p class="card-description">Dive into our curated collection of essential e-books and digital resources, available 24/7 to support your studies.</p>
-                        <button onclick="window.location.href='library.html'" class="cta-btn card-btn">Go to Library</button>
-                    </div>
-                    <div class="feature-graphic">
-                        <i class="section-icon fa-solid fa-book-open-reader"></i>
-                    </div>
-                </section>
-            </div>
-
-            <div class="section-wrapper" id="practice-section">
-                <section class="feature-section">
-                    <div class="feature-text">
-                        <h2 class="section-title">Practice Tests</h2>
-                        <p class="card-description">Hone your critical thinking and test-taking skills with interactive quizzes and assessments designed for your coursework.</p>
-                        <button onclick="window.location.href='practicequiz.html'" class="cta-btn card-btn">Go to Quizzes</button>
-                    </div>
-                    <div class="feature-graphic">
-                        <i class="section-icon fa-solid fa-pen-ruler"></i>
-                    </div>
-                </section>
-            </div>
-
-            <div class="section-wrapper" id="reviewers">
-                <section class="feature-section">
-                    <div class="feature-text">
-                        <h2 class="section-title">Reviewers Hub</h2>
-                        <p class="card-description">Access comprehensive reviewers and condensed "transes" to streamline your study sessions and master key concepts.</p>
-                        <button onclick="window.location.href='transes.html'" class="cta-btn card-btn">View Reviewers</button>
-                    </div>
-                    <div class="feature-graphic">
-                        <i class="section-icon fa-solid fa-file-lines"></i>
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <div id="ios-install-modal" class="ios-modal-overlay">
-            <div class="ios-modal-content">
-                <button id="ios-modal-close" class="ios-modal-close-btn" aria-label="Close">&times;</button>
-                <h3>Install Nursing Hub</h3>
-                <p>To install the app on your iOS device, follow these two simple steps.</p>
-                <ol class="ios-instructions-list">
-                    <li>
-                        <span>1. Tap the <strong>Share</strong> button</span>
-                        <span class="ios-icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5L12 16M12 5L8 9M12 5L16 9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M5 12V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V12" stroke="#000000" stroke-width="2" stroke-linecap="round"></path></svg>
-                        </span>
-                    </li>
-                    <li>
-                       <span>2. Tap <strong>'Add to Home Screen'</strong></span>
-                       <span class="ios-icon-wrapper">
-                           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5V19M5 12H19" stroke="#000000" stroke-width="2.5" stroke-linecap="round"></path></svg>
-                       </span>
-                    </li>
-                </ol>
-            </div>
         </div>
         
-        <footer>
-          <div class="footer-content">
-            <img src="logo.png" alt="College Logo" class="footer-logo" width="50" height="50">
-            <div class="footer-text">
-              <p>© <span id="current-year"></span> Olivarez College Nursing Department</p>
-              <p>Contact: nursing@olivarezcollege.edu.ph</p>
-              <p id="pwa-status" style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;"></p>
-            </div>
-          </div>
-        </footer>
-        
-        <div id="side-menu" class="side-nav">
-            <a href="#info" class="side-nav-item">
-                <i class="fa-solid fa-bullhorn"></i>
-                <span>Information</span>
-            </a>
-            <a href="#library" class="side-nav-item">
-                <i class="fa-solid fa-book-open-reader"></i>
-                <span>Library</span>
-            </a>
-            <a href="#practice-section" class="side-nav-item">
-                <i class="fa-solid fa-pen-ruler"></i>
-                <span>Practice</span>
-            </a>
-            <a href="#reviewers" class="side-nav-item">
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Reviewers</span>
-            </a>
-            <a href="#" id="install-btn-mobile" class="side-nav-item" style="display: none;">
-                <i class="fa-solid fa-download"></i>
-                <span>Install App</span>
-            </a>
-            <a href="#" class="side-nav-item logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
+        <div class="section-wrapper" id="library">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Digital Library</h2>
+                    <p class="card-description">Dive into our curated collection of essential e-books and digital resources, available 24/7 to support your studies.</p>
+                    <button onclick="window.location.href='library.html'" class="cta-btn card-btn">Go to Library</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-book-open-reader"></i>
+                </div>
+            </section>
         </div>
-        <div id="menu-overlay" class="overlay"></div>
+
+        <div class="section-wrapper" id="practice-section">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Practice Tests</h2>
+                    <p class="card-description">Hone your critical thinking and test-taking skills with interactive quizzes and assessments designed for your coursework.</p>
+                    <button onclick="window.location.href='practicequiz.html'" class="cta-btn card-btn">Go to Quizzes</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-pen-ruler"></i>
+                </div>
+            </section>
+        </div>
+
+        <div class="section-wrapper" id="reviewers">
+            <section class="feature-section">
+                <div class="feature-text">
+                    <h2 class="section-title">Reviewers Hub</h2>
+                    <p class="card-description">Access comprehensive reviewers and condensed "transes" to streamline your study sessions and master key concepts.</p>
+                    <button onclick="window.location.href='transes.html'" class="cta-btn card-btn">View Reviewers</button>
+                </div>
+                <div class="feature-graphic">
+                    <i class="section-icon fa-solid fa-file-lines"></i>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+      <div class="footer-content">
+        <img src="logo.png"
+             alt="College Logo" class="footer-logo" width="50" height="50">
+        <div class="footer-text">
+          <p>© <span id="current-year"></span> Olivarez College Nursing Department</p>
+          <p>Contact: nursing@olivarezcollege.edu.ph</p>
+        </div>
+      </div>
+    </footer>
+    
+    <div id="side-menu" class="side-nav">
+        <a href="#info" class="side-nav-item">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Information</span>
+        </a>
+        <a href="#library" class="side-nav-item">
+            <i class="fa-solid fa-book-open-reader"></i>
+            <span>Library</span>
+        </a>
+        <a href="#practice-section" class="side-nav-item">
+            <i class="fa-solid fa-pen-ruler"></i>
+            <span>Practice</span>
+        </a>
+        <a href="#reviewers" class="side-nav-item">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>Reviewers</span>
+        </a>
+        <a href="#" id="user-status-mobile" class="side-nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>Login / Sign Up</span>
+        </a>
     </div>
+    <div id="menu-overlay" class="overlay"></div>
 
-    <script type="module" src="index.tsx"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const body = document.body;
+        const userStatusDesktop = document.getElementById('user-status-desktop');
+        const userStatusMobile = document.getElementById('user-status-mobile');
+        const loginWallButton = document.getElementById('login-wall-button');
+
+        const openIdentityModal = (e) => {
+            e.preventDefault();
+            netlifyIdentity.open();
+        };
+
+        const handleLogout = (e) => {
+            e.preventDefault();
+            netlifyIdentity.logout();
+        };
+
+        const updateUserStatus = (user) => {
+            const isLoggedIn = !!user;
+
+            // Clean up old listeners
+            userStatusDesktop.removeEventListener('click', openIdentityModal);
+            userStatusDesktop.removeEventListener('click', handleLogout);
+            userStatusMobile.removeEventListener('click', openIdentityModal);
+            userStatusMobile.removeEventListener('click', handleLogout);
+
+            if (isLoggedIn) {
+                const userDisplay = user.user_metadata?.full_name || user.email.split('@')[0];
+                userStatusDesktop.textContent = `Logout (${userDisplay})`;
+                userStatusDesktop.addEventListener('click', handleLogout);
+                
+                userStatusMobile.innerHTML = `<i class="fa-solid fa-sign-out-alt"></i><span>Logout (${userDisplay})</span>`;
+                userStatusMobile.addEventListener('click', handleLogout);
+            } else {
+                userStatusDesktop.textContent = 'Login / Sign Up';
+                userStatusDesktop.addEventListener('click', openIdentityModal);
+                
+                userStatusMobile.innerHTML = `<i class="fa-solid fa-user"></i><span>Login / Sign Up</span>`;
+                userStatusMobile.addEventListener('click', openIdentityModal);
+            }
+        };
+
+        const showAppContent = (user) => {
+            body.classList.remove('unauthenticated');
+            body.classList.add('authenticated');
+            updateUserStatus(user);
+        };
+
+        const showLoginWall = () => {
+            body.classList.remove('authenticated');
+            body.classList.add('unauthenticated');
+            updateUserStatus(null);
+        };
+        
+        loginWallButton.addEventListener('click', openIdentityModal);
+
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', user => {
+                if (user) {
+                    showAppContent(user);
+                } else {
+                    showLoginWall();
+                }
+            });
+            window.netlifyIdentity.on('login', user => {
+                showAppContent(user);
+                window.netlifyIdentity.close();
+            });
+            window.netlifyIdentity.on('logout', () => {
+                showLoginWall();
+            });
+        }
+
+        // --- Service Worker & Update Notification ---
+        let newWorker;
+        function showUpdateNotification() {
+            const notification = document.getElementById('update-notification');
+            if (notification) {
+                notification.style.display = 'flex';
+                notification.style.alignItems = 'center';
+                const reloadButton = document.getElementById('reload-button');
+                reloadButton.addEventListener('click', () => {
+                    newWorker.postMessage({ action: 'skipWaiting' });
+                });
+            }
+        }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => {
+                        reg.addEventListener('updatefound', () => {
+                            newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
+                    }).catch(err => console.error('SW registration failed:', err));
+            });
+            let refreshing;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (refreshing) return;
+                window.location.reload();
+                refreshing = true;
+            });
+        }
+        
+        // --- Element Selectors ---
+        const videoContainer = document.getElementById('startup-video-container');
+        const video = document.getElementById('startup-video');
+        const preloader = document.getElementById('preloader');
+
+        // --- Main App Initialization Logic (runs only once) ---
+        function initializeMainApp() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            const indicator = document.querySelector('.nav-indicator');
+            const items = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('main .section-wrapper');
+            function handleIndicator(el) {
+              items.forEach(item => {
+                item.classList.remove('is-active');
+                item.removeAttribute('style');
+              });
+              if (el) {
+                  indicator.style.width = `${el.offsetWidth}px`;
+                  indicator.style.left = `${el.offsetLeft}px`;
+                  indicator.style.backgroundColor = el.getAttribute('active-color');
+                  el.classList.add('is-active');
+                  el.style.color = el.getAttribute('active-color');
+              }
+            }
+            items.forEach(item => {
+              item.addEventListener('click', (e) => {
+                const target = e.currentTarget;
+                const href = target.getAttribute('href');
+                if (href && href.startsWith('#') && href.length > 1) {
+                    handleIndicator(target);
+                }
+              });
+            });
+            handleIndicator(document.querySelector('.nav-item.is-active'));
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const navItem = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+                        if (navItem) handleIndicator(navItem);
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+            sections.forEach(section => scrollObserver.observe(section));
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('in-view');
+                });
+            }, { threshold: 0.2 });
+            document.querySelectorAll('.section-wrapper').forEach(section => {
+                animationObserver.observe(section);
+            });
+            const menuToggle = document.querySelector('.menu-toggle');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const sideNavItems = document.querySelectorAll('.side-nav-item');
+            function closeMenu() {
+                body.classList.remove('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+            function openMenu() {
+                body.classList.add('menu-open');
+                menuToggle.setAttribute('aria-expanded', 'true');
+            }
+            menuToggle.addEventListener('click', () => {
+                body.classList.contains('menu-open') ? closeMenu() : openMenu();
+            });
+            menuOverlay.addEventListener('click', closeMenu);
+            sideNavItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    closeMenu();
+                    const href = item.getAttribute('href');
+                    if (href && href.startsWith('#') && href.length > 1) {
+                        e.preventDefault();
+                        const targetSection = document.querySelector(href);
+                        if (targetSection) {
+                            setTimeout(() => {
+                                targetSection.scrollIntoView({ behavior: 'smooth' });
+                                const desktopNavItem = document.querySelector(`.nav-item[href="${href}"]`);
+                                if (desktopNavItem) handleIndicator(desktopNavItem);
+                            }, 350);
+                        }
+                    }
+                });
+            });
+        }
+
+        // --- Preloader Logic ---
+        function runPreloader() {
+            setTimeout(() => {
+                if (preloader) preloader.classList.add('preloader-hidden');
+                body.classList.add('loaded');
+                setTimeout(() => {
+                    body.classList.remove('preloading');
+                }, 800);
+            }, 2000);
+        }
+
+        // --- Startup Sequence Controller ---
+        function startApplicationFlow() {
+            if (videoContainer) {
+                videoContainer.classList.add('hidden');
+                videoContainer.addEventListener('transitionend', () => videoContainer.remove());
+            }
+            runPreloader();
+            initializeMainApp(); // Initialize nav, animations, etc., regardless of login state
+        }
+        
+        const videoCanPlay = video && !sessionStorage.getItem('startupVideoPlayed');
+        if (videoCanPlay) {
+            video.onended = () => {
+                sessionStorage.setItem('startupVideoPlayed', 'true');
+                startApplicationFlow();
+            };
+            video.onerror = () => {
+                sessionStorage.setItem('startupVideoPlayed', 'true');
+                startApplicationFlow();
+            };
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => startApplicationFlow());
+            }
+        } else {
+            startApplicationFlow();
+        }
+    });
+    </script>
 </body>
 </html>
