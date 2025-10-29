@@ -652,7 +652,7 @@
         <div class="auth-card">
             <img src="logo.png" alt="Olivarez College Logo">
             <h1>Welcome to the Nursing Resource Hub</h1>
-            <p>This is a private resource for authorized students and faculty of Olivarez College. Please log in or sign up to request access.</p>
+            <p>This is a private resource for authorized students and faculty of Olivarez College. Please log in or sign up to request access. Message Daniel Beltran on Messenger for Access.</p>
             <button id="login-btn" class="auth-btn">Login / Sign Up</button>
         </div>
     </div>
@@ -1155,17 +1155,6 @@
             showLogin();
         }
     });
-    </script>
-    <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => {
-              document.location.href = "/admin/";
-            });
-          }
-        });
-      }
     </script>
 <script type="module" src="/index.tsx"></script>
 </body>
